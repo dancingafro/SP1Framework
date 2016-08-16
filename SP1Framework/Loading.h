@@ -1,5 +1,5 @@
-#ifndef _GAME_H
-#define _GAME_H
+#ifndef _LOADING_H
+#define _LOADING_H
 
 #include<iostream>
 #include<fstream>
@@ -7,6 +7,6 @@
 
 using namespace std;
 
-void loadmaps(string mapname);
+char loadmaps(string mapname);
 
 #endif
