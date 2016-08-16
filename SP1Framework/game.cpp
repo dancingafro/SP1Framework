@@ -2,14 +2,14 @@
 //
 //
 #include "game.h"
-#include "Framework\console.h"
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
-bool    g_abKeyPressed[K_COUNT];
+bool    g_abKeyPressed[K_COUNT]; 
+const int width = 150;
+const int height = 50;
+bool loadD = true;
+char map[height][width] = { { '0', }, };
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -17,7 +17,7 @@ EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
-Console g_Console(80, 25, "SP1 Framework");
+Console g_Console(width, height, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -76,6 +76,14 @@ void getInput( void )
     g_abKeyPressed[K_RIGHT]  = isKeyPressed(VK_RIGHT);
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_W] = isKeyPressed(VK_W);
+	g_abKeyPressed[K_A] = isKeyPressed(VK_A);
+	g_abKeyPressed[K_S] = isKeyPressed(VK_S);
+	g_abKeyPressed[K_D] = isKeyPressed(VK_D);
+	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_RETURN] = isKeyPressed(VK_RETURN);
+	g_abKeyPressed[K_1] = isKeyPressed(VK_1);
+	g_abKeyPressed[K_2] = isKeyPressed(VK_2);
 }
 
 //--------------------------------------------------------------
@@ -130,8 +138,10 @@ void render()
 
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-    if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
-        g_eGameState = S_GAME;
+	if (g_abKeyPressed[K_RETURN])
+	{
+		g_eGameState = S_GAME;
+	}
 }
 
 void gameplay()            // gameplay logic
@@ -200,16 +210,21 @@ void clearScreen()
 
 void renderSplashScreen()  // renders the splash screen
 {
-    COORD c = g_Console.getConsoleSize();
-    c.Y /= 3;
-    c.X = c.X / 2 - 9;
-    g_Console.writeToBuffer(c, "A game in 3 seconds", 0x03);
-    c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 20;
-    g_Console.writeToBuffer(c, "Press <Space> to change character colour", 0x09);
-    c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 9;
-    g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x09);
+	if (loadD)
+	{
+		loadD = false;
+		loadmaps("test.txt");
+	}
+	COORD c = g_Console.getConsoleSize();
+	c.X = 0;
+	c.Y /= 3;
+	string line = " ";
+	for (int y = 0; y < height; y++)
+	{
+		line = map[y];
+		g_Console.writeToBuffer(c, line);
+		c.Y++;
+	}
 }
 
 void renderGame()
@@ -251,8 +266,8 @@ void renderFramerate()
 {
     COORD c;
     // displays the framerate
-    std::ostringstream ss;
-    ss << std::fixed << std::setprecision(3);
+    ostringstream ss;
+    ss << fixed << setprecision(3);
     ss << 1.0 / g_dDeltaTime << "fps";
     c.X = g_Console.getConsoleSize().X - 9;
     c.Y = 0;
@@ -270,3 +285,22 @@ void renderToScreen()
     // Writes the buffer to the console, hence you will see what you have written
     g_Console.flushBufferToConsole();
 }
+void loadmaps(string mapname)
+{
+	int row = 0;
+	string line = " ";
+	ifstream file(mapname);
+	if (file.is_open())
+	{
+		while (getline(file, line))
+		{
+			for (int i = 0; i < line.size(); i++)
+			{
+				map[row][i] = line[i];
+			}
+			row++;
+		}
+		file.close();
+	}
+}
+

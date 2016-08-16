@@ -2,6 +2,21 @@
 #define _GAME_H
 
 #include "Framework\timer.h"
+#include "Framework\console.h"
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+#define VK_W 0x57
+#define VK_A 0x41
+#define VK_S 0x53
+#define VK_D 0x44
+#define VK_1 0x31
+#define VK_2 0x32
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -15,7 +30,14 @@ enum EKEYS
     K_RIGHT,
     K_ESCAPE,
     K_SPACE,
-    K_COUNT
+    K_COUNT,
+	K_W,
+	K_A,
+	K_S,
+	K_D,
+	K_RETURN,
+	K_1,
+	K_2
 };
 
 // Enumeration for the different screen states
@@ -50,5 +72,6 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
+void loadmaps(string mapname);
 
 #endif // _GAME_H
