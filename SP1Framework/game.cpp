@@ -8,12 +8,11 @@ double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT]; 
 const int width = 150;
 const int height = 50;
-bool loadD = true;
-char map[height][width] = { { '0', }, };
+char map[height][width];
 
 // Game specific variables here
 SGameChar   g_sChar;
-EGAMESTATES g_eGameState = S_SPLASHSCREEN;
+EGAMESTATES g_eGameState = S_LOADING;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
@@ -33,7 +32,7 @@ void init( void )
     g_dBounceTime = 0.0;
 
     // sets the initial state for the game
-    g_eGameState = S_SPLASHSCREEN;
+	g_eGameState = S_LOADING;
 
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
@@ -107,7 +106,11 @@ void update(double dt)
     g_dDeltaTime = dt;
 
     switch (g_eGameState)
-    {
+	{
+		case S_LOADING: 
+			loadmaps("test.txt");
+			g_eGameState = S_SPLASHSCREEN;
+			break;
         case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
             break;
         case S_GAME: gameplay(); // gameplay logic when we are in the game
@@ -126,7 +129,7 @@ void render()
 {
     clearScreen();      // clears the current screen and draw from scratch 
     switch (g_eGameState)
-    {
+	{
         case S_SPLASHSCREEN: renderSplashScreen();
             break;
         case S_GAME: renderGame();
@@ -205,16 +208,11 @@ void processUserInput()
 void clearScreen()
 {
     // Clears the buffer with this colour attribute
-    g_Console.clearBuffer(0x1F);
+    g_Console.clearBuffer();
 }
 
 void renderSplashScreen()  // renders the splash screen
 {
-	if (loadD)
-	{
-		loadD = false;
-		loadmaps("test.txt");
-	}
 	COORD c = g_Console.getConsoleSize();
 	c.X = 0;
 	c.Y /= 3;
@@ -236,19 +234,7 @@ void renderGame()
 void renderMap()
 {
     // Set up sample colours, and output shadings
-    const WORD colors[] = {
-        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
-    };
-
-    COORD c;
-    for (int i = 0; i < 12; ++i)
-    {
-        c.X = 5 * i;
-        c.Y = i + 1;
-        colour(colors[i]);
-        g_Console.writeToBuffer(c, " °±²Û", colors[i]);
-    }
+    
 }
 
 void renderCharacter()
@@ -278,7 +264,7 @@ void renderFramerate()
     ss << g_dElapsedTime << "secs";
     c.X = 0;
     c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str(), 0x59);
+    g_Console.writeToBuffer(c, ss.str());
 }
 void renderToScreen()
 {

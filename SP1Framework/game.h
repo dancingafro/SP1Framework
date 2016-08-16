@@ -44,6 +44,7 @@ enum EKEYS
 enum EGAMESTATES
 {
     S_SPLASHSCREEN,
+	S_LOADING,
     S_GAME,
     S_COUNT
 };
