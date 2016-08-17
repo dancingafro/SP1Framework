@@ -88,7 +88,7 @@
     <ClInclude Include="Loading.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="test.txt" />
+    <None Include="Splashscreen.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -9,6 +9,7 @@
 #include <fstream>
 #include <string>
 
+
 using namespace std;
 
 #define VK_W 0x57
@@ -17,6 +18,9 @@ using namespace std;
 #define VK_D 0x44
 #define VK_1 0x31
 #define VK_2 0x32
+
+const int width = 80;
+const int height = 25;
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -54,6 +58,10 @@ struct SGameChar
 {
     COORD m_cLocation;
     bool  m_bActive;
+};
+struct SGameMap
+{
+	char map[height][width];
 };
 
 void init        ( void );      // initialize your variables, allocate memory, etc

@@ -52,7 +52,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="test.txt">
+    <None Include="Splashscreen.txt">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
