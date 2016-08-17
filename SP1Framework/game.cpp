@@ -236,6 +236,7 @@ void renderCharacter()
 {
     // Draw the location of the character
     WORD charColor = 0x0A;
+
     if (g_sChar.m_bAttack)
     {
 		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42);
