@@ -48,8 +48,9 @@ enum EKEYS
 // Enumeration for the different screen states
 enum EGAMESTATES
 {
-    S_SPLASHSCREEN,
 	S_LOADING,
+    S_SPLASHSCREEN,
+	S_GAMELOAD,
     S_GAME,
     S_COUNT
 };
@@ -64,17 +65,14 @@ struct SGameChar
 	int   m_iDamage;
 	double m_dAttackRate;
 };
-struct SGameMap
-{
-	char map[height][width];
-};
+	
 
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
 void update      ( double dt ); // update the game and the state of the game
 void render      ( void );      // renders the current state of the game to the console
 void shutdown    ( void );      // do clean up, free memory
-
+void loading();
 void splashScreenWait();    // waits for time to pass in splash screen
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
@@ -88,5 +86,6 @@ void renderFramerate();     // renders debug information, frame rate, elapsed ti
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void loadmaps(string mapname);
 void characterAttackControls();
+void gameLoad();
 
 #endif // _GAME_H

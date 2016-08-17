@@ -42,6 +42,12 @@
     <ClCompile Include="Combat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Combat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Combat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\console.h">
@@ -64,5 +70,13 @@
     <None Include="Splashscreen.txt">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="maze3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="maze2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

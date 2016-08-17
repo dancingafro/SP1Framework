@@ -11,7 +11,14 @@ void loadmaps(string mapname)
 		{
 			for (int i = 0; i < line.size(); i++)
 			{
-				g_map.map[row][i] = line[i];
+				if (line[i]=='W')
+				{
+					map[row][i] = (char)219;
+				}
+				else
+				{
+					map[row][i] = line[i];
+				}
 			}
 			row++;
 		}

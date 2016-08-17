@@ -3,7 +3,6 @@
 
 #include"game.h"
 
-extern SGameMap g_map;
-
+extern char map[height][width];
 
 #endif

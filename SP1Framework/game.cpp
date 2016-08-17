@@ -10,7 +10,7 @@ bool    g_abKeyPressed[K_COUNT];
 // Game specific variables here
 SGameChar   g_sChar;
 EGAMESTATES g_eGameState;
-SGameMap g_map;
+char map[height][width];
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
@@ -105,12 +105,14 @@ void update(double dt)
     switch (g_eGameState)
 	{
 		case S_LOADING: 
-			loadmaps("Splashscreen.txt");
-			g_eGameState = S_SPLASHSCREEN;
+			loading();
 			break;
         case S_SPLASHSCREEN : 
 			splashScreenWait(); // game logic for the splash screen
-            break;
+			break;
+		case S_GAMELOAD:
+			gameLoad();
+			break;
         case S_GAME: 
 			gameplay(); // gameplay logic when we are in the game
             break;
@@ -139,12 +141,21 @@ void render()
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
-
+void loading()
+{
+	loadmaps("Splashscreen.txt");
+	g_eGameState = S_SPLASHSCREEN;
+}
+void gameLoad()
+{
+	loadmaps("maze2.txt");
+	g_eGameState = S_GAME;
+}
 void splashScreenWait()    // waits for time to pass in splash screen
 {
 	if (g_abKeyPressed[K_RETURN])
 	{
-		g_eGameState = S_GAME;
+		g_eGameState = S_GAMELOAD;
 	}
 }
 
@@ -166,25 +177,37 @@ void moveCharacter()
     if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.Y--;
+		if (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]!=(char)219)
+		{
+			g_sChar.m_cLocation.Y--;
+		}
         bSomethingHappened = true;
     }
     if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.X--;
+		if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X-1] != (char)219)
+		{
+			g_sChar.m_cLocation.X--;
+		}
         bSomethingHappened = true;
     }
     if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.Y++;
+		if (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] != (char)219)
+		{
+			g_sChar.m_cLocation.Y++;
+		}
         bSomethingHappened = true;
     }
     if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.X++;
+		if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] != (char)219)
+		{
+			g_sChar.m_cLocation.X++;
+		}
         bSomethingHappened = true;
     }
 
@@ -216,7 +239,7 @@ void renderSplashScreen()  // renders the splash screen
 	string line;
 	for (int y = 0; y < height; y++)
 	{
-		line = g_map.map[y];
+		line = map[y];
 		g_Console.writeToBuffer(c,line );
 		c.Y++;
 	}
@@ -230,10 +253,17 @@ void renderGame()
 
 void renderMap()
 {
-	COORD c;
-	c.X = 5;
-	c.Y = 5;
-	g_Console.writeToBuffer(c, "AAA", 0x1A);
+	COORD c = g_Console.getConsoleSize();
+
+	c.X = 0;
+	c.Y = 0;
+	string line;
+	for (int y = 0; y < height; y++)
+	{
+		line = map[y];
+		g_Console.writeToBuffer(c, line);
+		c.Y++;
+	}
 }
 
 void renderCharacter()
