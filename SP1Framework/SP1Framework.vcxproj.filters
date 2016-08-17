@@ -56,9 +56,6 @@
     <ClInclude Include="Loading.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Combat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Splashscreen.txt">

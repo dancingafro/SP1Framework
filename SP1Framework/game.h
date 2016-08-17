@@ -34,7 +34,6 @@ enum EKEYS
     K_RIGHT,
     K_ESCAPE,
     K_SPACE,
-    
 	K_W,
 	K_A,
 	K_S,
@@ -42,7 +41,7 @@ enum EKEYS
 	K_RETURN,
 	K_1,
 	K_2,
-	K_COUNT
+	K_COUNT // MUST BE LAST IN ENUM!!!
 };
 
 // Enumeration for the different screen states
@@ -59,10 +58,10 @@ struct SGameChar
 {
     COORD m_cLocation;
 	COORD m_cAttackLocation;
-    bool  m_bAttack;
+    bool  m_bAttacking;
 	int   m_iHitpoints;
 	int   m_iDamage;
-	double m_dAttackRate;
+	double m_dAttackTime = 0.025;
 };
 struct SGameMap
 {

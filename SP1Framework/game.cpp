@@ -1,10 +1,11 @@
-// This is the main file for the game logic and function
+﻿// This is the main file for the game logic and function
 //
 //
 #include "game.h"
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
+double  g_dCharNextAttackTime;
 bool    g_abKeyPressed[K_COUNT]; 
 
 // Game specific variables here
@@ -31,6 +32,10 @@ void init( void )
 
     // sets the initial state for the game
 	g_eGameState = S_LOADING;
+
+	g_dCharNextAttackTime = 0.0;
+	g_sChar.m_cAttackLocation = { 0, 0 };
+	g_sChar.m_bAttacking = false;
 
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
@@ -163,30 +168,33 @@ void moveCharacter()
 
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
-    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.Y--;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.X--;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.Y++;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.X++;
-        bSomethingHappened = true;
-    }
+	if (!g_sChar.m_bAttacking)
+	{
+		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
+		{
+			//Beep(1440, 30);
+			g_sChar.m_cLocation.Y--;
+			bSomethingHappened = true;
+		}
+		if (g_abKeyPressed[K_A] && g_sChar.m_cLocation.X > 0)
+		{
+			//Beep(1440, 30);
+			g_sChar.m_cLocation.X--;
+			bSomethingHappened = true;
+		}
+		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+		{
+			//Beep(1440, 30);
+			g_sChar.m_cLocation.Y++;
+			bSomethingHappened = true;
+		}
+		if (g_abKeyPressed[K_D] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+		{
+			//Beep(1440, 30);
+			g_sChar.m_cLocation.X++;
+			bSomethingHappened = true;
+		}
+	}
 
     if (bSomethingHappened)
     {
@@ -226,6 +234,7 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
+	characterAttackControls();
 }
 
 void renderMap()
@@ -233,14 +242,19 @@ void renderMap()
 	COORD c;
 	c.X = 5;
 	c.Y = 5;
-	g_Console.writeToBuffer(c, "AAA", 0x1A);
+	g_Console.writeToBuffer(c, (char)219, 0x1A);
 }
 
+	
 void renderCharacter()
 {
     // Draw the location of the character
     WORD charColor = 0x0A;
     g_Console.writeToBuffer(g_sChar.m_cLocation, (char)48, charColor);
+	if (g_sChar.m_bAttacking)
+	{
+		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, charColor);
+	}
 }
 
 void renderFramerate()
@@ -265,5 +279,59 @@ void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
     g_Console.flushBufferToConsole();
+}
+
+void characterAttackControls()
+{
+	bool bSomethingHappened = false;
+
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+	if (g_dCharNextAttackTime <= g_dElapsedTime)
+	{
+		g_sChar.m_bAttacking = false;
+	}
+	else
+	{
+		g_sChar.m_bAttacking = false;
+	}
+
+	if (!g_sChar.m_bAttacking)
+	{
+		if (g_abKeyPressed[K_UP])
+		{
+			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1 };
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackTime;
+			g_sChar.m_bAttacking = true;
+			bSomethingHappened = true;
+		}
+		if (g_abKeyPressed[K_LEFT])
+		{
+			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y };
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackTime;
+			g_sChar.m_bAttacking = true;
+			bSomethingHappened = true;
+		}
+		if (g_abKeyPressed[K_DOWN])
+		{
+			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1 };
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackTime;
+			g_sChar.m_bAttacking = true;
+			bSomethingHappened = true;
+		}
+		if (g_abKeyPressed[K_RIGHT])
+		{
+			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y };
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackTime;
+			g_sChar.m_bAttacking = true;
+			bSomethingHappened = true;
+		}
+	}
+
+	if (bSomethingHappened)
+	{
+		g_dBounceTime = g_dElapsedTime + 0.125;
+	}
 }
 
