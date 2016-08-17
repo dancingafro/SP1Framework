@@ -57,7 +57,11 @@ enum EGAMESTATES
 struct SGameChar
 {
     COORD m_cLocation;
-    bool  m_bActive;
+	COORD m_cAttackLocation;
+    bool  m_bAttack;
+	int   m_iHitpoints;
+	int   m_iDamage;
+	double m_dAttackRate;
 };
 struct SGameMap
 {
@@ -82,5 +86,6 @@ void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void loadmaps(string mapname);
+void characterAttackControls();
 
 #endif // _GAME_H
