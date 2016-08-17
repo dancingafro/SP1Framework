@@ -238,7 +238,7 @@ void renderCharacter()
     WORD charColor = 0x0A;
     if (g_sChar.m_bAttack)
     {
-        
+		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42);
     }
     g_Console.writeToBuffer(g_sChar.m_cLocation, (char)48, charColor);
 }
@@ -282,6 +282,41 @@ void loadmaps(string mapname)
 			row++;
 		}
 		file.close();
+	}
+}
+
+void characterAttackControls()
+{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+
+	if (g_abKeyPressed[K_UP])
+	{
+		g_sChar.m_cAttackLocation.X = g_sChar.m_cLocation.X;
+		g_sChar.m_cAttackLocation.Y = g_sChar.m_cLocation.Y - 1;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_LEFT])
+	{
+		g_sChar.m_cAttackLocation.X = g_sChar.m_cLocation.X - 1;
+		g_sChar.m_cAttackLocation.Y = g_sChar.m_cLocation.Y;
+	}
+	if (g_abKeyPressed[K_DOWN])
+	{
+		g_sChar.m_cAttackLocation.X = g_sChar.m_cLocation.X;
+		g_sChar.m_cAttackLocation.Y = g_sChar.m_cLocation.Y + 1;
+	}
+	if (g_abKeyPressed[K_RIGHT])
+	{
+		g_sChar.m_cAttackLocation.X = g_sChar.m_cLocation.X - 1;
+		g_sChar.m_cAttackLocation.Y = g_sChar.m_cLocation.Y;
+	}
+
+	if (bSomethingHappened)
+	{
+		g_dBounceTime = g_dElapsedTime + 0.125;
 	}
 }
 
