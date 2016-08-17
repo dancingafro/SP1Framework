@@ -1,12 +1,9 @@
 #ifndef _LOADING_H
 #define _LOADING_H
 
-#include<iostream>
-#include<fstream>
-#include<string>
+#include"game.h"
 
-using namespace std;
+extern SGameMap g_map;
 
-char loadmaps(string mapname);
 
 #endif

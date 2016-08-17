@@ -6,17 +6,15 @@
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT]; 
-const int width = 150;
-const int height = 50;
-char map[height][width];
 
 // Game specific variables here
 SGameChar   g_sChar;
-EGAMESTATES g_eGameState = S_LOADING;
+EGAMESTATES g_eGameState;
+SGameMap g_map;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
-Console g_Console(width, height, "SP1 Framework");
+Console g_Console(80, 25, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -36,7 +34,6 @@ void init( void )
 
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
-    g_sChar.m_bAttack = true;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
 }
@@ -108,12 +105,14 @@ void update(double dt)
     switch (g_eGameState)
 	{
 		case S_LOADING: 
-			loadmaps("test.txt");
+			loadmaps("Splashscreen.txt");
 			g_eGameState = S_SPLASHSCREEN;
 			break;
-        case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
+        case S_SPLASHSCREEN : 
+			splashScreenWait(); // game logic for the splash screen
             break;
-        case S_GAME: gameplay(); // gameplay logic when we are in the game
+        case S_GAME: 
+			gameplay(); // gameplay logic when we are in the game
             break;
     }
 }
@@ -130,9 +129,11 @@ void render()
     clearScreen();      // clears the current screen and draw from scratch 
     switch (g_eGameState)
 	{
-        case S_SPLASHSCREEN: renderSplashScreen();
+        case S_SPLASHSCREEN: 
+			renderSplashScreen();
             break;
-        case S_GAME: renderGame();
+        case S_GAME: 
+			renderGame();
             break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
@@ -162,25 +163,25 @@ void moveCharacter()
 
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
-    if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
+    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.Y--;
         bSomethingHappened = true;
     }
-    if (g_abKeyPressed[K_A] && g_sChar.m_cLocation.X > 0)
+    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.X--;
         bSomethingHappened = true;
     }
-    if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.Y++;
         bSomethingHappened = true;
     }
-    if (g_abKeyPressed[K_D] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.X++;
@@ -197,7 +198,7 @@ void processUserInput()
 {
     // quits the game if player hits the escape key
     if (g_abKeyPressed[K_ESCAPE])
-        g_bQuitGame = true;    
+        g_bQuitGame = true;
 }
 
 void clearScreen()
@@ -209,13 +210,14 @@ void clearScreen()
 void renderSplashScreen()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
+
 	c.X = 0;
 	c.Y /= 3;
-	string line = " ";
+	string line;
 	for (int y = 0; y < height; y++)
 	{
-		line = map[y];
-		g_Console.writeToBuffer(c, line);
+		line = g_map.map[y];
+		g_Console.writeToBuffer(c,line );
 		c.Y++;
 	}
 }
@@ -228,19 +230,16 @@ void renderGame()
 
 void renderMap()
 {
-    // Set up sample colours, and output shadings
-    
+	COORD c;
+	c.X = 5;
+	c.Y = 5;
+	g_Console.writeToBuffer(c, "AAA", 0x1A);
 }
 
 void renderCharacter()
 {
     // Draw the location of the character
     WORD charColor = 0x0A;
-
-    if (g_sChar.m_bAttack)
-    {
-		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42);
-    }
     g_Console.writeToBuffer(g_sChar.m_cLocation, (char)48, charColor);
 }
 
@@ -266,58 +265,5 @@ void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
     g_Console.flushBufferToConsole();
-}
-void loadmaps(string mapname)
-{
-	int row = 0;
-	string line = " ";
-	ifstream file(mapname);
-	if (file.is_open())
-	{
-		while (getline(file, line))
-		{
-			for (int i = 0; i < line.size(); i++)
-			{
-				map[row][i] = line[i];
-			}
-			row++;
-		}
-		file.close();
-	}
-}
-
-void characterAttackControls()
-{
-	bool bSomethingHappened = false;
-	if (g_dBounceTime > g_dElapsedTime)
-		return;
-
-
-	if (g_abKeyPressed[K_UP])
-	{
-		g_sChar.m_cAttackLocation.X = g_sChar.m_cLocation.X;
-		g_sChar.m_cAttackLocation.Y = g_sChar.m_cLocation.Y - 1;
-		bSomethingHappened = true;
-	}
-	if (g_abKeyPressed[K_LEFT])
-	{
-		g_sChar.m_cAttackLocation.X = g_sChar.m_cLocation.X - 1;
-		g_sChar.m_cAttackLocation.Y = g_sChar.m_cLocation.Y;
-	}
-	if (g_abKeyPressed[K_DOWN])
-	{
-		g_sChar.m_cAttackLocation.X = g_sChar.m_cLocation.X;
-		g_sChar.m_cAttackLocation.Y = g_sChar.m_cLocation.Y + 1;
-	}
-	if (g_abKeyPressed[K_RIGHT])
-	{
-		g_sChar.m_cAttackLocation.X = g_sChar.m_cLocation.X - 1;
-		g_sChar.m_cAttackLocation.Y = g_sChar.m_cLocation.Y;
-	}
-
-	if (bSomethingHappened)
-	{
-		g_dBounceTime = g_dElapsedTime + 0.125;
-	}
 }
 

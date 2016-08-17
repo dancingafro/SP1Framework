@@ -9,6 +9,7 @@
 #include <fstream>
 #include <string>
 
+
 using namespace std;
 
 #define VK_W 0x57
@@ -17,6 +18,9 @@ using namespace std;
 #define VK_D 0x44
 #define VK_1 0x31
 #define VK_2 0x32
+
+const int width = 80;
+const int height = 25;
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -30,14 +34,15 @@ enum EKEYS
     K_RIGHT,
     K_ESCAPE,
     K_SPACE,
-    K_COUNT,
+    
 	K_W,
 	K_A,
 	K_S,
 	K_D,
 	K_RETURN,
 	K_1,
-	K_2
+	K_2,
+	K_COUNT
 };
 
 // Enumeration for the different screen states
@@ -58,6 +63,10 @@ struct SGameChar
 	int   m_iHitpoints;
 	int   m_iDamage;
 	double m_dAttackRate;
+};
+struct SGameMap
+{
+	char map[height][width];
 };
 
 void init        ( void );      // initialize your variables, allocate memory, etc
