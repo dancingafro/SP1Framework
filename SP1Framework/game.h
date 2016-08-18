@@ -59,6 +59,8 @@ struct SGameChar
 {
     COORD m_cLocation;
 	COORD m_cAttackLocation;
+	bool  m_bActive;
+	bool  m_haveKey;
     bool  m_bAttacking;
 	int   m_iHitpoints;
 	int   m_iDamage;

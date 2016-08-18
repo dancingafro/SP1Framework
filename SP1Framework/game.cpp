@@ -9,6 +9,10 @@ double  g_dCharNextAttackTime;
 bool    g_abKeyPressed[K_COUNT]; 
 
 // Game specific variables here
+SGameChar	g_sKey;
+SGameChar	g_sDoor;
+SGameChar   g_sTeleporter1A;
+SGameChar   g_sTeleporter1B;
 SGameChar   g_sChar;
 EGAMESTATES g_eGameState;
 char map[height][width];
@@ -36,6 +40,22 @@ void init( void )
 	g_dCharNextAttackTime = 0.0;
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
+
+	g_sKey.m_cLocation.X = g_Console.getConsoleSize().X / 3;
+	g_sKey.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
+	g_sKey.m_bActive = true;
+
+	g_sDoor.m_cLocation.X = g_Console.getConsoleSize().X / 3;
+	g_sDoor.m_cLocation.Y = g_Console.getConsoleSize().Y / 3;
+	g_sDoor.m_bActive = true;
+
+	g_sTeleporter1A.m_cLocation.X = g_Console.getConsoleSize().X - 10;
+	g_sTeleporter1A.m_cLocation.Y = g_Console.getConsoleSize().Y - 10;
+	g_sTeleporter1A.m_bActive = true;
+
+	g_sTeleporter1B.m_cLocation.X = g_Console.getConsoleSize().X / 4;
+	g_sTeleporter1B.m_cLocation.Y = g_Console.getConsoleSize().Y / 5;
+	g_sTeleporter1B.m_bActive = true;
 
     g_sChar.m_cLocation.X = 2;
     g_sChar.m_cLocation.Y = 2;
