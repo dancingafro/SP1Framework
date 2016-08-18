@@ -3,11 +3,13 @@
 
 #include "Framework\timer.h"
 #include "Framework\console.h"
+#include "points.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <fstream>
 #include <string>
+
 
 
 using namespace std;
@@ -24,6 +26,9 @@ const int height = 25;
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
+
+
+
 
 // Enumeration to store the control keys that your game will have
 enum EKEYS
@@ -95,5 +100,6 @@ void loadfile(string mapname);
 void renderCharacterAttack();
 void gameLoad(int level);
 void renderObject();
+
 
 #endif // _GAME_H
