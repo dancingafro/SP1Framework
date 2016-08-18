@@ -37,8 +37,8 @@ void init( void )
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
 
-    g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
-    g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
+    g_sChar.m_cLocation.X = 2;
+    g_sChar.m_cLocation.Y = 2;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
 }
@@ -179,70 +179,46 @@ void moveCharacter()
 
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
-    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
-    {
-        //Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]!=(char)219)
-		{
-			g_sChar.m_cLocation.Y--;
-		}
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
-    {
-        //Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X-1] != (char)219)
-		{
-			g_sChar.m_cLocation.X--;
-		}
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
-    {
-        //Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] != (char)219)
-		{
-			g_sChar.m_cLocation.Y++;
-		}
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
-    {
-        //Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] != (char)219)
-		{
-			g_sChar.m_cLocation.X++;
-		}
-        bSomethingHappened = true;
-    }
 	if (!g_sChar.m_bAttacking)
 	{
 		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
 		{
 			//Beep(1440, 30);
-			g_sChar.m_cLocation.Y--;
+			if (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] != (char)219)
+			{
+				g_sChar.m_cLocation.Y--;
+			}
 			bSomethingHappened = true;
 		}
 		if (g_abKeyPressed[K_A] && g_sChar.m_cLocation.X > 0)
 		{
 			//Beep(1440, 30);
-			g_sChar.m_cLocation.X--;
+			if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] != (char)219)
+			{
+				g_sChar.m_cLocation.X--;
+			}
 			bSomethingHappened = true;
 		}
 		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 		{
 			//Beep(1440, 30);
-			g_sChar.m_cLocation.Y++;
+			if (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] != (char)219)
+			{
+				g_sChar.m_cLocation.Y++;
+			}
 			bSomethingHappened = true;
 		}
 		if (g_abKeyPressed[K_D] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 		{
 			//Beep(1440, 30);
-			g_sChar.m_cLocation.X++;
+			if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] != (char)219)
+			{
+				g_sChar.m_cLocation.X++;
+			}
 			bSomethingHappened = true;
 		}
 	}
-
+	
     if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
