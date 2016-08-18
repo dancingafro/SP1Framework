@@ -103,6 +103,7 @@ void renderEnemy();
 void enemyBehaviour();
 void randomMovement();
 void renderObject();
+void renderCharacterAttack();
 bool collision(int x,int y);
 
 

@@ -310,6 +310,7 @@ void renderGame()
 	renderObject();	
     renderCharacter();  // renders the character into the buffer
 	renderEnemy();		// renders an enemy into the buffer
+	renderCharacterAttack();
 }
 
 void renderMap()
