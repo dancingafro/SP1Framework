@@ -14,8 +14,10 @@ SGameChar	g_sDoor;
 SGameChar   g_sTeleporter1A;
 SGameChar   g_sTeleporter1B;
 SGameChar   g_sChar;
+SGameChar   g_sEnemy;
 EGAMESTATES g_eGameState;
 char map[height][width];
+int i = 0;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
@@ -44,6 +46,11 @@ void init( void )
 	g_sKey.m_cLocation.X = g_Console.getConsoleSize().X / 3;
 	g_sKey.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
 	g_sKey.m_bActive = true;
+
+	g_sEnemy.m_cLocation.X = 26;
+	g_sEnemy.m_cLocation.Y = 15;
+	g_sEnemy.m_bActive = true;
+	g_sEnemy.m_seePlayer = false;
 
 	g_sDoor.m_cLocation.X = g_Console.getConsoleSize().X / 3;
 	g_sDoor.m_cLocation.Y = g_Console.getConsoleSize().Y / 3;
@@ -184,11 +191,12 @@ void splashScreenWait()    // waits for time to pass in splash screen
 	}
 }
 
-void gameplay()            // gameplay logic
+void gameplay()			// gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
+	randomMovement();
 }
 
 void moveCharacter()
@@ -278,6 +286,7 @@ void renderGame()
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
 	characterAttackControls();
+	renderEnemy();		// renders an enemy into the buffer
 }
 
 void renderMap()
@@ -291,7 +300,7 @@ void renderMap()
 	{
 		line = map[y];
 		g_Console.writeToBuffer(c, line);
-		c.Y++;
+		c.Y++;			
 	}
 }
 
@@ -305,6 +314,16 @@ void renderCharacter()
 	{
 		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, charColor);
 	}
+}
+
+void renderEnemy()
+{
+	g_Console.writeToBuffer(g_sEnemy.m_cLocation, "C", 0x07);
+}
+
+void enemyBehaviour()
+{
+	randomMovement();
 }
 
 void renderFramerate()
@@ -382,6 +401,46 @@ void characterAttackControls()
 	if (bSomethingHappened)
 	{
 		g_dBounceTime = g_dElapsedTime + 0.125;
+	}
+}
+
+int timeSinceLastAIMove;
+
+void randomMovement()
+{
+	if (timeSinceLastAIMove == 0)
+	{
+		timeSinceLastAIMove = g_dElapsedTime+1;
+	}
+	if (g_dElapsedTime < timeSinceLastAIMove)
+	{
+		return;
+	}
+	else
+	{
+		int randomNumber = (rand() % 4 + 1);
+
+		if (randomNumber == 1)
+		{
+			if (map[g_sEnemy.m_cLocation.Y - 1][g_sEnemy.m_cLocation.X] != (char)219)
+			g_sEnemy.m_cLocation.Y--;
+		}
+		else if (randomNumber == 2)
+		{
+			if (map[g_sEnemy.m_cLocation.Y][g_sEnemy.m_cLocation.X - 1] != (char)219)
+			g_sEnemy.m_cLocation.X--;
+		}
+		else if (randomNumber == 3)
+		{
+			if (map[g_sEnemy.m_cLocation.Y + 1][g_sEnemy.m_cLocation.X] != (char)219)
+			g_sEnemy.m_cLocation.Y++;
+		}
+		else if (randomNumber == 4)
+		{
+			if (map[g_sEnemy.m_cLocation.Y][g_sEnemy.m_cLocation.X + 1] != (char)219)
+			g_sEnemy.m_cLocation.X++;
+		}
+		timeSinceLastAIMove = g_dElapsedTime + 1;
 	}
 }
 

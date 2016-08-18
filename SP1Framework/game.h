@@ -62,6 +62,7 @@ struct SGameChar
 	bool  m_bActive;
 	bool  m_haveKey;
     bool  m_bAttacking;
+	bool  m_seePlayer;
 	int   m_iHitpoints;
 	int   m_iDamage;
 	double m_dAttackTime = 0.025;
@@ -88,5 +89,9 @@ void renderToScreen();      // dump the contents of the buffer to the screen, on
 void loadmaps(string mapname);
 void characterAttackControls();
 void gameLoad();
+void renderEnemy();
+void enemyBehaviour();
+void randomMovement();
+bool areaIsClear(int x, int y);
 
 #endif // _GAME_H
