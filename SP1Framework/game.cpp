@@ -292,7 +292,7 @@ void renderGame()
 	renderMap();        // renders the map to the buffer first
 	renderObject();	
     renderCharacter();  // renders the character into the buffer
-	characterAttackControls();
+	renderCharacterAttack();
 }
 
 void renderMap()
@@ -320,6 +320,57 @@ void renderCharacter()
 	{
 		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, charColor);
 		g_sChar.m_bAttacking = false;
+	}
+}
+
+void renderCharacterAttack()
+{
+	bool bSomethingHappened = false;
+
+	if (g_sChar.m_bAttacking || g_dCharNextAttackTime > g_dElapsedTime) // (N) If player is launching or next attack time has not come
+	{
+		g_sChar.m_bCanAttack = false;
+	}
+	// (N) If player is not holding down attack keys + attack has already launched + next attack time has passed
+	else if (!g_sChar.m_bAttacking && g_dCharNextAttackTime <= g_dElapsedTime && (g_abKeyPressed[K_UP] + g_abKeyPressed[K_LEFT] + g_abKeyPressed[K_DOWN] + g_abKeyPressed[K_RIGHT]) == false)
+	{
+		g_sChar.m_bCanAttack = true;
+	}
+
+	if (g_sChar.m_bCanAttack)
+	{
+		if (g_abKeyPressed[K_UP])
+		{
+			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1 };
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
+			g_sChar.m_bCanAttack = false;
+			g_sChar.m_bAttacking = true;
+			bSomethingHappened = true;
+		}
+		if (g_abKeyPressed[K_LEFT])
+		{
+			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y };
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
+			g_sChar.m_bCanAttack = false;
+			g_sChar.m_bAttacking = true;
+			bSomethingHappened = true;
+		}
+		if (g_abKeyPressed[K_DOWN])
+		{
+			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1 };
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
+			g_sChar.m_bCanAttack = false;
+			g_sChar.m_bAttacking = true;
+			bSomethingHappened = true;
+		}
+		if (g_abKeyPressed[K_RIGHT])
+		{
+			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y };
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
+			g_sChar.m_bCanAttack = false;
+			g_sChar.m_bAttacking = true;
+			bSomethingHappened = true;
+		}
 	}
 }
 
@@ -361,61 +412,5 @@ void renderToScreen()
     g_Console.flushBufferToConsole();
 }
 
-void characterAttackControls()
-{
-	bool bSomethingHappened = false;
 
-	if (g_dBounceTime > g_dElapsedTime)
-		return;
-
-	if (g_sChar.m_bAttacking && g_dCharNextAttackTime > g_dElapsedTime)
-	{
-		g_sChar.m_bCanAttack = false;
-	}
-	else if (!g_sChar.m_bAttacking && g_dCharNextAttackTime <= g_dElapsedTime)
-	{
-		g_sChar.m_bCanAttack = true;
-	}
-
-	if (g_sChar.m_bCanAttack)
-	{
-		if (g_abKeyPressed[K_UP])
-		{
-			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1 };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
-			g_sChar.m_bCanAttack = false;
-			g_sChar.m_bAttacking = true;
-			bSomethingHappened = true;
-		}
-		if (g_abKeyPressed[K_LEFT])
-		{
-			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
-			g_sChar.m_bCanAttack = false;
-			g_sChar.m_bAttacking = true;
-			bSomethingHappened = true;
-		}
-		if (g_abKeyPressed[K_DOWN])
-		{
-			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1 };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
-			g_sChar.m_bCanAttack = false;
-			g_sChar.m_bAttacking = true;
-			bSomethingHappened = true;
-		}
-		if (g_abKeyPressed[K_RIGHT])
-		{
-			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
-			g_sChar.m_bCanAttack = false;
-			g_sChar.m_bAttacking = true;
-			bSomethingHappened = true;
-		}
-	}
-
-	if (bSomethingHappened)
-	{
-		g_dBounceTime = g_dElapsedTime + 0.1;
-	}
-}
 
