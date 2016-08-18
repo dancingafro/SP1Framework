@@ -102,6 +102,6 @@ void checkCharacterAttack();
 void renderCharacterAttack();
 bool collision(int x,int y);
 bool lineOfSight();
-//void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, bool *bSomethingHappened );
+void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 
 #endif
