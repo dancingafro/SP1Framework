@@ -372,6 +372,7 @@ void checkCharacterAttack()
 	{
 		if (g_abKeyPressed[K_UP])
 		{
+			//checkUp( &g_sChar, &g_dCharNextAttackTime, &bSomethingHappened );
 			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1 };
 			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
 			g_sChar.m_bCanAttack = false;

@@ -8,6 +8,7 @@
     <ClCompile Include="loading.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="points.cpp" />
+    <ClCompile Include="CheckAttack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision.h" />

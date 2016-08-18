@@ -106,6 +106,7 @@ void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
 bool collision(int x,int y);
+//void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, bool *bSomethingHappened );
 
 
 #endif // _GAME_H
