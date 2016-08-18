@@ -9,17 +9,16 @@ double  g_dCharNextAttackTime;
 bool    g_abKeyPressed[K_COUNT]; 
 
 // Game specific variables here
-SGameChar	g_sKey;
-SGameChar	g_sDoor;
-SGameChar   g_sTeleporter1A;
-SGameChar   g_sTeleporter1B;
+SGameObj	g_sKey;
+SGameObj	g_sDoor[2];
+SGameObj	g_sTeleporters[];
 SGameChar   g_sChar;
 EGAMESTATES g_eGameState;
 char map[height][width];
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
-Console g_Console(80, 25, "SP1 Framework");
+Console g_Console(width, height, "Dungeon Explorer");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -40,27 +39,14 @@ void init( void )
 	g_dCharNextAttackTime = 0.0;
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
-
-	g_sKey.m_cLocation.X = g_Console.getConsoleSize().X / 3;
-	g_sKey.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
+	for (int i = 0; i < 2; i++)
+	{
+		g_sDoor[i].m_bActive = true;
+	}
 	g_sKey.m_bActive = true;
 
-	g_sDoor.m_cLocation.X = g_Console.getConsoleSize().X / 3;
-	g_sDoor.m_cLocation.Y = g_Console.getConsoleSize().Y / 3;
-	g_sDoor.m_bActive = true;
-
-	g_sTeleporter1A.m_cLocation.X = g_Console.getConsoleSize().X - 10;
-	g_sTeleporter1A.m_cLocation.Y = g_Console.getConsoleSize().Y - 10;
-	g_sTeleporter1A.m_bActive = true;
-
-	g_sTeleporter1B.m_cLocation.X = g_Console.getConsoleSize().X / 4;
-	g_sTeleporter1B.m_cLocation.Y = g_Console.getConsoleSize().Y / 5;
-	g_sTeleporter1B.m_bActive = true;
-
-    g_sChar.m_cLocation.X = 2;
-    g_sChar.m_cLocation.Y = 2;
     // sets the width, height and the font name to use in the console
-    g_Console.setConsoleFont(0, 16, L"Consolas");
+    g_Console.setConsoleFont(0, 16, L"Bitstream Vera Sans");
 }
 
 //--------------------------------------------------------------
@@ -74,7 +60,6 @@ void shutdown( void )
 {
     // Reset to white text on black background
     colour(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-
     g_Console.clearBuffer();
 }
 
@@ -91,20 +76,20 @@ void shutdown( void )
 //--------------------------------------------------------------
 void getInput( void )
 {    
-    g_abKeyPressed[K_UP]     = isKeyPressed(VK_UP);
-    g_abKeyPressed[K_DOWN]   = isKeyPressed(VK_DOWN);
-    g_abKeyPressed[K_LEFT]   = isKeyPressed(VK_LEFT);
-    g_abKeyPressed[K_RIGHT]  = isKeyPressed(VK_RIGHT);
-    g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
-    g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
-	g_abKeyPressed[K_W] = isKeyPressed(VK_W);
-	g_abKeyPressed[K_A] = isKeyPressed(VK_A);
-	g_abKeyPressed[K_S] = isKeyPressed(VK_S);
-	g_abKeyPressed[K_D] = isKeyPressed(VK_D);
-	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
-	g_abKeyPressed[K_RETURN] = isKeyPressed(VK_RETURN);
-	g_abKeyPressed[K_1] = isKeyPressed(VK_1);
-	g_abKeyPressed[K_2] = isKeyPressed(VK_2);
+    g_abKeyPressed[K_UP]			= isKeyPressed(VK_UP);
+    g_abKeyPressed[K_DOWN]			= isKeyPressed(VK_DOWN);
+    g_abKeyPressed[K_LEFT]			= isKeyPressed(VK_LEFT);
+    g_abKeyPressed[K_RIGHT]			= isKeyPressed(VK_RIGHT);
+    g_abKeyPressed[K_SPACE]			= isKeyPressed(VK_SPACE);
+    g_abKeyPressed[K_ESCAPE]		= isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_W]				= isKeyPressed(VK_W);
+	g_abKeyPressed[K_A]				= isKeyPressed(VK_A);
+	g_abKeyPressed[K_S]				= isKeyPressed(VK_S);
+	g_abKeyPressed[K_D]				= isKeyPressed(VK_D);
+	g_abKeyPressed[K_ESCAPE]		= isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_RETURN]		= isKeyPressed(VK_RETURN);
+	g_abKeyPressed[K_1]				= isKeyPressed(VK_1);
+	g_abKeyPressed[K_2]				= isKeyPressed(VK_2);
 }
 
 //--------------------------------------------------------------
@@ -130,13 +115,13 @@ void update(double dt)
     switch (g_eGameState)
 	{
 		case S_LOADING: 
-			loading();
+			Splashscreenloading();
 			break;
         case S_SPLASHSCREEN : 
 			splashScreenWait(); // game logic for the splash screen
 			break;
 		case S_GAMELOAD:
-			gameLoad();
+			gameLoad(1);
 			break;
         case S_GAME: 
 			gameplay(); // gameplay logic when we are in the game
@@ -166,14 +151,23 @@ void render()
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
-void loading()
+void Splashscreenloading()
 {
-	loadmaps("Splashscreen.txt");
+	loadfile("Splashscreen.txt");
 	g_eGameState = S_SPLASHSCREEN;
 }
-void gameLoad()
+void gameLoad(int level)
 {
-	loadmaps("maze2.txt");
+	switch (level)
+	{
+	case 1:
+		loadfile("maze2.txt");
+		g_sChar.m_cLocation.X = 2;
+		g_sChar.m_cLocation.Y = 2;
+		break;
+	default:
+		break;
+	}
 	g_eGameState = S_GAME;
 }
 void splashScreenWait()    // waits for time to pass in splash screen
@@ -186,7 +180,7 @@ void splashScreenWait()    // waits for time to pass in splash screen
 
 void gameplay()            // gameplay logic
 {
-    processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
+    processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
 }
@@ -207,6 +201,11 @@ void moveCharacter()
 			if (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] != (char)219)
 			{
 				g_sChar.m_cLocation.Y--;
+				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
+				{
+					g_sDoor[0].m_bActive = false;
+					g_sKey.m_bActive = false;
+				}
 			}
 			bSomethingHappened = true;
 		}
@@ -216,6 +215,11 @@ void moveCharacter()
 			if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] != (char)219)
 			{
 				g_sChar.m_cLocation.X--;
+				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
+				{
+					g_sDoor[0].m_bActive = false;
+					g_sKey.m_bActive = false;
+				}
 			}
 			bSomethingHappened = true;
 		}
@@ -225,6 +229,11 @@ void moveCharacter()
 			if (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] != (char)219)
 			{
 				g_sChar.m_cLocation.Y++;
+				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
+				{
+					g_sDoor[0].m_bActive = false;
+					g_sKey.m_bActive = false;
+				}
 			}
 			bSomethingHappened = true;
 		}
@@ -234,6 +243,11 @@ void moveCharacter()
 			if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] != (char)219)
 			{
 				g_sChar.m_cLocation.X++;
+				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
+				{
+					g_sDoor[0].m_bActive = false;
+					g_sKey.m_bActive = false;
+				}
 			}
 			bSomethingHappened = true;
 		}
@@ -275,7 +289,8 @@ void renderSplashScreen()  // renders the splash screen
 
 void renderGame()
 {
-    renderMap();        // renders the map to the buffer first
+	renderMap();        // renders the map to the buffer first
+	renderObject();	
     renderCharacter();  // renders the character into the buffer
 	characterAttackControls();
 }
@@ -307,16 +322,30 @@ void renderCharacter()
 	}
 }
 
+void renderObject()
+{
+	// Draw the location of the character
+
+	if (g_sKey.m_bActive)
+	{
+		g_Console.writeToBuffer(g_sKey.m_cLocation, (char)254);
+	}
+	if (g_sDoor[1].m_bActive)
+	{
+		g_Console.writeToBuffer(g_sDoor[1].m_cLocation, (char)205);
+	}
+	if (g_sDoor[0].m_bActive)
+	{
+		g_Console.writeToBuffer(g_sDoor[0].m_cLocation, (char)186);
+	}
+}
+
 void renderFramerate()
 {
     COORD c;
     // displays the framerate
     ostringstream ss;
     ss << fixed << setprecision(3);
-    ss << 1.0 / g_dDeltaTime << "fps";
-    c.X = g_Console.getConsoleSize().X - 9;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
 
     // displays the elapsed time
     ss.str("");

@@ -1,6 +1,6 @@
 #include"Loading.h"
 
-void loadmaps(string mapname)
+void loadfile(string mapname)
 {
 	int row = 0;
 	string line = " ";
@@ -9,15 +9,34 @@ void loadmaps(string mapname)
 	{
 		while (getline(file, line))
 		{
-			for (int i = 0; i < line.size(); i++)
+			for (int col = 0; col < line.size(); col++)
 			{
-				if (line[i]=='W')
+				switch (line[col])
 				{
-					map[row][i] = (char)219;
-				}
-				else
-				{
-					map[row][i] = line[i];
+				case 'W':
+					map[row][col] = (char)219;
+					break;
+				case 'T':
+					map[row][col] = (char)43;
+					break;
+				case 'P':
+					g_sDoor[1].m_cLocation.X = col;
+					g_sDoor[1].m_cLocation.Y = row;
+					map[row][col] = ' ';
+					break;
+				case 'X':
+					g_sDoor[0].m_cLocation.X = col;
+					g_sDoor[0].m_cLocation.Y = row;
+					map[row][col] = ' ';
+					break;
+				case 'K':
+					g_sKey.m_cLocation.X = col;
+					g_sKey.m_cLocation.Y = row;
+					map[row][col] = ' ';
+					break;
+				default:
+					map[row][col] = line[col];
+					break;
 				}
 			}
 			row++;

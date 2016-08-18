@@ -66,6 +66,11 @@ struct SGameChar
 	int   m_iDamage;
 	double m_dAttackTime = 0.025;
 };
+struct SGameObj
+{
+	COORD m_cLocation;
+	bool  m_bActive;
+};
 	
 
 void init        ( void );      // initialize your variables, allocate memory, etc
@@ -73,7 +78,7 @@ void getInput    ( void );      // get input from player
 void update      ( double dt ); // update the game and the state of the game
 void render      ( void );      // renders the current state of the game to the console
 void shutdown    ( void );      // do clean up, free memory
-void loading();
+void Splashscreenloading();
 void splashScreenWait();    // waits for time to pass in splash screen
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
@@ -85,8 +90,9 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void loadmaps(string mapname);
+void loadfile(string mapname);
 void characterAttackControls();
-void gameLoad();
+void gameLoad(int level);
+void renderObject();
 
 #endif // _GAME_H
