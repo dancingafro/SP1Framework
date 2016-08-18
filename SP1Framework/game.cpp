@@ -256,7 +256,7 @@ void moveCharacter()
     if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
-        g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+        g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
     }
 }
 void processUserInput()
@@ -319,6 +319,7 @@ void renderCharacter()
 	if (g_sChar.m_bAttacking)
 	{
 		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, charColor);
+		g_sChar.m_bAttacking = false;
 	}
 }
 
@@ -367,42 +368,46 @@ void characterAttackControls()
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 
-	if (g_dCharNextAttackTime <= g_dElapsedTime)
+	if (g_sChar.m_bAttacking && g_dCharNextAttackTime > g_dElapsedTime)
 	{
-		g_sChar.m_bAttacking = false;
+		g_sChar.m_bCanAttack = false;
 	}
-	else
+	else if (!g_sChar.m_bAttacking && g_dCharNextAttackTime <= g_dElapsedTime)
 	{
-		g_sChar.m_bAttacking = false;
+		g_sChar.m_bCanAttack = true;
 	}
 
-	if (!g_sChar.m_bAttacking)
+	if (g_sChar.m_bCanAttack)
 	{
 		if (g_abKeyPressed[K_UP])
 		{
 			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1 };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackTime;
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
+			g_sChar.m_bCanAttack = false;
 			g_sChar.m_bAttacking = true;
 			bSomethingHappened = true;
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
 			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackTime;
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
+			g_sChar.m_bCanAttack = false;
 			g_sChar.m_bAttacking = true;
 			bSomethingHappened = true;
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
 			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1 };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackTime;
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
+			g_sChar.m_bCanAttack = false;
 			g_sChar.m_bAttacking = true;
 			bSomethingHappened = true;
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
 			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackTime;
+			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
+			g_sChar.m_bCanAttack = false;
 			g_sChar.m_bAttacking = true;
 			bSomethingHappened = true;
 		}
@@ -410,7 +415,7 @@ void characterAttackControls()
 
 	if (bSomethingHappened)
 	{
-		g_dBounceTime = g_dElapsedTime + 0.125;
+		g_dBounceTime = g_dElapsedTime + 0.1;
 	}
 }
 
