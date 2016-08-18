@@ -13,6 +13,9 @@ bool collision(int x,int y)
 	case (char)205:
 		return false;
 		break;
+	case 'E':
+		return true;
+		break;
 	default:
 		return true;
 		break;
