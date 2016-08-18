@@ -8,6 +8,7 @@ points* playerPoints = new points();
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  g_dCharNextAttackTime;
+double  timeSinceLastAIMove;
 bool    g_abKeyPressed[K_COUNT]; 
 
 // Game specific variables here
@@ -434,13 +435,11 @@ void renderToScreen()
     g_Console.flushBufferToConsole();
 }
 
-int timeSinceLastAIMove;
-
 void randomMovement()
 {
 	if (timeSinceLastAIMove == 0)
 	{
-		timeSinceLastAIMove = g_dElapsedTime+1;
+		timeSinceLastAIMove = g_dElapsedTime + 1;
 	}
 	if (g_dElapsedTime < timeSinceLastAIMove)
 	{

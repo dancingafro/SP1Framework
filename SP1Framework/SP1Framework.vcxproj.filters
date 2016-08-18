@@ -1,77 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="game.cpp">
-      <Filter>Souce Files</Filter>
-    </ClCompile>
-    <ClCompile Include="loading.cpp">
-      <Filter>Souce Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Souce Files</Filter>
-    </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="Framework\timer.cpp">
-      <Filter>Souce Files\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\console.cpp">
-      <Filter>Souce Files\Framework</Filter>
-=======
-<<<<<<< HEAD
-    <ClCompile Include="Collision.cpp">
-=======
-<<<<<<< HEAD
-    <ClCompile Include="Combat.cpp">
->>>>>>> 4302f99e3d455e839b31f5feccb426e5c976139d
-      <Filter>Source Files</Filter>
->>>>>>> e8f2d1d5bd2d5e68c05d476fe51f203b08338a82
-    </ClCompile>
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Framework\console.cpp" />
+    <ClCompile Include="Framework\timer.cpp" />
+    <ClCompile Include="game.cpp" />
+    <ClCompile Include="loading.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="points.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Framework\timer.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\console.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Loading.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Framework\console.h" />
+    <ClInclude Include="Framework\timer.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="Loading.h" />
+    <ClInclude Include="points.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="maze2.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="maze3.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
+    <None Include="Splashscreen.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Souce Files">
-      <UniqueIdentifier>{2419af32-7250-4167-ada3-5a87a5aedba9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{7b595bb5-1322-43a0-91bf-f5e2c55b8125}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Framework">
-      <UniqueIdentifier>{7ef852fd-ec38-4dec-82e7-66caf9ed9c3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Souce Files\Framework">
-      <UniqueIdentifier>{a776409d-149d-4943-ba16-a32f9d465dfe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{01ab96b2-8406-4d69-9695-8a03260137b0}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Splashscreen.txt">
-      <Filter>Resource Files</Filter>
-    </None>
+    <Text Include="maze2.txt" />
+    <Text Include="maze3.txt" />
   </ItemGroup>
 </Project>

@@ -83,6 +83,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="loading.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="points.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="Loading.h" />
+    <ClInclude Include="points.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Splashscreen.txt" />
