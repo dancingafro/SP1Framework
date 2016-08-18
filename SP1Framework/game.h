@@ -62,9 +62,10 @@ struct SGameChar
 	bool  m_bActive;
 	bool  m_haveKey;
     bool  m_bAttacking;
+	bool  m_bCanAttack;
 	int   m_iHitpoints;
 	int   m_iDamage;
-	double m_dAttackTime = 0.025;
+	double m_dAttackRate;
 };
 	
 
