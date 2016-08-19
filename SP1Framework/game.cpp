@@ -10,6 +10,7 @@ double  g_dDeltaTime;
 double  g_dCharNextAttackTime;
 double  timeSinceLastAIMove;
 bool    g_abKeyPressed[K_COUNT]; 
+int     directionAIMove = 1;      // 1 = up, 2 = left, 3 = down, 4 =right
 
 // Game specific variables here
 SGameObj	g_sKey;
@@ -197,7 +198,7 @@ void gameplay()			// gameplay logic
     processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
-	randomMovement();
+	enemyBehaviour();
 }
 
 void moveCharacter()
@@ -437,39 +438,94 @@ void renderToScreen()
 
 void randomMovement()
 {
+	// Lets the AI only be able to move after at least 1 second has passed since it's last movement
 	if (timeSinceLastAIMove == 0)
 	{
-		timeSinceLastAIMove = g_dElapsedTime + 1;
-	}
-	if (g_dElapsedTime < timeSinceLastAIMove)
-	{
-		return;
+		timeSinceLastAIMove = g_dElapsedTime;
 	}
 	else
 	{
-		int randomNumber = (rand() % 4 + 1);
-
-		if (randomNumber == 1)
+		if (g_dElapsedTime - timeSinceLastAIMove > 0.5)
 		{
-			if (map[g_sEnemy.m_cLocation.Y - 1][g_sEnemy.m_cLocation.X] != (char)219)
+			timeSinceLastAIMove = 0;
+		}
+		return;
+	}
+	
+	if (directionAIMove == 1)
+	{
+		if (map[g_sEnemy.m_cLocation.Y - 1][g_sEnemy.m_cLocation.X] == (char)219)     // Check if above AI got wall
+		{
+			directionAIMove = (rand() % 4 + 1);
+		}
+		else       // Above AI no wall
+		{
 			g_sEnemy.m_cLocation.Y--;
 		}
-		else if (randomNumber == 2)
+
+	}
+	if (directionAIMove == 2)
+	{
+		if (map[g_sEnemy.m_cLocation.Y][g_sEnemy.m_cLocation.X - 1] == (char)219)     // Check if above AI got wall
 		{
-			if (map[g_sEnemy.m_cLocation.Y][g_sEnemy.m_cLocation.X - 1] != (char)219)
+			directionAIMove = (rand() % 4 + 1);
+		}
+		else       // Above AI no wall
+		{
 			g_sEnemy.m_cLocation.X--;
 		}
-		else if (randomNumber == 3)
+
+	}
+	if (directionAIMove == 3)
+	{
+		if (map[g_sEnemy.m_cLocation.Y + 1][g_sEnemy.m_cLocation.X] == (char)219)     // Check if above AI got wall
 		{
-			if (map[g_sEnemy.m_cLocation.Y + 1][g_sEnemy.m_cLocation.X] != (char)219)
+			directionAIMove = (rand() % 4 + 1);
+		}
+		else       // Above AI no wall
+		{
 			g_sEnemy.m_cLocation.Y++;
 		}
-		else if (randomNumber == 4)
+
+	}
+	if (directionAIMove == 4)
+	{
+		if (map[g_sEnemy.m_cLocation.Y][g_sEnemy.m_cLocation.X + 1] == (char)219)     // Check if above AI got wall
 		{
-			if (map[g_sEnemy.m_cLocation.Y][g_sEnemy.m_cLocation.X + 1] != (char)219)
+			directionAIMove = (rand() % 4 + 1);
+		}
+		else       // Above AI no wall
+		{
 			g_sEnemy.m_cLocation.X++;
 		}
-		timeSinceLastAIMove = g_dElapsedTime + 1;
 	}
+	/*
+	int randomNumber = (rand() % 4 + 1);
+
+	if (randomNumber == 1)
+	{
+		if (map[g_sEnemy.m_cLocation.Y - 1][g_sEnemy.m_cLocation.X] != (char)219)
+			g_sEnemy.m_cLocation.Y--;
+	}
+	else if (randomNumber == 2)
+	{
+		if (map[g_sEnemy.m_cLocation.Y][g_sEnemy.m_cLocation.X - 1] != (char)219)
+			g_sEnemy.m_cLocation.X--;
+	}
+	else if (randomNumber == 3)
+	{
+		if (map[g_sEnemy.m_cLocation.Y + 1][g_sEnemy.m_cLocation.X] != (char)219)
+			g_sEnemy.m_cLocation.Y++;
+	}
+	else if (randomNumber == 4)
+	{
+		if (map[g_sEnemy.m_cLocation.Y][g_sEnemy.m_cLocation.X + 1] != (char)219)
+			g_sEnemy.m_cLocation.X++;
+	}
+	*/
 }
 
+bool lineOfSight()
+{
+	return false;
+}

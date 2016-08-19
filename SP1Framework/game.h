@@ -104,6 +104,7 @@ void enemyBehaviour();
 void randomMovement();
 void renderObject();
 bool collision(int x,int y);
+bool lineOfSight();
 
 
 #endif // _GAME_H
