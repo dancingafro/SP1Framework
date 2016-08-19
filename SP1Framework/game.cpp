@@ -3,6 +3,8 @@
 //
 #include "game.h"
 
+points* playerPoints = new points();
+
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  g_dCharNextAttackTime;
@@ -259,6 +261,7 @@ void moveCharacter()
 				{
 					g_sDoor[0].m_bActive = false;
 					g_sKey.m_bActive = false;
+					playerPoints->increasePoints();
 				}
 			}
 			bSomethingHappened = true;
@@ -267,6 +270,7 @@ void moveCharacter()
 	
     if (bSomethingHappened)
     {
+
         // set the bounce time to some time in the future to prevent accidental triggers
         g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
     }
@@ -447,10 +451,16 @@ void renderFramerate()
 
     // displays the elapsed time
     ss.str("");
-    ss << g_dElapsedTime << "secs";
+	ss << g_dElapsedTime << "secs";
     c.X = 0;
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str());
+
+	ss.str("");
+	ss << "Points: "<<playerPoints->getPoints();
+	c.X = 33;
+	c.Y = 0;
+	g_Console.writeToBuffer(c, ss.str());
 }
 void renderToScreen()
 {
