@@ -407,23 +407,6 @@ void renderCharacterAttack()
 	}
 }
 
-void renderObject()
-{
-	// Draw the location of the character
-
-	if (g_sKey.m_bActive)
-	{
-		g_Console.writeToBuffer(g_sKey.m_cLocation, (char)254);
-	}
-	if (g_sDoor[1].m_bActive)
-	{
-		g_Console.writeToBuffer(g_sDoor[1].m_cLocation, (char)205);
-	}
-	if (g_sDoor[0].m_bActive)
-	{
-		g_Console.writeToBuffer(g_sDoor[0].m_cLocation, (char)186);
-	}
-}
 
 void renderFramerate()
 {
