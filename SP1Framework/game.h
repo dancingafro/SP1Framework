@@ -98,6 +98,8 @@ void renderEnemy();
 void enemyBehaviour();
 void randomMovement();
 void renderObject();
+void checkCharacterAttack();
+void renderCharacterAttack();
 bool collision(int x,int y);
 
 #endif

@@ -369,6 +369,8 @@ void renderGame()
 	renderObject();	
     renderCharacter();  // renders the character into the buffer
 	renderEnemy();		// renders an enemy into the buffer
+	checkCharacterAttack();
+	renderCharacterAttack();
 }
 
 void renderMap()
@@ -392,11 +394,6 @@ void renderCharacter()
     // Draw the location of the character
     WORD charColor = 0x0A;
     g_Console.writeToBuffer(g_sChar.m_cLocation, (char)48, charColor);
-	if (g_sChar.m_bAttacking)
-	{
-		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, charColor);
-		g_sChar.m_bAttacking = false;
-	}
 }
 
 void renderEnemy()
@@ -419,7 +416,7 @@ void enemyBehaviour()
 	randomMovement();
 }
 
-void renderCharacterAttack()
+void checkCharacterAttack()
 {
 	bool bSomethingHappened = false;
 
@@ -470,6 +467,14 @@ void renderCharacterAttack()
 	}
 }
 
+void renderCharacterAttack()
+{
+	if (g_sChar.m_bAttacking)
+	{
+		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, 0x0A);
+		g_sChar.m_bAttacking = false;
+	}
+}
 
 void renderFramerate()
 {
