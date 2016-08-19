@@ -17,7 +17,7 @@ SGameObj	g_sKey;
 SGameObj	g_sDoor[2];
 SGameObj	g_sTeleporters[80];
 SGameChar   g_sChar;
-SGameChar   g_sEnemy;
+SGameChar   g_sEnemy[numEnemy];
 EGAMESTATES g_eGameState;
 int level = 1;
 char map[height][width];
@@ -55,11 +55,14 @@ void init( void )
 		g_sDoor[i].m_bActive = true;
 	}
 	g_sKey.m_bActive = true;
-	g_sEnemy.m_bActive = true;
-	g_sEnemy.m_seePlayer = false;
-
 	oldLocationx = 0;
 	oldLocationx = 0;
+	
+	for (int i = 0; i < numEnemy; i++)
+	{
+		g_sEnemy[i].m_bActive = true;
+		g_sEnemy[i].m_seePlayer = false;
+	}
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Bitstream Vera Sans");
@@ -207,15 +210,20 @@ void gameplay()			// gameplay logic
 	processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
 	// sound can be played here too.
+
 	if (oldLocationx != g_sChar.m_cLocation.X || oldLocationy != g_sChar.m_cLocation.Y)
 	{
 		oldLocationx = g_sChar.m_cLocation.X;
 		oldLocationy = g_sChar.m_cLocation.Y;
 		FOW(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y);
 	}
-	if (g_sEnemy.m_bActive)
+
+	for (int i = 0; i < numEnemy; i++)
 	{
-		enemyBehaviour();
+		if (g_sEnemy[i].m_bActive)
+		{
+			enemyBehaviour();
+		}
 	}
 }
 
@@ -347,7 +355,10 @@ void processUserInput()
 	if (g_abKeyPressed[K_1])
 	{
 		map[g_sDoor[1].m_cLocation.Y][g_sDoor[1].m_cLocation.X] = 'E';
-		g_sEnemy.m_bActive = false;
+		for (int i = 0; i < numEnemy; i++)
+		{
+			g_sEnemy[i].m_bActive = false;
+		}
 	}
 }
 
@@ -406,10 +417,13 @@ void renderCharacter()
 }
 
 void renderEnemy()
-{
-	if (g_sEnemy.m_bActive)
+{	
+	for (int i = 0; i < numEnemy; i++)
 	{
-		g_Console.writeToBuffer(g_sEnemy.m_cLocation, "C", 0x07);
+		if (g_sEnemy[i].m_bActive)
+		{
+			g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x07);
+		}
 	}
 }
 
@@ -438,17 +452,12 @@ void checkCharacterAttack()
 	{
 		g_sChar.m_bCanAttack = true;
 	}
-
+	
 	if (g_sChar.m_bCanAttack)
 	{
 		if (g_abKeyPressed[K_UP])
 		{
-			//checkUp( &g_sChar, &g_dCharNextAttackTime, &bSomethingHappened );
-			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1 };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
-			g_sChar.m_bCanAttack = false;
-			g_sChar.m_bAttacking = true;
-			bSomethingHappened = true;
+			checkUp( &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened );
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
@@ -528,51 +537,54 @@ void randomMovement()
 		return;
 	}
 	
-	if (directionAIMove == 1)
+	for (int i = 0; i < numEnemy; i++)
 	{
-		if (collision(g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y - 1))     // Check if above AI got wall
+		if (directionAIMove == 1)
 		{
-			g_sEnemy.m_cLocation.Y--;
-		}
-		else       // Above AI no wall
-		{
-			directionAIMove = (rand() % 4 + 1);
-		}
+			if (collision(g_sEnemy[i].m_cLocation.X, g_sEnemy[i].m_cLocation.Y - 1))     // Check if above AI got wall
+			{
+				g_sEnemy[i].m_cLocation.Y--;
+			}
+			else       // Above AI no wall
+			{
+				directionAIMove = (rand() % 4 + 1);
+			}
 
-	}
-	if (directionAIMove == 2)
-	{
-		if (collision(g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y))     // Check if above AI got wall
-		{
-			g_sEnemy.m_cLocation.X--;
 		}
-		else       // Above AI no wall
+		if (directionAIMove == 2)
 		{
-			directionAIMove = (rand() % 4 + 1);
-		}
+			if (collision(g_sEnemy[i].m_cLocation.X - 1, g_sEnemy[i].m_cLocation.Y))     // Check if above AI got wall
+			{
+				g_sEnemy[i].m_cLocation.X--;
+			}
+			else       // Above AI no wall
+			{
+				directionAIMove = (rand() % 4 + 1);
+			}
 
-	}
-	if (directionAIMove == 3)
-	{
-		if (collision(g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y + 1))     // Check if above AI got wall
-		{
-			g_sEnemy.m_cLocation.Y++;
 		}
-		else       // Above AI no wall
+		if (directionAIMove == 3)
 		{
-			directionAIMove = (rand() % 4 + 1);
-		}
+			if (collision(g_sEnemy[i].m_cLocation.X, g_sEnemy[i].m_cLocation.Y + 1))     // Check if above AI got wall
+			{
+				g_sEnemy[i].m_cLocation.Y++;
+			}
+			else       // Above AI no wall
+			{
+				directionAIMove = (rand() % 4 + 1);
+			}
 
-	}
-	if (directionAIMove == 4)
-	{
-		if (collision(g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y))     // Check if above AI got wall
-		{
-			g_sEnemy.m_cLocation.X++;
 		}
-		else       // Above AI no wall
+		if (directionAIMove == 4)
 		{
-			directionAIMove = (rand() % 4 + 1);
+			if (collision(g_sEnemy[i].m_cLocation.X + 1, g_sEnemy[i].m_cLocation.Y))     // Check if above AI got wall
+			{
+				g_sEnemy[i].m_cLocation.X++;
+			}
+			else       // Above AI no wall
+			{
+				directionAIMove = (rand() % 4 + 1);
+			}
 		}
 	}
 	/*
