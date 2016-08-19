@@ -17,12 +17,20 @@ void loadfile(string mapname)
 					map[row][col] = (char)219;
 					break;
 				case 'T':
+					g_sTeleporters[numTele].m_cLocation.X = col;
+					g_sTeleporters[numTele].m_cLocation.Y = row;
 					map[row][col] = (char)43;
+					numTele++;
 					break;
 				case 'P':
 					g_sDoor[1].m_cLocation.X = col;
 					g_sDoor[1].m_cLocation.Y = row;
 					map[row][col] = (char)205;
+					break;
+				case 'B':
+					g_sEnemy.m_cLocation.X = col;
+					g_sEnemy.m_cLocation.Y = row;
+					map[row][col] = ' ';
 					break;
 				case 'X':
 					g_sDoor[0].m_cLocation.X = col;
