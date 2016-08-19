@@ -51,10 +51,7 @@ void init( void )
 	g_sKey.m_bActive = true;
 
 
-	g_sEnemy.m_cLocation.X = 26;
-	g_sEnemy.m_cLocation.Y = 15;
-	g_sEnemy.m_bActive = true;
-	g_sEnemy.m_seePlayer = false;
+
 
     g_sChar.m_cLocation.X = 2;
     g_sChar.m_cLocation.Y = 2;
@@ -293,8 +290,8 @@ void renderSplashScreen()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
 
-	c.X = 0;
-	c.Y /= 3;
+	c.X = 20;
+	c.Y = 1;
 	string line;
 	for (int y = 0; y < height; y++)
 	{
