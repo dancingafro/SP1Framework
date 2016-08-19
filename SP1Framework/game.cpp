@@ -14,14 +14,15 @@ bool    g_abKeyPressed[K_COUNT];
 // Game specific variables here
 SGameObj	g_sKey;
 SGameObj	g_sDoor[2];
-SGameObj	g_sTeleporters[];
+SGameObj	g_sTeleporters[80];
 SGameChar   g_sChar;
 SGameChar   g_sEnemy;
 EGAMESTATES g_eGameState;
+int level = 1;
 char map[height][width];
-int i = 0;
-double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
+double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
+int numTele = 0;
 // Console object
 Console g_Console(width, height, "Dungeon Explorer");
 
@@ -49,7 +50,6 @@ void init( void )
 		g_sDoor[i].m_bActive = true;
 	}
 	g_sKey.m_bActive = true;
-
 
 	g_sEnemy.m_cLocation.X = 26;
 	g_sEnemy.m_cLocation.Y = 15;
@@ -135,7 +135,7 @@ void update(double dt)
 			splashScreenWait(); // game logic for the splash screen
 			break;
 		case S_GAMELOAD:
-			gameLoad(1);
+			gameLoad(level);
 			break;
         case S_GAME: 
 			gameplay(); // gameplay logic when we are in the game
@@ -175,7 +175,14 @@ void gameLoad(int level)
 	switch (level)
 	{
 	case 1:
+		numTele = 0;
 		loadfile("maze2.txt");
+		g_sChar.m_cLocation.X = 2;
+		g_sChar.m_cLocation.Y = 2;
+		break;
+	case 2:
+		numTele = 0;
+		loadfile("maze3.txt");
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
@@ -194,10 +201,13 @@ void splashScreenWait()    // waits for time to pass in splash screen
 
 void gameplay()			// gameplay logic
 {
-    processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
-    moveCharacter();    // moves the character, collision detection, physics, etc
-                        // sound can be played here too.
-	randomMovement();
+	processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
+	moveCharacter();    // moves the character, collision detection, physics, etc
+	// sound can be played here too.
+	if (g_sEnemy.m_bActive)
+	{
+		enemyBehaviour();
+	}
 }
 
 void moveCharacter()
@@ -216,10 +226,16 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
 			{
 				g_sChar.m_cLocation.Y--;
+				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
+				{
+					level++;
+					g_eGameState = S_GAMELOAD;
+				}
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
 					g_sKey.m_bActive = false;
+					playerPoints->increasePoints();
 				}
 			}
 			bSomethingHappened = true;
@@ -230,10 +246,16 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y))
 			{
 				g_sChar.m_cLocation.X--;
+				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
+				{
+					level++;
+					g_eGameState = S_GAMELOAD;
+				}
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
 					g_sKey.m_bActive = false;
+					playerPoints->increasePoints();
 				}
 			}
 			bSomethingHappened = true;
@@ -244,10 +266,16 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
 			{
 				g_sChar.m_cLocation.Y++;
+				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
+				{
+					level++;
+					g_eGameState = S_GAMELOAD;
+				}
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
 					g_sKey.m_bActive = false;
+					playerPoints->increasePoints();
 				}
 			}
 			bSomethingHappened = true;
@@ -258,6 +286,11 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
 			{
 				g_sChar.m_cLocation.X++;
+				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
+				{
+					level++;
+					g_eGameState = S_GAMELOAD;
+				}
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
@@ -267,13 +300,34 @@ void moveCharacter()
 			}
 			bSomethingHappened = true;
 		}
+		if (g_abKeyPressed[K_SPACE])
+		{
+			for (int i = 0; i<numTele; i++)
+			{
+				if (g_sChar.m_cLocation.Y == g_sTeleporters[i].m_cLocation.Y && g_sChar.m_cLocation.X == g_sTeleporters[i].m_cLocation.X)
+				{
+					int randNum = 0;
+					while (true)
+					{
+						randNum = rand() % numTele;
+						if (randNum == i)
+						{
+							continue;
+						}
+						break;
+					}
+					g_sChar.m_cLocation.Y = g_sTeleporters[randNum].m_cLocation.Y;
+					g_sChar.m_cLocation.X = g_sTeleporters[randNum].m_cLocation.X;
+				}
+			}
+			bSomethingHappened = true;
+		}
 	}
 	
     if (bSomethingHappened)
     {
-
         // set the bounce time to some time in the future to prevent accidental triggers
-        g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
+        g_dBounceTime = g_dElapsedTime + 0.15; // 125ms should be enough
     }
 }
 void processUserInput()
@@ -281,6 +335,11 @@ void processUserInput()
     // quits the game if player hits the escape key
     if (g_abKeyPressed[K_ESCAPE])
         g_bQuitGame = true;
+	if (g_abKeyPressed[K_1])
+	{
+		map[g_sDoor[1].m_cLocation.Y][g_sDoor[1].m_cLocation.X] = 'E';
+		g_sEnemy.m_bActive = false;
+	}
 }
 
 void clearScreen()
@@ -342,7 +401,10 @@ void renderCharacter()
 
 void renderEnemy()
 {
-	g_Console.writeToBuffer(g_sEnemy.m_cLocation, "C", 0x07);
+	if (g_sEnemy.m_bActive)
+	{
+		g_Console.writeToBuffer(g_sEnemy.m_cLocation, "C", 0x07);
+	}
 }
 
 void renderObject()
@@ -472,4 +534,3 @@ void randomMovement()
 		timeSinceLastAIMove = g_dElapsedTime + 1;
 	}
 }
-
