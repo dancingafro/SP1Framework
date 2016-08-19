@@ -39,9 +39,12 @@
     <ClCompile Include="Combat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Combat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+=======
+>>>>>>> 57d1a54cc0193951de9b0b340b2679b26b82f9ee
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\console.h">
