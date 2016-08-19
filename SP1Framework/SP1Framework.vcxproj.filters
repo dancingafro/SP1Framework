@@ -1,29 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-<<<<<<< HEAD
-    <ClCompile Include="Framework\console.cpp">
-      <Filter>Source Files\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\timer.cpp">
-      <Filter>Source Files\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="loading.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="points.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-=======
+    <ClCompile Include="CheckAttack.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Framework\console.cpp" />
     <ClCompile Include="Framework\timer.cpp" />
@@ -31,57 +9,22 @@
     <ClCompile Include="loading.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="points.cpp" />
-    <ClCompile Include="CheckAttack.cpp" />
->>>>>>> 6f2ff6a0c4ab4ada615110386e957f14d5f9fc4e
+    <ClCompile Include="FogOfWar.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Framework\console.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\timer.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Loading.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="points.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Framework\console.h" />
+    <ClInclude Include="Framework\timer.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="Loading.h" />
+    <ClInclude Include="points.h" />
+    <ClInclude Include="Fogofwar.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="maze2.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="maze3.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
+    <None Include="Splashscreen.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{eee56a40-f5ac-4f72-bd0a-49a090e22ec8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{e16834fe-737b-4f1c-86b3-1651ed39ef24}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{7b68cd7c-507c-443d-a507-8b3ad280a60d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Framework">
-      <UniqueIdentifier>{ee9dda65-0862-49f0-8d2f-355eb3d67faf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Framework">
-      <UniqueIdentifier>{007f9adb-7166-4a7c-b76a-a0bda5069294}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Splashscreen.txt">
-      <Filter>Resource Files</Filter>
-    </None>
+    <Text Include="maze2.txt" />
+    <Text Include="maze3.txt" />
   </ItemGroup>
 </Project>

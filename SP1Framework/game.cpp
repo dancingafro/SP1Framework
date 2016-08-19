@@ -21,6 +21,9 @@ SGameChar   g_sEnemy;
 EGAMESTATES g_eGameState;
 int level = 1;
 char map[height][width];
+char fog[height][width];
+int oldLocationx;
+int oldLocationy;
 
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 int numTele = 0;
@@ -46,6 +49,7 @@ void init( void )
 	g_dCharNextAttackTime = 0.0;
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
+	
 	for (int i = 0; i < 2; i++)
 	{
 		g_sDoor[i].m_bActive = true;
@@ -54,9 +58,8 @@ void init( void )
 	g_sEnemy.m_bActive = true;
 	g_sEnemy.m_seePlayer = false;
 
-
-    g_sChar.m_cLocation.X = 2;
-    g_sChar.m_cLocation.Y = 2;
+	oldLocationx = 0;
+	oldLocationx = 0;
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Bitstream Vera Sans");
@@ -204,6 +207,12 @@ void gameplay()			// gameplay logic
 	processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
 	// sound can be played here too.
+	if (oldLocationx != g_sChar.m_cLocation.X || oldLocationy != g_sChar.m_cLocation.Y)
+	{
+		oldLocationx = g_sChar.m_cLocation.X;
+		oldLocationy = g_sChar.m_cLocation.Y;
+		FOW(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y);
+	}
 	if (g_sEnemy.m_bActive)
 	{
 		enemyBehaviour();
@@ -382,7 +391,7 @@ void renderMap()
 	string line;
 	for (int y = 0; y < height; y++)
 	{
-		line = map[y];
+		line = fog[y];
 		g_Console.writeToBuffer(c, line);
 		c.Y++;			
 	}

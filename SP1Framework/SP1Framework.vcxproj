@@ -79,6 +79,7 @@
   <ItemGroup>
     <ClCompile Include="CheckAttack.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="FogOfWar.cpp" />
     <ClCompile Include="Framework\console.cpp" />
     <ClCompile Include="Framework\timer.cpp" />
     <ClCompile Include="game.cpp" />
@@ -88,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Fogofwar.h" />
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
