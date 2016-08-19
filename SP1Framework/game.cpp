@@ -349,30 +349,6 @@ void enemyBehaviour()
 	randomMovement();
 }
 
-void renderFramerate()
-{
-    COORD c;
-    // displays the framerate
-    ostringstream ss;
-    ss << fixed << setprecision(3);
-    ss << 1.0 / g_dDeltaTime << "fps";
-    c.X = g_Console.getConsoleSize().X - 9;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
-
-    // displays the elapsed time
-    ss.str("");
-    ss << g_dElapsedTime << "secs";
-    c.X = 0;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
-}
-void renderToScreen()
-{
-    // Writes the buffer to the console, hence you will see what you have written
-    g_Console.flushBufferToConsole();
-}
-
 void renderCharacterAttack()
 {
 	bool bSomethingHappened = false;
