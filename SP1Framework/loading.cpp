@@ -22,12 +22,12 @@ void loadfile(string mapname)
 				case 'P':
 					g_sDoor[1].m_cLocation.X = col;
 					g_sDoor[1].m_cLocation.Y = row;
-					map[row][col] = ' ';
+					map[row][col] = (char)205;
 					break;
 				case 'X':
 					g_sDoor[0].m_cLocation.X = col;
 					g_sDoor[0].m_cLocation.Y = row;
-					map[row][col] = ' ';
+					map[row][col] = (char)186;
 					break;
 				case 'K':
 					g_sKey.m_cLocation.X = col;

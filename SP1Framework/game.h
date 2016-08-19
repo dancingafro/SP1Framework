@@ -103,6 +103,7 @@ void renderEnemy();
 void enemyBehaviour();
 void randomMovement();
 void renderObject();
+bool collision(int x,int y);
 
 
 #endif // _GAME_H

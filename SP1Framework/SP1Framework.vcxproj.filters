@@ -10,11 +10,21 @@
     <ClCompile Include="main.cpp">
       <Filter>Souce Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Framework\timer.cpp">
       <Filter>Souce Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Framework\console.cpp">
       <Filter>Souce Files\Framework</Filter>
+=======
+<<<<<<< HEAD
+    <ClCompile Include="Collision.cpp">
+=======
+<<<<<<< HEAD
+    <ClCompile Include="Combat.cpp">
+>>>>>>> 4302f99e3d455e839b31f5feccb426e5c976139d
+      <Filter>Source Files</Filter>
+>>>>>>> e8f2d1d5bd2d5e68c05d476fe51f203b08338a82
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -28,6 +38,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Loading.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -212,12 +212,12 @@ void moveCharacter()
 		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
 		{
 			//Beep(1440, 30);
-			if (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X] != (char)219)
+			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
 			{
 				g_sChar.m_cLocation.Y--;
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
-					g_sDoor[0].m_bActive = false;
+					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
 					g_sKey.m_bActive = false;
 				}
 			}
@@ -226,12 +226,12 @@ void moveCharacter()
 		if (g_abKeyPressed[K_A] && g_sChar.m_cLocation.X > 0)
 		{
 			//Beep(1440, 30);
-			if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1] != (char)219)
+			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y))
 			{
 				g_sChar.m_cLocation.X--;
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
-					g_sDoor[0].m_bActive = false;
+					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
 					g_sKey.m_bActive = false;
 				}
 			}
@@ -240,12 +240,12 @@ void moveCharacter()
 		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 		{
 			//Beep(1440, 30);
-			if (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X] != (char)219)
+			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
 			{
 				g_sChar.m_cLocation.Y++;
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
-					g_sDoor[0].m_bActive = false;
+					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
 					g_sKey.m_bActive = false;
 				}
 			}
@@ -254,12 +254,12 @@ void moveCharacter()
 		if (g_abKeyPressed[K_D] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 		{
 			//Beep(1440, 30);
-			if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1] != (char)219)
+			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
 			{
 				g_sChar.m_cLocation.X++;
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
-					g_sDoor[0].m_bActive = false;
+					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -344,6 +344,13 @@ void renderEnemy()
 	g_Console.writeToBuffer(g_sEnemy.m_cLocation, "C", 0x07);
 }
 
+void renderObject()
+{
+	if (g_sKey.m_bActive)
+	{
+		g_Console.writeToBuffer(g_sKey.m_cLocation, (char)254);
+	}
+}
 void enemyBehaviour()
 {
 	randomMovement();
