@@ -10,8 +10,6 @@
 #include <fstream>
 #include <string>
 
-
-
 using namespace std;
 
 #define VK_W 0x57
@@ -22,13 +20,11 @@ using namespace std;
 #define VK_2 0x32
 
 const int width = 80;
-const int height = 25;
+const int height = 35;
+
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
-
-
-
 
 // Enumeration to store the control keys that your game will have
 enum EKEYS
@@ -78,7 +74,6 @@ struct SGameObj
 	COORD m_cLocation;
 	bool  m_bActive;
 };
-	
 
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
@@ -103,8 +98,10 @@ void renderEnemy();
 void enemyBehaviour();
 void randomMovement();
 void renderObject();
+void checkCharacterAttack();
+void renderCharacterAttack();
 bool collision(int x,int y);
 bool lineOfSight();
+//void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, bool *bSomethingHappened );
 
-
-#endif // _GAME_H
+#endif
