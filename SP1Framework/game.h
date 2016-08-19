@@ -95,5 +95,6 @@ void loadfile(string mapname);
 void characterAttackControls();
 void gameLoad(int level);
 void renderObject();
+bool collision(int x,int y);
 
 #endif // _GAME_H
