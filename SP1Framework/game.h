@@ -21,6 +21,7 @@ using namespace std;
 
 const int width = 80;
 const int height = 35;
+const int numEnemy = 11;
 
 
 extern CStopWatch g_swTimer;
