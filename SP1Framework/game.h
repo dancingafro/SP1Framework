@@ -3,11 +3,13 @@
 
 #include "Framework\timer.h"
 #include "Framework\console.h"
+#include "points.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <fstream>
 #include <string>
+
 
 
 using namespace std;
@@ -24,6 +26,9 @@ const int height = 25;
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
+
+
+
 
 // Enumeration to store the control keys that your game will have
 enum EKEYS
@@ -62,6 +67,7 @@ struct SGameChar
 	bool  m_bActive;
 	bool  m_haveKey;
     bool  m_bAttacking;
+	bool  m_seePlayer;
 	bool  m_bCanAttack;
 	int   m_iHitpoints;
 	int   m_iDamage;
@@ -92,9 +98,12 @@ void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void loadfile(string mapname);
-void characterAttackControls();
 void gameLoad(int level);
+void renderEnemy();
+void enemyBehaviour();
+void randomMovement();
 void renderObject();
 bool collision(int x,int y);
+
 
 #endif // _GAME_H

@@ -3,6 +3,8 @@
 //
 #include "game.h"
 
+points* playerPoints = new points();
+
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  g_dCharNextAttackTime;
@@ -13,8 +15,10 @@ SGameObj	g_sKey;
 SGameObj	g_sDoor[2];
 SGameObj	g_sTeleporters[];
 SGameChar   g_sChar;
+SGameChar   g_sEnemy;
 EGAMESTATES g_eGameState;
 char map[height][width];
+int i = 0;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
@@ -44,6 +48,15 @@ void init( void )
 		g_sDoor[i].m_bActive = true;
 	}
 	g_sKey.m_bActive = true;
+
+
+	g_sEnemy.m_cLocation.X = 26;
+	g_sEnemy.m_cLocation.Y = 15;
+	g_sEnemy.m_bActive = true;
+	g_sEnemy.m_seePlayer = false;
+
+    g_sChar.m_cLocation.X = 2;
+    g_sChar.m_cLocation.Y = 2;
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Bitstream Vera Sans");
@@ -178,11 +191,12 @@ void splashScreenWait()    // waits for time to pass in splash screen
 	}
 }
 
-void gameplay()            // gameplay logic
+void gameplay()			// gameplay logic
 {
     processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
+	randomMovement();
 }
 
 void moveCharacter()
@@ -247,6 +261,7 @@ void moveCharacter()
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
 					g_sKey.m_bActive = false;
+					playerPoints->increasePoints();
 				}
 			}
 			bSomethingHappened = true;
@@ -255,6 +270,7 @@ void moveCharacter()
 	
     if (bSomethingHappened)
     {
+
         // set the bounce time to some time in the future to prevent accidental triggers
         g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
     }
@@ -292,7 +308,7 @@ void renderGame()
 	renderMap();        // renders the map to the buffer first
 	renderObject();	
     renderCharacter();  // renders the character into the buffer
-	characterAttackControls();
+	renderEnemy();		// renders an enemy into the buffer
 }
 
 void renderMap()
@@ -306,7 +322,7 @@ void renderMap()
 	{
 		line = map[y];
 		g_Console.writeToBuffer(c, line);
-		c.Y++;
+		c.Y++;			
 	}
 }
 
@@ -323,15 +339,21 @@ void renderCharacter()
 	}
 }
 
+void renderEnemy()
+{
+	g_Console.writeToBuffer(g_sEnemy.m_cLocation, "C", 0x07);
+}
+
 void renderObject()
 {
-	// Draw the location of the character
-
 	if (g_sKey.m_bActive)
 	{
 		g_Console.writeToBuffer(g_sKey.m_cLocation, (char)254);
 	}
-	
+}
+void enemyBehaviour()
+{
+	randomMovement();
 }
 
 void renderFramerate()
@@ -340,6 +362,10 @@ void renderFramerate()
     // displays the framerate
     ostringstream ss;
     ss << fixed << setprecision(3);
+    ss << 1.0 / g_dDeltaTime << "fps";
+    c.X = g_Console.getConsoleSize().X - 9;
+    c.Y = 0;
+    g_Console.writeToBuffer(c, ss.str());
 
     // displays the elapsed time
     ss.str("");
@@ -354,18 +380,16 @@ void renderToScreen()
     g_Console.flushBufferToConsole();
 }
 
-void characterAttackControls()
+void renderCharacterAttack()
 {
 	bool bSomethingHappened = false;
 
-	if (g_dBounceTime > g_dElapsedTime)
-		return;
-
-	if (g_sChar.m_bAttacking && g_dCharNextAttackTime > g_dElapsedTime)
+	if (g_sChar.m_bAttacking || g_dCharNextAttackTime > g_dElapsedTime) // (N) If player is launching or next attack time has not come
 	{
 		g_sChar.m_bCanAttack = false;
 	}
-	else if (!g_sChar.m_bAttacking && g_dCharNextAttackTime <= g_dElapsedTime)
+	// (N) If player is not holding down attack keys + attack has already launched + next attack time has passed
+	else if (!g_sChar.m_bAttacking && g_dCharNextAttackTime <= g_dElapsedTime && (g_abKeyPressed[K_UP] + g_abKeyPressed[K_LEFT] + g_abKeyPressed[K_DOWN] + g_abKeyPressed[K_RIGHT]) == false)
 	{
 		g_sChar.m_bCanAttack = true;
 	}
@@ -405,10 +429,89 @@ void characterAttackControls()
 			bSomethingHappened = true;
 		}
 	}
+}
 
-	if (bSomethingHappened)
+void renderObject()
+{
+	// Draw the location of the character
+
+	if (g_sKey.m_bActive)
 	{
-		g_dBounceTime = g_dElapsedTime + 0.1;
+		g_Console.writeToBuffer(g_sKey.m_cLocation, (char)254);
+	}
+	if (g_sDoor[1].m_bActive)
+	{
+		g_Console.writeToBuffer(g_sDoor[1].m_cLocation, (char)205);
+	}
+	if (g_sDoor[0].m_bActive)
+	{
+		g_Console.writeToBuffer(g_sDoor[0].m_cLocation, (char)186);
+	}
+}
+
+void renderFramerate()
+{
+    COORD c;
+    // displays the framerate
+    ostringstream ss;
+    ss << fixed << setprecision(3);
+
+    // displays the elapsed time
+    ss.str("");
+	ss << g_dElapsedTime << "secs";
+    c.X = 0;
+    c.Y = 0;
+    g_Console.writeToBuffer(c, ss.str());
+
+	ss.str("");
+	ss << "Points: "<<playerPoints->getPoints();
+	c.X = 33;
+	c.Y = 0;
+	g_Console.writeToBuffer(c, ss.str());
+}
+void renderToScreen()
+{
+    // Writes the buffer to the console, hence you will see what you have written
+    g_Console.flushBufferToConsole();
+}
+
+int timeSinceLastAIMove;
+
+void randomMovement()
+{
+	if (timeSinceLastAIMove == 0)
+	{
+		timeSinceLastAIMove = g_dElapsedTime+1;
+	}
+	if (g_dElapsedTime < timeSinceLastAIMove)
+	{
+		return;
+	}
+	else
+	{
+		int randomNumber = (rand() % 4 + 1);
+
+		if (randomNumber == 1)
+		{
+			if (map[g_sEnemy.m_cLocation.Y - 1][g_sEnemy.m_cLocation.X] != (char)219)
+			g_sEnemy.m_cLocation.Y--;
+		}
+		else if (randomNumber == 2)
+		{
+			if (map[g_sEnemy.m_cLocation.Y][g_sEnemy.m_cLocation.X - 1] != (char)219)
+			g_sEnemy.m_cLocation.X--;
+		}
+		else if (randomNumber == 3)
+		{
+			if (map[g_sEnemy.m_cLocation.Y + 1][g_sEnemy.m_cLocation.X] != (char)219)
+			g_sEnemy.m_cLocation.Y++;
+		}
+		else if (randomNumber == 4)
+		{
+			if (map[g_sEnemy.m_cLocation.Y][g_sEnemy.m_cLocation.X + 1] != (char)219)
+			g_sEnemy.m_cLocation.X++;
+		}
+		timeSinceLastAIMove = g_dElapsedTime + 1;
 	}
 }
 

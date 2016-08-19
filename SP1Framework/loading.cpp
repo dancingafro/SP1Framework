@@ -9,7 +9,7 @@ void loadfile(string mapname)
 	{
 		while (getline(file, line))
 		{
-			for (int col = 0; col < line.size(); col++)
+			for (unsigned int col = 0; col < line.size(); col++)
 			{
 				switch (line[col])
 				{
