@@ -461,27 +461,15 @@ void checkCharacterAttack()
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
-			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
-			g_sChar.m_bCanAttack = false;
-			g_sChar.m_bAttacking = true;
-			bSomethingHappened = true;
+			checkLeft(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
-			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1 };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
-			g_sChar.m_bCanAttack = false;
-			g_sChar.m_bAttacking = true;
-			bSomethingHappened = true;
+			checkDown(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
-			g_sChar.m_cAttackLocation = { g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y };
-			g_dCharNextAttackTime = g_dElapsedTime + g_sChar.m_dAttackRate;
-			g_sChar.m_bCanAttack = false;
-			g_sChar.m_bAttacking = true;
-			bSomethingHappened = true;
+			checkRight(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 	}
 }
