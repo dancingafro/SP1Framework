@@ -87,6 +87,7 @@
     <ClCompile Include="loading.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="points.cpp" />
+    <ClCompile Include="ResetData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision.h" />
@@ -96,6 +97,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="points.h" />
+    <ClInclude Include="ResetData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Splashscreen.txt" />
