@@ -3,28 +3,24 @@
   <ItemGroup>
     <ClCompile Include="CheckAttack.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="FogOfWar.cpp" />
     <ClCompile Include="Framework\console.cpp" />
     <ClCompile Include="Framework\timer.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="loading.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="points.cpp" />
-<<<<<<< HEAD
-    <ClCompile Include="FogOfWar.cpp" />
-=======
->>>>>>> c77443cb752d49a4d20814ff2dfbf28069eb19cf
+    <ClCompile Include="ResetData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Fogofwar.h" />
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="points.h" />
-<<<<<<< HEAD
-    <ClInclude Include="Fogofwar.h" />
-=======
->>>>>>> c77443cb752d49a4d20814ff2dfbf28069eb19cf
+    <ClInclude Include="ResetData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Splashscreen.txt" />

@@ -15,7 +15,7 @@ int     directionAIMove = 1;      // 1 = up, 2 = left, 3 = down, 4 =right
 // Game specific variables here
 SGameObj	g_sKey;
 SGameObj	g_sDoor[2];
-SGameObj	g_sTeleporters[80];
+SGameObj	g_sTeleporters[totalTele];
 SGameChar   g_sChar;
 SGameChar   g_sEnemy[totalEnemy];
 EGAMESTATES g_eGameState;
@@ -329,11 +329,13 @@ void moveCharacter()
 					int randNum = 0;
 					while (true)
 					{
-						randNum = rand() % numTele;
-						if (randNum == i)
+						float frandNum = (rand() % numTele);
+						if (frandNum == i)
 						{
 							continue;
 						}
+						
+						randNum = frandNum;
 						break;
 					}
 					g_sChar.m_cLocation.Y = g_sTeleporters[randNum].m_cLocation.Y;

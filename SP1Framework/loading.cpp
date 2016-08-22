@@ -52,4 +52,20 @@ void loadfile(string mapname)
 		}
 		file.close();
 	}
+	row = 1;
+	ifstream afile("fog.txt");
+	if (afile.is_open())
+	{
+		while (getline(afile, line))
+		{
+			for (unsigned int col = 0; col < line.size(); col++)
+			{
+				if (line[col] == '.')
+				{
+					fog[row][col] = ' ';
+				}
+			}
+			row++;
+		}
+	}
 }
