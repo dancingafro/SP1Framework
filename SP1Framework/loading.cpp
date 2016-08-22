@@ -28,59 +28,10 @@ void loadfile(string mapname)
 					map[row][col] = (char)205;
 					break;
 				case 'B':
-					g_sEnemy[0].m_cLocation.X = col;
-					g_sEnemy[0].m_cLocation.Y = row;
+					g_sEnemy[numEnemy].m_cLocation.X = col;
+					g_sEnemy[numEnemy].m_cLocation.Y = row;
 					map[row][col] = ' ';
-					break;
-				case '1':
-					g_sEnemy[1].m_cLocation.X = col;
-					g_sEnemy[1].m_cLocation.Y = row;
-					map[row][col] = ' ';
-					break;
-				case '2':
-					g_sEnemy[2].m_cLocation.X = col;
-					g_sEnemy[2].m_cLocation.Y = row;
-					map[row][col] = ' ';
-					break;
-				case '3':
-					g_sEnemy[3].m_cLocation.X = col;
-					g_sEnemy[3].m_cLocation.Y = row;
-					map[row][col] = ' ';
-					break;
-				case '4':
-					g_sEnemy[4].m_cLocation.X = col;
-					g_sEnemy[4].m_cLocation.Y = row;
-					map[row][col] = ' ';
-					break;
-				case '5':
-					g_sEnemy[5].m_cLocation.X = col;
-					g_sEnemy[5].m_cLocation.Y = row;
-					map[row][col] = ' ';
-					break;
-				case '6':
-					g_sEnemy[6].m_cLocation.X = col;
-					g_sEnemy[6].m_cLocation.Y = row;
-					map[row][col] = ' ';
-					break;
-				case '7':
-					g_sEnemy[7].m_cLocation.X = col;
-					g_sEnemy[7].m_cLocation.Y = row;
-					map[row][col] = ' ';
-					break;
-				case '8':
-					g_sEnemy[8].m_cLocation.X = col;
-					g_sEnemy[8].m_cLocation.Y = row;
-					map[row][col] = ' ';
-					break;
-				case '9':
-					g_sEnemy[9].m_cLocation.X = col;
-					g_sEnemy[9].m_cLocation.Y = row;
-					map[row][col] = ' ';
-					break;
-				case 'A':
-					g_sEnemy[10].m_cLocation.X = col;
-					g_sEnemy[10].m_cLocation.Y = row;
-					map[row][col] = ' ';
+					numEnemy++;
 					break;
 				case 'X':
 					g_sDoor[0].m_cLocation.X = col;

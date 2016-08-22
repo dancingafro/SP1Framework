@@ -17,7 +17,7 @@ SGameObj	g_sKey;
 SGameObj	g_sDoor[2];
 SGameObj	g_sTeleporters[totalTele];
 SGameChar   g_sChar;
-SGameChar   g_sEnemy[numEnemy];
+SGameChar   g_sEnemy[totalEnemy];
 EGAMESTATES g_eGameState;
 int level = 1;
 char map[height][width];
@@ -27,6 +27,7 @@ int oldLocationy;
 
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 int numTele = 0;
+int numEnemy = 0;
 // Console object
 Console g_Console(width, height, "Dungeon Explorer");
 
@@ -58,7 +59,7 @@ void init( void )
 	oldLocationx = 0;
 	oldLocationx = 0;
 	
-	for (int i = 0; i < numEnemy; i++)
+	for (int i = 0; i < totalEnemy; i++)
 	{
 		g_sEnemy[i].m_bActive = true;
 		g_sEnemy[i].m_seePlayer = false;
@@ -181,12 +182,14 @@ void gameLoad(int level)
 	{
 	case 1:
 		numTele = 0;
+		numEnemy = 0;
 		loadfile("maze2.txt");
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	case 2:
 		numTele = 0;
+		numEnemy = 0;
 		loadfile("maze3.txt");
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
