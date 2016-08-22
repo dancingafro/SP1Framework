@@ -103,6 +103,7 @@
     <None Include="Splashscreen.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Fog.txt" />
     <Text Include="maze2.txt" />
     <Text Include="maze3.txt" />
   </ItemGroup>

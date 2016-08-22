@@ -1,13 +1,13 @@
 #include"Fogofwar.h"
 void FOW(int x,int y)
 {
-	int radius = 2;
-	for (int lookrow = (radius * 2); lookrow > -(radius * 2); lookrow--)
+	int radius = 3;
+	for (int lookrow = radius; lookrow > -radius; lookrow--)
 	{
-		for (int lookcol = (radius * 2); lookcol > -(radius * 2); lookcol--)
+		for (int lookcol = radius; lookcol > -radius; lookcol--)
 		{
-			int tempy = y - lookrow;
-			int tempx = x - lookcol;
+			int tempy = y + lookrow;
+			int tempx = x + lookcol;
 			if (tempy < 0)
 			{
 				tempy = 0;

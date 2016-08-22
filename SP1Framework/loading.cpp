@@ -113,6 +113,10 @@ void loadfile(string mapname)
 				{
 					fog[row][col] = ' ';
 				}
+				else
+				{
+					fog[row][col] = line[col];
+				}
 			}
 			row++;
 		}
