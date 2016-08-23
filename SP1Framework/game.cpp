@@ -24,7 +24,7 @@ char map[height][width];
 char fog[height][width];
 int oldLocationx;
 int oldLocationy;
-
+bool menuselect = true;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 int numTele = 0;
 int numEnemy = 0;
@@ -131,6 +131,12 @@ void update(double dt)
         case S_SPLASHSCREEN : 
 			splashScreenWait(); // game logic for the splash screen
 			break;
+		case S_INSTRUCTLOAD:
+			instructionloading();
+			break;
+		case S_INSTRUCTION:
+			instructscreen();
+			break;
 		case S_GAMELOAD:
 			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy,g_sDoor,g_sTeleporters);
 			gameLoad(level);
@@ -156,6 +162,9 @@ void render()
         case S_SPLASHSCREEN: 
 			renderSplashScreen();
             break;
+		case S_INSTRUCTION:
+			renderloadinginstruct();
+			break;
         case S_GAME: 
 			renderGame();
             break;
@@ -167,6 +176,12 @@ void Splashscreenloading()
 {
 	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
 	g_eGameState = S_SPLASHSCREEN;
+}
+
+void instructionloading()
+{
+	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+	g_eGameState = S_INSTRUCTION;
 }
 void gameLoad(int level)
 {
@@ -188,13 +203,7 @@ void gameLoad(int level)
 	g_eGameState = S_GAME;
 }
 
-void splashScreenWait()    // waits for time to pass in splash screen
-{
-	if (g_abKeyPressed[K_RETURN])
-	{
-		g_eGameState = S_GAMELOAD;
-	}
-}
+
 
 void gameplay()			// gameplay logic
 {
@@ -379,7 +388,6 @@ void renderSplashScreen()  // renders the splash screen
 		g_Console.writeToBuffer(c,line );
 		c.Y++;
 	}
-
 	
 	c.X = 27;
 	c.Y = 15;
@@ -392,6 +400,7 @@ void renderSplashScreen()  // renders the splash screen
 	{
 		c.X = 34;
 		c.Y = 17;
+		menuselect = true;
 		g_Console.writeToBuffer(c, "Start Game", 0xF0);
 		c.X = 33;
 		c.Y = 18;
@@ -401,10 +410,45 @@ void renderSplashScreen()  // renders the splash screen
 	{
 		c.X = 34;
 		c.Y = 17;
+		menuselect = false;
 		g_Console.writeToBuffer(c, "Start Game");
 		c.X = 33;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Instructions", 0xF0);
+
+	}
+}
+void renderloadinginstruct()  // renders the splash screen
+{
+	COORD c = g_Console.getConsoleSize();
+
+	c.X = 20;
+	c.Y = 1;
+	string line;
+	for (int y = 0; y < height; y++)
+	{
+		line = map[y];
+		g_Console.writeToBuffer(c, line);
+		c.Y++;
+	}
+}
+
+void splashScreenWait()    // waits for time to pass in splash screen
+{
+	if (g_abKeyPressed[K_RETURN])
+	{
+		if(menuselect)
+		g_eGameState = S_GAMELOAD;
+		else
+		g_eGameState = S_INSTRUCTLOAD;
+	}
+}
+
+void instructscreen()
+{
+	if (g_abKeyPressed[K_RETURN])
+	{
+		g_eGameState = S_INSTRUCTION;
 	}
 }
 
@@ -433,7 +477,6 @@ void renderMap()
 		c.Y++;			
 	}
 }
-
 	
 void renderCharacter()
 {
@@ -466,6 +509,7 @@ void renderObject()
 		}
 	}
 }
+
 void enemyBehaviour()
 {
 	randomMovement();

@@ -5,5 +5,5 @@
 
 extern char map[height][width];
 extern char fog[height][width];
-
+extern char instruct[height][width];
 #endif

@@ -29,5 +29,6 @@
     <Text Include="maze2.txt" />
     <Text Include="maze3.txt" />
     <Text Include="Fog.txt" />
+    <Text Include="instructions.txt" />
   </ItemGroup>
 </Project>

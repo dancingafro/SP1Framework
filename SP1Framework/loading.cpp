@@ -13,7 +13,7 @@ void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGam
 			{
 				switch (line[col])
 				{
-				case 'W':
+				case 'w':
 					map[row][col] = (char)219;
 					break;
 				case 'T':

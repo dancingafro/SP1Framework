@@ -50,6 +50,8 @@ enum EKEYS
 enum EGAMESTATES
 {
 	S_LOADING,
+	S_INSTRUCTION,
+	S_INSTRUCTLOAD,
     S_SPLASHSCREEN,
 	S_GAMELOAD,
     S_GAME,
@@ -83,11 +85,13 @@ void render      ( void );      // renders the current state of the game to the 
 void shutdown    ( void );      // do clean up, free memory
 void Splashscreenloading();
 void splashScreenWait();    // waits for time to pass in splash screen
+void instructscreen();
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
+void renderloadinginstruct();
 void renderGame();          // renders the game stuff
 void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
@@ -110,5 +114,6 @@ void checkDown( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dEl
 void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
 void renderHP();
+void instructionloading();
 
 #endif
