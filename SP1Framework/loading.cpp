@@ -69,6 +69,10 @@ void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGam
 				{
 					fog[row][col] = ' ';
 				}
+				else if (line[col] == 'N')
+				{
+					fog[row][col] = (char)178;
+				}
 				else
 				{
 					fog[row][col] = line[col];

@@ -50,6 +50,7 @@ void init( void )
 	g_dCharNextAttackTime = 0.0;
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
+	g_sChar.m_iHitpoints = 10;
 
 	oldLocationx = 0;
 	oldLocationx = 0;
@@ -222,7 +223,11 @@ void moveCharacter()
     bool bSomethingHappened = false;
     if (g_dBounceTime > g_dElapsedTime)
         return;
-
+	if (g_abKeyPressed[K_2])
+	{
+		g_sChar.m_iHitpoints -= 1;
+		bSomethingHappened = true;
+	}
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
 	if (!g_sChar.m_bAttacking)
@@ -383,6 +388,7 @@ void renderGame()
 	renderEnemy();		// renders an enemy into the buffer
 	checkCharacterAttack();
 	renderCharacterAttack();
+	renderHP();
 }
 
 void renderMap()
@@ -440,7 +446,10 @@ void enemyBehaviour()
 void checkCharacterAttack()
 {
 	bool bSomethingHappened = false;
-
+	if (g_sChar.m_iHitpoints <= 0)
+	{
+		g_bQuitGame = true;
+	}
 	if (g_sChar.m_bAttacking || g_dCharNextAttackTime > g_dElapsedTime) // (N) If player is launching or next attack time has not come
 	{
 		g_sChar.m_bCanAttack = false;
@@ -469,6 +478,28 @@ void checkCharacterAttack()
 		{
 			checkRight(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
+	}
+}
+
+void renderHP()
+{
+	WORD HPColor = 0x0A;
+	COORD c;
+	c.Y = 28;
+	unsigned int iHP = g_sChar.m_iHitpoints;
+
+	for (unsigned int i = 1; i <= iHP; i++)
+	{
+		c.X = 5 + i;
+		if (g_sChar.m_iHitpoints <= 7 && g_sChar.m_iHitpoints > 3)
+		{
+			HPColor = 0x0E;
+		}
+		else if (g_sChar.m_iHitpoints <= 3)
+		{
+			HPColor = 0x0C;
+		}
+		g_Console.writeToBuffer(c, (char)219, HPColor);
 	}
 }
 
