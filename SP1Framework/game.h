@@ -95,7 +95,7 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[]);
+void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[]);
 void gameLoad(int level);
 void renderEnemy();
 void enemyBehaviour();
@@ -110,6 +110,6 @@ void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElap
 void checkLeft(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened);
 void checkDown(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened);
 void checkRight(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened);
-void ResetAllData(SGameChar g_sEnemy[], SGameObj g_sKey, SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
+void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
 
 #endif

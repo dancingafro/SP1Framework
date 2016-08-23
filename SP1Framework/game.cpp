@@ -50,8 +50,7 @@ void init( void )
 	g_dCharNextAttackTime = 0.0;
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
-	
-	g_sKey.m_bActive = true;
+
 	oldLocationx = 0;
 	oldLocationx = 0;
 
@@ -131,7 +130,7 @@ void update(double dt)
 			splashScreenWait(); // game logic for the splash screen
 			break;
 		case S_GAMELOAD:
-			ResetAllData(g_sEnemy,g_sKey,g_sDoor,g_sTeleporters);
+			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy,g_sDoor,g_sTeleporters);
 			gameLoad(level);
 			break;
         case S_GAME: 
@@ -164,7 +163,7 @@ void render()
 }
 void Splashscreenloading()
 {
-	loadfile("Splashscreen.txt", &numTele, &numEnemy, g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
 	g_eGameState = S_SPLASHSCREEN;
 }
 void gameLoad(int level)
@@ -172,16 +171,12 @@ void gameLoad(int level)
 	switch (level)
 	{
 	case 1:
-		numTele = 0;
-		numEnemy = 0;
-		loadfile("maze2.txt", &numTele, &numEnemy, g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+		loadfile("maze2.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	case 2:
-		numTele = 0;
-		numEnemy = 0;
-		loadfile("maze3.txt", &numTele, &numEnemy, g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+		loadfile("maze3.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
@@ -190,6 +185,7 @@ void gameLoad(int level)
 	}
 	g_eGameState = S_GAME;
 }
+
 void splashScreenWait()    // waits for time to pass in splash screen
 {
 	if (g_abKeyPressed[K_RETURN])

@@ -1,6 +1,6 @@
 #include"ResetData.h"
 
-void ResetAllData(SGameChar g_sEnemy[], SGameObj g_sKey, SGameObj g_sDoor[], SGameObj g_sTeleporters[])
+void ResetAllData(int *numTele, int *numEnemy, SGameObj * g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[])
 {
 	for (unsigned int row = 0; row < height; row++)
 	{
@@ -28,7 +28,9 @@ void ResetAllData(SGameChar g_sEnemy[], SGameObj g_sKey, SGameObj g_sDoor[], SGa
 		g_sDoor[i].m_cLocation.Y = 0;
 		g_sDoor[i].m_bActive = false;
 	}
-	g_sKey.m_cLocation.X = 0;
-	g_sKey.m_cLocation.Y = 0;
-	g_sKey.m_bActive = false;
+	(*g_sKey).m_cLocation.X = 0;
+	(*g_sKey).m_cLocation.Y = 0;
+	(*g_sKey).m_bActive = false;
+	(*numTele) = 0;
+	(*numEnemy) = 0;
 }
