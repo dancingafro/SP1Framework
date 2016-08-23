@@ -241,7 +241,7 @@ void moveCharacter()
 				}
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
-					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
+					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -261,7 +261,7 @@ void moveCharacter()
 				}
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
-					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
+					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -281,7 +281,7 @@ void moveCharacter()
 				}
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
-					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
+					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -301,7 +301,7 @@ void moveCharacter()
 				}
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
-					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = ' ';
+					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -328,6 +328,7 @@ void moveCharacter()
 					}
 					g_sChar.m_cLocation.Y = g_sTeleporters[randNum].m_cLocation.Y;
 					g_sChar.m_cLocation.X = g_sTeleporters[randNum].m_cLocation.X;
+					break;
 				}
 			}
 			bSomethingHappened = true;

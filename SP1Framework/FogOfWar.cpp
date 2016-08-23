@@ -16,9 +16,13 @@ void FOW(int x,int y)
 			{
 				tempX = 0;
 			}
-			if (tempY > height-10)
+			if (tempY >= height-10)
 			{
 				tempY = height - 10;
+			}
+			if (tempX >= width)
+			{
+				tempX = width - 1;
 			}
 			/*if (tempY < y)
 			{
@@ -47,12 +51,8 @@ void FOW(int x,int y)
 				{
 					continue;
 				}
-			}*/
-			if (tempX > width)
-			{
-				tempX = 80;
 			}
-			/*if (tempX < x)
+			if (tempX < x)
 			{
 				if (tempX + 1 < x)
 				{
