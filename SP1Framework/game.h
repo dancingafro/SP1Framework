@@ -1,7 +1,6 @@
 #ifndef _GAME_H
 #define _GAME_H
 
-
 #define VK_W 0x57
 #define VK_A 0x41
 #define VK_S 0x53
@@ -24,7 +23,6 @@ const int width = 80;
 const int height = 35;
 const int totalEnemy = 11;
 const int totalTele = 80;
-
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
