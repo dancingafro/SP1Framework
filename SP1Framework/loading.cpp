@@ -33,6 +33,7 @@ void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGam
 					g_sEnemy[*numEnemy].m_cLocation.X = col;
 					g_sEnemy[*numEnemy].m_cLocation.Y = row;
 					g_sEnemy[*numEnemy].m_bActive = true;
+					g_sEnemy[*numEnemy].m_iHitpoints = 3;
 					map[row][col] = '.';
 					*numEnemy = *numEnemy + 1;
 					break;
@@ -68,6 +69,10 @@ void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGam
 				if (line[col] == '.')
 				{
 					fog[row][col] = ' ';
+				}
+				else if (line[col] == 'N')
+				{
+					fog[row][col] = (char)178;
 				}
 				else
 				{

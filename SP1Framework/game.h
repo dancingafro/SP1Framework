@@ -7,6 +7,7 @@
 #define VK_D 0x44
 #define VK_1 0x31
 #define VK_2 0x32
+#define VK_3 0x33
 
 #include "Framework\timer.h"
 #include "Framework\console.h"
@@ -43,6 +44,7 @@ enum EKEYS
 	K_RETURN,
 	K_1,
 	K_2,
+	K_3,
 	K_COUNT // MUST BE LAST IN ENUM!!!
 };
 
@@ -66,8 +68,9 @@ struct SGameChar
     bool  m_bAttacking;
 	bool  m_seePlayer;
 	bool  m_bCanAttack;
-	int   m_iHitpoints;
-	int   m_iDamage;
+	unsigned int m_iHitpoints;
+	unsigned int m_iDamage;
+	unsigned int m_iKills = 0;
 	double m_dAttackRate;
 };
 struct SGameObj
@@ -102,12 +105,14 @@ void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
 bool collision(int x,int y);
+bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
 bool lineOfSight();
 void FOW(int x, int y);
 void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
-void checkLeft(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened);
-void checkDown(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened);
-void checkRight(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened);
+void checkLeft( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
+void checkDown( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
+void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
+void renderHUD();
 
 #endif

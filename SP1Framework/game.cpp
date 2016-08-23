@@ -51,6 +51,9 @@ void init( void )
 	g_dCharNextAttackTime = 0.0;
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
+	g_sChar.m_iHitpoints = 10;
+	g_sChar.m_dAttackRate = 0.1;
+	g_sChar.m_iKills = 0;
 
 	oldLocationx = 0;
 	oldLocationx = 0;
@@ -99,7 +102,8 @@ void getInput( void )
 	g_abKeyPressed[K_ESCAPE]		= isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_RETURN]		= isKeyPressed(VK_RETURN);
 	g_abKeyPressed[K_1]				= isKeyPressed(VK_1);
-	g_abKeyPressed[K_2]				= isKeyPressed(VK_2);
+	g_abKeyPressed[K_2]				= isKeyPressed(VK_2); 
+	g_abKeyPressed[K_3]             = isKeyPressed(VK_3);
 }
 
 //--------------------------------------------------------------
@@ -221,11 +225,16 @@ void gameplay()			// gameplay logic
 void moveCharacter()
 {
     bool bSomethingHappened = false;
+	
     if (g_dBounceTime > g_dElapsedTime)
         return;
-
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
+	if (g_abKeyPressed[K_2])
+	{
+		g_sChar.m_iKills++;
+		bSomethingHappened = true;
+	}
 	if (!g_sChar.m_bAttacking)
 	{
 		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
@@ -412,6 +421,7 @@ void renderGame()
 	renderEnemy();		// renders an enemy into the buffer
 	checkCharacterAttack();
 	renderCharacterAttack();
+	renderHUD();
 }
 
 void renderMap()
@@ -448,6 +458,15 @@ void renderEnemy()
 				g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x07);
 			}
 		}
+		if (g_sEnemy[i].m_bActive && EnemyIsAttacked(g_sEnemy[i].m_cLocation.X, g_sChar.m_cAttackLocation.X, g_sEnemy[i].m_cLocation.Y, g_sChar.m_cAttackLocation.Y))
+		{
+			g_sEnemy[i].m_iHitpoints--;
+			if (g_sEnemy[i].m_iHitpoints == 0)
+			{
+				g_sChar.m_iKills++;
+				g_sEnemy[i].m_bActive = false;
+			}
+		}
 	}
 }
 
@@ -469,9 +488,14 @@ void enemyBehaviour()
 void checkCharacterAttack()
 {
 	bool bSomethingHappened = false;
-
+	if (g_sChar.m_iHitpoints <= 0)
+	{
+////////VVVVVVVVVVVVVVVVVVV       FOR TESTING ONLY!! MUST CHANGE!!      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		g_bQuitGame = true;
+	}
 	if (g_sChar.m_bAttacking || g_dCharNextAttackTime > g_dElapsedTime) // (N) If player is launching or next attack time has not come
 	{
+		g_sChar.m_cAttackLocation = { 0,0 };
 		g_sChar.m_bCanAttack = false;
 	}
 	// (N) If player is not holding down attack keys + attack has already launched + next attack time has passed
@@ -498,6 +522,46 @@ void checkCharacterAttack()
 		{
 			checkRight(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
+	}
+}
+
+void renderHUD()
+{
+	WORD HPColor = 0x0A;
+	char cKillCountOnes = '0';
+	char cKillCountTens = '0';
+	COORD c;
+	c.Y = 28;
+	unsigned int iHP = g_sChar.m_iHitpoints;
+
+	for (unsigned int i = 1; i <= iHP; i++)
+	{
+		c.X = 5 + i;
+		if (g_sChar.m_iHitpoints <= 7 && g_sChar.m_iHitpoints > 3)
+		{
+			HPColor = 0x0E;
+		}
+		else if (g_sChar.m_iHitpoints <= 3)
+		{
+			HPColor = 0x0C;
+		}
+		g_Console.writeToBuffer(c, (char)219, HPColor);
+	}
+	c.Y = 29;
+	c.X = 8;
+	if (g_sChar.m_iKills <= 9)
+	{
+		cKillCountOnes += g_sChar.m_iKills;
+		g_Console.writeToBuffer(c, cKillCountOnes, 0x0A);
+	}
+	else if (g_sChar.m_iKills > 9)
+	{
+		int r = g_sChar.m_iKills - 10;
+		cKillCountOnes += r;
+		cKillCountTens = '1';
+		g_Console.writeToBuffer(c, cKillCountTens, 0x0A);
+		c.X = 9;
+		g_Console.writeToBuffer(c, cKillCountOnes, 0x0A);
 	}
 }
 
