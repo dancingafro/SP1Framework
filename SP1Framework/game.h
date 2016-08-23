@@ -1,6 +1,14 @@
 #ifndef _GAME_H
 #define _GAME_H
 
+
+#define VK_W 0x57
+#define VK_A 0x41
+#define VK_S 0x53
+#define VK_D 0x44
+#define VK_1 0x31
+#define VK_2 0x32
+
 #include "Framework\timer.h"
 #include "Framework\console.h"
 #include "points.h"
@@ -11,13 +19,6 @@
 #include <string>
 
 using namespace std;
-
-#define VK_W 0x57
-#define VK_A 0x41
-#define VK_S 0x53
-#define VK_D 0x44
-#define VK_1 0x31
-#define VK_2 0x32
 
 const int width = 80;
 const int height = 35;
@@ -94,7 +95,7 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void loadfile(string mapname);
+void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[]);
 void gameLoad(int level);
 void renderEnemy();
 void enemyBehaviour();
@@ -109,5 +110,6 @@ void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElap
 void checkLeft(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened);
 void checkDown(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened);
 void checkRight(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened);
+void ResetAllData(SGameChar g_sEnemy[], SGameObj g_sKey, SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
 
 #endif

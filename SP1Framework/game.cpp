@@ -51,19 +51,9 @@ void init( void )
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
 	
-	for (int i = 0; i < 2; i++)
-	{
-		g_sDoor[i].m_bActive = true;
-	}
 	g_sKey.m_bActive = true;
 	oldLocationx = 0;
 	oldLocationx = 0;
-	
-	for (int i = 0; i < totalEnemy; i++)
-	{
-		g_sEnemy[i].m_bActive = true;
-		g_sEnemy[i].m_seePlayer = false;
-	}
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Bitstream Vera Sans");
@@ -141,6 +131,7 @@ void update(double dt)
 			splashScreenWait(); // game logic for the splash screen
 			break;
 		case S_GAMELOAD:
+			ResetAllData(g_sEnemy,g_sKey,g_sDoor,g_sTeleporters);
 			gameLoad(level);
 			break;
         case S_GAME: 
@@ -173,7 +164,7 @@ void render()
 }
 void Splashscreenloading()
 {
-	loadfile("Splashscreen.txt");
+	loadfile("Splashscreen.txt", &numTele, &numEnemy, g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
 	g_eGameState = S_SPLASHSCREEN;
 }
 void gameLoad(int level)
@@ -183,14 +174,14 @@ void gameLoad(int level)
 	case 1:
 		numTele = 0;
 		numEnemy = 0;
-		loadfile("maze2.txt");
+		loadfile("maze2.txt", &numTele, &numEnemy, g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	case 2:
 		numTele = 0;
 		numEnemy = 0;
-		loadfile("maze3.txt");
+		loadfile("maze3.txt", &numTele, &numEnemy, g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
@@ -425,18 +416,24 @@ void renderEnemy()
 {	
 	for (int i = 0; i < numEnemy; i++)
 	{
-		if (g_sEnemy[i].m_bActive)
+		if (fog[g_sEnemy[i].m_cLocation.Y][g_sEnemy[i].m_cLocation.X]!=' ')
 		{
-			g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x07);
+			if (g_sEnemy[i].m_bActive)
+			{
+				g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x07);
+			}
 		}
 	}
 }
 
 void renderObject()
 {
-	if (g_sKey.m_bActive)
+	if (fog[g_sKey.m_cLocation.Y][g_sKey.m_cLocation.X] != ' ')
 	{
-		g_Console.writeToBuffer(g_sKey.m_cLocation, (char)254);
+		if (g_sKey.m_bActive)
+		{
+			g_Console.writeToBuffer(g_sKey.m_cLocation, (char)254);
+		}
 	}
 }
 void enemyBehaviour()

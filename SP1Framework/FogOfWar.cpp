@@ -6,17 +6,25 @@ void FOW(int x,int y)
 	{
 		for (int lookcol = radius; lookcol > -radius; lookcol--)
 		{
-			int tempy = y + lookrow;
-			int tempx = x + lookcol;
-			if (tempy < 0)
+			int tempY = y + lookrow;
+			int tempX = x + lookcol;
+			if (tempY < 0)
 			{
-				tempy = 0;
+				tempY = 0;
 			}
-			if (tempx < 0)
+			if (tempX < 0)
 			{
-				tempx = 0;
+				tempX = 0;
 			}
-			fog[tempy][tempx] = map[tempy][tempx];
+			if (tempY > height-10)
+			{
+				tempY = height - 10;
+			}
+			if (tempX > width)
+			{
+				tempX = 80;
+			}
+			fog[tempY][tempX] = map[tempY][tempX];
 		}
 	}
 }
