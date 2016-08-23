@@ -28,6 +28,7 @@ int oldLocationy;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 int numTele = 0;
 int numEnemy = 0;
+int g_menuselect = 0;
 // Console object
 Console g_Console(width, height, "Dungeon Explorer");
 
@@ -372,6 +373,33 @@ void renderSplashScreen()  // renders the splash screen
 		line = map[y];
 		g_Console.writeToBuffer(c,line );
 		c.Y++;
+	}
+
+	
+	c.X = 27;
+	c.Y = 15;
+	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
+	if (g_abKeyPressed[K_DOWN])
+		g_menuselect = 1;
+	if (g_menuselect == 1 && g_abKeyPressed[K_UP])
+		g_menuselect = 0;
+	if (g_menuselect == 0)
+	{
+		c.X = 34;
+		c.Y = 17;
+		g_Console.writeToBuffer(c, "Start Game", 0xF0);
+		c.X = 33;
+		c.Y = 18;
+		g_Console.writeToBuffer(c, "Instructions");
+	}
+	if (g_menuselect == 1)
+	{
+		c.X = 34;
+		c.Y = 17;
+		g_Console.writeToBuffer(c, "Start Game");
+		c.X = 33;
+		c.Y = 18;
+		g_Console.writeToBuffer(c, "Instructions", 0xF0);
 	}
 }
 
