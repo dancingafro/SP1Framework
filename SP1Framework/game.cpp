@@ -95,6 +95,7 @@ void getInput( void )
     g_abKeyPressed[K_RIGHT]			= isKeyPressed(VK_RIGHT);
     g_abKeyPressed[K_SPACE]			= isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE]		= isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_BACK]			= isKeyPressed(VK_BACK);
 	g_abKeyPressed[K_W]				= isKeyPressed(VK_W);
 	g_abKeyPressed[K_A]				= isKeyPressed(VK_A);
 	g_abKeyPressed[K_S]				= isKeyPressed(VK_S);
@@ -451,9 +452,9 @@ void splashScreenWait()    // waits for time to pass in splash screen
 
 void instructscreen()
 {
-	if (g_abKeyPressed[K_RETURN])
+	if (g_abKeyPressed[K_BACK])
 	{
-		g_eGameState = S_INSTRUCTION;
+		g_eGameState = S_SPLASHSCREEN;
 	}
 }
 
