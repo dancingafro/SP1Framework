@@ -596,6 +596,8 @@ void renderHUD()
 	if (g_sChar.m_iKills <= 9)
 	{
 		cKillCountOnes += g_sChar.m_iKills;
+		g_Console.writeToBuffer(c, '0', 0x0A);
+		c.X = 9;
 		g_Console.writeToBuffer(c, cKillCountOnes, 0x0A);
 	}
 	else if (g_sChar.m_iKills > 9)
