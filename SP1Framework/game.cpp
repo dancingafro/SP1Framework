@@ -534,6 +534,8 @@ void enemyBehaviour()
 		//	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
 		//}
 	}
+	//randomMovement(&numEnemy, &g_dElapsedTime, g_sEnemy);
+	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
 }
 
 void checkCharacterAttack()
