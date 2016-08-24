@@ -110,7 +110,7 @@ void randomMovement(int *numEnemy, double *g_dElapsedTime, SGameChar g_sEnemy[])
 void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
-bool collision(int x,int y);
+bool collision(int x, int y);
 void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnemy[], SGameChar *g_sChar);
 bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
 //bool lineOfSight();
@@ -122,5 +122,6 @@ void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dE
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
 void instructionloading();
 void renderHUD();
+
 
 #endif

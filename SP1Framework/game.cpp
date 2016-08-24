@@ -252,6 +252,13 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
 			{
 				g_sChar.m_cLocation.Y--;
+				for (int a = 0; a < numEnemy; a++)
+				{
+					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					{
+						g_sChar.m_cLocation.Y++;
+					}
+				}
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -272,6 +279,13 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y))
 			{
 				g_sChar.m_cLocation.X--;
+				for (int a = 0; a < numEnemy; a++)
+				{
+					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					{
+						g_sChar.m_cLocation.X++;
+					}
+				}
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -292,6 +306,13 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
 			{
 				g_sChar.m_cLocation.Y++;
+				for (int a = 0; a < numEnemy; a++)
+				{
+					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					{
+						g_sChar.m_cLocation.Y--;
+					}
+				}
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -312,6 +333,13 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
 			{
 				g_sChar.m_cLocation.X++;
+				for (int a = 0; a < numEnemy; a++)
+				{
+					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					{
+						g_sChar.m_cLocation.X--;
+					}
+				}
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
