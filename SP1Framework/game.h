@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
+#include <queue>
 #include <string>
 
 using namespace std;
@@ -96,12 +97,12 @@ void loadfile(string mapname);
 void gameLoad(int level);
 void renderEnemy();
 void enemyBehaviour();
-void randomMovement();
+void randomMovement(double *g_dElapsedTime, SGameChar *g_sEnemy);
 void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
 bool collision(int x,int y);
-bool lineOfSight();
+void breadthFirstSearch(double *g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar);
 //void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, bool *bSomethingHappened );
 
 #endif
