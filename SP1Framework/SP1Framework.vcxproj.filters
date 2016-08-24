@@ -3,21 +3,34 @@
   <ItemGroup>
     <ClCompile Include="CheckAttack.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="FogOfWar.cpp" />
     <ClCompile Include="Framework\console.cpp" />
     <ClCompile Include="Framework\timer.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="loading.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="points.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="AI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision.h" />
+=======
+    <ClCompile Include="ResetData.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Fogofwar.h" />
+>>>>>>> 8d3ea349fae15698dea28a2dee4f0e92e83420e6
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="points.h" />
+<<<<<<< HEAD
+=======
+    <ClInclude Include="ResetData.h" />
+>>>>>>> 8d3ea349fae15698dea28a2dee4f0e92e83420e6
   </ItemGroup>
   <ItemGroup>
     <None Include="Splashscreen.txt" />
@@ -25,5 +38,10 @@
   <ItemGroup>
     <Text Include="maze2.txt" />
     <Text Include="maze3.txt" />
+<<<<<<< HEAD
+=======
+    <Text Include="Fog.txt" />
+    <Text Include="instructions.txt" />
+>>>>>>> 8d3ea349fae15698dea28a2dee4f0e92e83420e6
   </ItemGroup>
 </Project>

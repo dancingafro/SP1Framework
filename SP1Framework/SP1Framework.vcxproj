@@ -14,13 +14,14 @@
     <ProjectGuid>{1A587CA1-7340-416F-94D6-7C400A833946}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SP1Framework</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -80,25 +81,31 @@
     <ClCompile Include="AI.cpp" />
     <ClCompile Include="CheckAttack.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="FogOfWar.cpp" />
     <ClCompile Include="Framework\console.cpp" />
     <ClCompile Include="Framework\timer.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="loading.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="points.cpp" />
+    <ClCompile Include="ResetData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Fogofwar.h" />
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="points.h" />
+    <ClInclude Include="ResetData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Splashscreen.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Fog.txt" />
+    <Text Include="instructions.txt" />
     <Text Include="maze2.txt" />
     <Text Include="maze3.txt" />
   </ItemGroup>

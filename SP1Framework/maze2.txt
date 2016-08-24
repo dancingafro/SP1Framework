@@ -1,25 +1,25 @@
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWPWWW  
-W   W      T        W               W           W                   W    W  B  W
-W   W   WWWWWWWWW   W   WWWWW   WWWWWWWWW   WWWWW   WWWWW   WWWWW   W    W     W
-W               W       W   W           W           W T W   W       W    W     W
-WWWWWWWWW   W   WWWWWWWWW   WWWWWWWWW   WWWWW   W   W   W   WWWWWWWWW    W     W
-W       W   W               W           W   W   W   W   W           W    W     W
-W   W   WWWWWWWWWWWWW   W   W   WWWWWWWWW   WWWWW   W   WWWWWWWWW   W    W     W
-W   W               W   W   W       W           W           W       W    W     W
-W   WWWWWWWWWWWWW   WWWWW   WWWWW   W   WWWWW   WWWWWWWWW   W   WWWWW    W     W
-W           W       W   W       W   W       W           W   W            W     W
-W   WWWWW   WWWWW   W   WWWWW   W   WWWWWWWWW   W   W   W   WWWWWWWWWWWW W     W
-W    T  W       W   W   W       W       W       W   W   W       W        W     W
-WWWWWWWWWWWWW   W   W   W   WWWWWWWWW   W   WWWWW   W   WWWWW   WWWWW    W     W
-W           W   W           W       W   W       W   W       W            W     W
-W   WWWWW   W   WWWWWWWWW   WWWWW   W   WWWWW   WWWWW   WWWWWWWWWWWWW    W     W
-W   W       W           W           W       W   W   W               W    W     W
-W   W   WWWWWWWWW   W   WWWWW   WWWWWWWWW   W   W   WWWWWWWWWWWWW   W    W     W
-W   W           W   W   W   W   W           W               W   W        W     W
-W   WWWWWWWWW   W   W   W   WWWWW   WWWWWWWWW   WWWWWWWWW   W   WWWWWWWWWWWW WWW
-W   W       W   W   W           W           W   W       W             T  W     W
-W   W   WWWWW   WWWWW   WWWWW   WWWWWWWWW   WWWWW   W   WWWWWWWWW   W          W
-W   W                   W           W               W               W    W     W
-W   WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W                                                                           K  W
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwPwww
+w...w......T........w...............w...........w...................w....w..B..w
+w...w...wwwwwwwww...w...wwwww...wwwwwwwww...wwwww...wwwww...wwwww...w....w.....w
+w...............w.......w...w...........w...........w.T.w...w.......w....w.....w
+wwwwwwwww...w...wwwwwwwww...wwwwwwwww...wwwww...w...w...w...wwwwwwwww....w.....w
+w.......w...w.............B.w...........w...w...w...w...w...........w....w.....w
+w...w...wwwwwwwwwwwww...w...w...wwwwwwwww...wwwww...w.B.wwwwwwwww...w....w.....w
+w...w...............w...w...w.......w.....B.....w...........w.......w....w.....w
+w...wwwwwwwwwwwww...wwwww...wwwww...w...wwwww...wwwwwwwww...w...wwwww....w.....w
+w...........w.......w...w.......w...w.......w...........w...w............w.....w
+w...wwwww...wwwww...w...wwwww...w...wwwwwwwww...w...w...w...wwwwwwwwwwww.w.....w
+w....T..w.......w...w...w.......w.......w.......w...w...w.......w........w.....w
+wwwwwwwwwwwww...w...w...w...wwwwwwwww...w...wwwww...w...wwwww...wwwww....w.....w
+w...........w...w.....B.....w.......w...w.......w...w.B.....w..........B.w.....w
+w...wwwww...w...wwwwwwwww...wwwww...w...wwwww...wwwww...wwwwwwwwwwwww....w.....w
+w...w.......w...........w...........w.......w...w...w...............w....w.....w
+w...w...wwwwwwwww...w...wwwww...wwwwwwwww...w...w...wwwwwwwwwwwww...w....w.....w
+w...w...........w...w...w...w...w...........w...............w...w........w.....w
+w...wwwwwwwww...w...w...w...wwwww...wwwwwwwww...wwwwwwwww...w...wwwwwwwwwwww.www
+w...w.......w...w...w.B.........w...........w...w.......w...B.........T..w.....w
+w...w...wwwww...wwwww...wwwww...wwwwwwwww...wwwww...w...wwwwwwwww...w....X.....w
+w...w...................w...........w...............w...............w....w.....w
+w...wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+w.......................B..........................B........................K..w
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
