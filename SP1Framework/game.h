@@ -125,6 +125,7 @@ void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEn
 void instructionloading();
 void renderHUD();
 void renderExplosion(SGameChar g_sEnemy);
+void menu(COORD c);
 
 
 #endif

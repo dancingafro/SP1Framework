@@ -422,10 +422,20 @@ void renderSplashScreen()  // renders the splash screen
 		c.Y++;
 	}
 	
+	menu(c);
+}
+
+void menu(COORD c)
+{
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
-
+	c.X = 34;
+	c.Y = 17;
+	g_Console.writeToBuffer(c, "Start Game");
+	c.X = 33;
+	c.Y = 18;
+	g_Console.writeToBuffer(c, "Instructions");
 	if (g_abKeyPressed[K_DOWN])
 		g_menuselect = 1;
 	if (g_menuselect == 1 && g_abKeyPressed[K_UP])
@@ -436,20 +446,13 @@ void renderSplashScreen()  // renders the splash screen
 		c.Y = 17;
 		menuselect = true;
 		g_Console.writeToBuffer(c, "Start Game", 0xF0);
-		c.X = 33;
-		c.Y = 18;
-		g_Console.writeToBuffer(c, "Instructions");
 	}
 	if (g_menuselect == 1)
 	{
-		c.X = 34;
-		c.Y = 17;
 		menuselect = false;
-		g_Console.writeToBuffer(c, "Start Game");
 		c.X = 33;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Instructions", 0xF0);
-
 	}
 }
 
