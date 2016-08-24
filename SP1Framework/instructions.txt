@@ -10,8 +10,8 @@
 
 
 
-<WASD> to move
-<ARROWS> to attack
+<wASD> to move
+<ARROwS> to attack
 
 K is a key, pick it up to open doors
 T is a teleporter, its random
