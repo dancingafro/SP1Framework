@@ -528,10 +528,10 @@ void enemyBehaviour()
 {
 	for (int i = 0; i < numEnemy; i++)
 	{
-		randomMovement(&g_dElapsedTime, g_sEnemy);
+		//randomMovement(&numEnemy,&g_dElapsedTime, g_sEnemy);
 		if (g_sEnemy[i].m_cLocation.X != g_sChar.m_cLocation.X || g_sEnemy[i].m_cLocation.Y != g_sChar.m_cLocation.Y)
 		{
-			breadthFirstSearch(&g_dElapsedTime, g_sEnemy, &g_sChar);
+			breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
 		}
 	}
 }

@@ -106,26 +106,22 @@ void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGa
 void gameLoad(int level);
 void renderEnemy();
 void enemyBehaviour();
-void randomMovement(double *g_dElapsedTime, SGameChar *g_sEnemy);
+void randomMovement(int *numEnemy,double *g_dElapsedTime, SGameChar g_sEnemy[]);
 void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
 bool collision(int x,int y);
-<<<<<<< HEAD
-void breadthFirstSearch(double *g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar);
-//void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, bool *bSomethingHappened );
-=======
+void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnemy[], SGameChar *g_sChar);
 bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
-bool lineOfSight();
+//bool lineOfSight();
 void FOW(int x, int y);
 void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void checkLeft( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void checkDown( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
-void renderHP();
 void instructionloading();
 void renderHUD();
->>>>>>> 8d3ea349fae15698dea28a2dee4f0e92e83420e6
+bool playerAroundAI();
 
 #endif
