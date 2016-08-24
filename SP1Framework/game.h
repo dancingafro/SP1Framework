@@ -106,7 +106,7 @@ void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGa
 void gameLoad(int level);
 void renderEnemy();
 void enemyBehaviour();
-void randomMovement(int *numEnemy,double *g_dElapsedTime, SGameChar g_sEnemy[]);
+void randomMovement(int *numEnemy, double *g_dElapsedTime, SGameChar g_sEnemy[]);
 void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
@@ -122,6 +122,5 @@ void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dE
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
 void instructionloading();
 void renderHUD();
-bool playerAroundAI();
 
 #endif
