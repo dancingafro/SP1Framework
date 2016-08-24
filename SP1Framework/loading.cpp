@@ -13,8 +13,11 @@ void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGam
 			{
 				switch (line[col])
 				{
-				case 'w':
+				case 'W':
 					map[row][col] = (char)219;
+					break;
+				case 'w':
+					map[row][col] = 'W';
 					break;
 				case 'T':
 					g_sTeleporters[*numTele].m_cLocation.X = col;

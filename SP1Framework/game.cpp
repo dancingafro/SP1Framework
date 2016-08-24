@@ -105,7 +105,6 @@ void getInput( void )
 	g_abKeyPressed[K_2]				= isKeyPressed(VK_2); 
 	g_abKeyPressed[K_3]             = isKeyPressed(VK_3);
 }
-
 //--------------------------------------------------------------
 // Purpose  : Update function
 //            This is the update function
@@ -175,6 +174,7 @@ void render()
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
+
 void Splashscreenloading()
 {
 	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
@@ -186,6 +186,7 @@ void instructionloading()
 	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
 	g_eGameState = S_INSTRUCTION;
 }
+
 void gameLoad(int level)
 {
 	switch (level)
@@ -205,8 +206,6 @@ void gameLoad(int level)
 	}
 	g_eGameState = S_GAME;
 }
-
-
 
 void gameplay()			// gameplay logic
 {
@@ -359,6 +358,7 @@ void moveCharacter()
         g_dBounceTime = g_dElapsedTime + 0.15; // 125ms should be enough
     }
 }
+
 void processUserInput()
 {
     // quits the game if player hits the escape key
@@ -397,6 +397,7 @@ void renderSplashScreen()  // renders the splash screen
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
+
 	if (g_abKeyPressed[K_DOWN])
 		g_menuselect = 1;
 	if (g_menuselect == 1 && g_abKeyPressed[K_UP])
@@ -423,6 +424,7 @@ void renderSplashScreen()  // renders the splash screen
 
 	}
 }
+
 void renderloadinginstruct()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
@@ -442,9 +444,9 @@ void splashScreenWait()    // waits for time to pass in splash screen
 {
 	if (g_abKeyPressed[K_RETURN])
 	{
-		if(menuselect)
+		if(g_menuselect == 0)
 		g_eGameState = S_GAMELOAD;
-		else
+		else if (g_menuselect == 1)
 		g_eGameState = S_INSTRUCTLOAD;
 	}
 }
@@ -453,7 +455,7 @@ void instructscreen()
 {
 	if (g_abKeyPressed[K_BACK])
 	{
-		g_eGameState = S_SPLASHSCREEN;
+		g_eGameState = S_GAMELOAD;
 	}
 }
 
@@ -664,6 +666,7 @@ void renderFramerate()
 	c.Y = 0;
 	g_Console.writeToBuffer(c, ss.str());
 }
+
 void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
