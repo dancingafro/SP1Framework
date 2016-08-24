@@ -508,6 +508,7 @@ void renderEnemy()
 			{
 				g_sChar.m_iKills++;
 				g_sEnemy[i].m_bActive = false;
+				g_sEnemy[i].m_dExplosionTime = g_dDeltaTime + 1.5;
 			}
 		}
 	}
@@ -627,6 +628,20 @@ void renderCharacterAttack()
 		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, 0x0A);
 		g_sChar.m_bAttacking = false;
 	}
+}
+
+void renderExplosion(SGameChar g_sEnemy)
+{
+	WORD co = 0x0E;
+		g_Console.writeToBuffer(g_sEnemy.m_cLocation, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
 }
 
 void renderFramerate()
