@@ -51,7 +51,7 @@ void init( void )
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
 	g_sChar.m_iHitpoints = 10;
-	g_sChar.m_dAttackRate = 0.1;
+	g_sChar.m_dAttackRate = 0.375;
 	g_sChar.m_iKills = 0;
 
 	oldLocationx = 0;
@@ -105,7 +105,6 @@ void getInput( void )
 	g_abKeyPressed[K_2]				= isKeyPressed(VK_2); 
 	g_abKeyPressed[K_3]             = isKeyPressed(VK_3);
 }
-
 //--------------------------------------------------------------
 // Purpose  : Update function
 //            This is the update function
@@ -175,6 +174,7 @@ void render()
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
+
 void Splashscreenloading()
 {
 	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
@@ -186,6 +186,7 @@ void instructionloading()
 	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
 	g_eGameState = S_INSTRUCTION;
 }
+
 void gameLoad(int level)
 {
 	switch (level)
@@ -205,8 +206,6 @@ void gameLoad(int level)
 	}
 	g_eGameState = S_GAME;
 }
-
-
 
 void gameplay()			// gameplay logic
 {
@@ -387,6 +386,7 @@ void moveCharacter()
         g_dBounceTime = g_dElapsedTime + 0.15; // 125ms should be enough
     }
 }
+
 void processUserInput()
 {
     // quits the game if player hits the escape key
@@ -425,6 +425,7 @@ void renderSplashScreen()  // renders the splash screen
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
+
 	if (g_abKeyPressed[K_DOWN])
 		g_menuselect = 1;
 	if (g_menuselect == 1 && g_abKeyPressed[K_UP])
@@ -451,6 +452,7 @@ void renderSplashScreen()  // renders the splash screen
 
 	}
 }
+
 void renderloadinginstruct()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
@@ -470,9 +472,9 @@ void splashScreenWait()    // waits for time to pass in splash screen
 {
 	if (g_abKeyPressed[K_RETURN])
 	{
-		if(menuselect)
+		if(g_menuselect == 0)
 		g_eGameState = S_GAMELOAD;
-		else
+		else if (g_menuselect == 1)
 		g_eGameState = S_INSTRUCTLOAD;
 	}
 }
@@ -481,15 +483,15 @@ void instructscreen()
 {
 	if (g_abKeyPressed[K_BACK])
 	{
-		g_eGameState = S_SPLASHSCREEN;
+		g_eGameState = S_GAMELOAD;
 	}
 }
 
 void renderGame()
 {
 	renderMap();        // renders the map to the buffer first
-	renderObject();	
-    renderCharacter();  // renders the character into the buffer
+	renderObject();
+	renderCharacter();  // renders the character into the buffer
 	renderEnemy();		// renders an enemy into the buffer
 	checkCharacterAttack();
 	renderCharacterAttack();
@@ -536,6 +538,7 @@ void renderEnemy()
 			{
 				g_sChar.m_iKills++;
 				g_sEnemy[i].m_bActive = false;
+				g_sEnemy[i].m_dExplosionTime = g_dDeltaTime + 1.5;
 			}
 		}
 	}
@@ -554,6 +557,14 @@ void renderObject()
 
 void enemyBehaviour()
 {
+	for (int i = 0; i < numEnemy; i++)
+	{
+		randomMovement(&numEnemy,&g_dElapsedTime, g_sEnemy);
+		//if (g_sEnemy[i].m_cLocation.X != g_sChar.m_cLocation.X || g_sEnemy[i].m_cLocation.Y != g_sChar.m_cLocation.Y)
+		//{
+		//	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
+		//}
+	}
 	//randomMovement(&numEnemy, &g_dElapsedTime, g_sEnemy);
 	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
 }
@@ -625,18 +636,18 @@ void renderHUD()
 	if (g_sChar.m_iKills <= 9)
 	{
 		cKillCountOnes += g_sChar.m_iKills;
-		g_Console.writeToBuffer(c, '0', 0x0A);
+		g_Console.writeToBuffer(c, '0', 0x0F);
 		c.X = 9;
-		g_Console.writeToBuffer(c, cKillCountOnes, 0x0A);
+		g_Console.writeToBuffer(c, cKillCountOnes, 0x0F);
 	}
 	else if (g_sChar.m_iKills > 9)
 	{
 		int r = g_sChar.m_iKills - 10;
 		cKillCountOnes += r;
 		cKillCountTens = '1';
-		g_Console.writeToBuffer(c, cKillCountTens, 0x0A);
+		g_Console.writeToBuffer(c, cKillCountTens, 0x0F);
 		c.X = 9;
-		g_Console.writeToBuffer(c, cKillCountOnes, 0x0A);
+		g_Console.writeToBuffer(c, cKillCountOnes, 0x0F);
 	}
 }
 
@@ -647,6 +658,20 @@ void renderCharacterAttack()
 		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, 0x0A);
 		g_sChar.m_bAttacking = false;
 	}
+}
+
+void renderExplosion(SGameChar g_sEnemy)
+{
+	WORD co = 0x0E;
+		g_Console.writeToBuffer(g_sEnemy.m_cLocation, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
 }
 
 void renderFramerate()
@@ -669,6 +694,7 @@ void renderFramerate()
 	c.Y = 0;
 	g_Console.writeToBuffer(c, ss.str());
 }
+
 void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written

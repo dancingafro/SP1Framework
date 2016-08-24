@@ -13,8 +13,11 @@ void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGam
 			{
 				switch (line[col])
 				{
-				case 'w':
+				case 'W':
 					map[row][col] = (char)219;
+					break;
+				case 'w':
+					map[row][col] = 'W';
 					break;
 				case 'T':
 					g_sTeleporters[*numTele].m_cLocation.X = col;
@@ -34,6 +37,8 @@ void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGam
 					g_sEnemy[*numEnemy].m_cLocation.Y = row;
 					g_sEnemy[*numEnemy].m_bActive = true;
 					g_sEnemy[*numEnemy].m_iHitpoints = 3;
+					g_sEnemy[*numEnemy].m_bHasExploded = false;
+					g_sEnemy[*numEnemy].m_dExplosionTime = 0.0;
 					map[row][col] = '.';
 					*numEnemy = *numEnemy + 1;
 					break;
