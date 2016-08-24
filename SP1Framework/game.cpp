@@ -51,7 +51,7 @@ void init( void )
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
 	g_sChar.m_iHitpoints = 10;
-	g_sChar.m_dAttackRate = 0.1;
+	g_sChar.m_dAttackRate = 0.375;
 	g_sChar.m_iKills = 0;
 
 	oldLocationx = 0;
@@ -460,8 +460,8 @@ void instructscreen()
 void renderGame()
 {
 	renderMap();        // renders the map to the buffer first
-	renderObject();	
-    renderCharacter();  // renders the character into the buffer
+	renderObject();
+	renderCharacter();  // renders the character into the buffer
 	renderEnemy();		// renders an enemy into the buffer
 	checkCharacterAttack();
 	renderCharacterAttack();
@@ -528,11 +528,11 @@ void enemyBehaviour()
 {
 	for (int i = 0; i < numEnemy; i++)
 	{
-		//randomMovement(&numEnemy,&g_dElapsedTime, g_sEnemy);
-		if (g_sEnemy[i].m_cLocation.X != g_sChar.m_cLocation.X || g_sEnemy[i].m_cLocation.Y != g_sChar.m_cLocation.Y)
-		{
-			breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
-		}
+		randomMovement(&numEnemy,&g_dElapsedTime, g_sEnemy);
+		//if (g_sEnemy[i].m_cLocation.X != g_sChar.m_cLocation.X || g_sEnemy[i].m_cLocation.Y != g_sChar.m_cLocation.Y)
+		//{
+		//	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
+		//}
 	}
 }
 
@@ -603,18 +603,18 @@ void renderHUD()
 	if (g_sChar.m_iKills <= 9)
 	{
 		cKillCountOnes += g_sChar.m_iKills;
-		g_Console.writeToBuffer(c, '0', 0x0A);
+		g_Console.writeToBuffer(c, '0', 0x0F);
 		c.X = 9;
-		g_Console.writeToBuffer(c, cKillCountOnes, 0x0A);
+		g_Console.writeToBuffer(c, cKillCountOnes, 0x0F);
 	}
 	else if (g_sChar.m_iKills > 9)
 	{
 		int r = g_sChar.m_iKills - 10;
 		cKillCountOnes += r;
 		cKillCountTens = '1';
-		g_Console.writeToBuffer(c, cKillCountTens, 0x0A);
+		g_Console.writeToBuffer(c, cKillCountTens, 0x0F);
 		c.X = 9;
-		g_Console.writeToBuffer(c, cKillCountOnes, 0x0A);
+		g_Console.writeToBuffer(c, cKillCountOnes, 0x0F);
 	}
 }
 
