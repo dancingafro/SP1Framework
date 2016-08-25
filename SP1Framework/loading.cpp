@@ -2,7 +2,7 @@
 
 void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[])
 {
-	int row = 1;
+	unsigned int row = 1;
 	string line = " ";
 	ifstream file(mapname);
 	if (file.is_open())
@@ -33,12 +33,7 @@ void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGam
 					map[row][col] = (char)205;
 					break;
 				case 'B':
-					g_sEnemy[*numEnemy].m_cLocation.X = col;
-					g_sEnemy[*numEnemy].m_cLocation.Y = row;
-					g_sEnemy[*numEnemy].m_bActive = true;
-					g_sEnemy[*numEnemy].m_iHitpoints = 3;
-					g_sEnemy[*numEnemy].m_bHasExploded = false;
-					g_sEnemy[*numEnemy].m_dExplosionTime = 0.0;
+					initializeEnemy(&g_sEnemy[*numEnemy], row, col);
 					map[row][col] = '.';
 					*numEnemy = *numEnemy + 1;
 					break;
@@ -87,4 +82,14 @@ void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGam
 			row++;
 		}
 	}
+}
+
+void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col)
+{
+	g_sEnemy->m_cLocation.X = col;
+	g_sEnemy->m_cLocation.Y = row;
+	g_sEnemy->m_bActive = true;
+	g_sEnemy->m_iHitpoints = 3;
+	g_sEnemy->m_bCanExplode = true;
+	g_sEnemy->m_dExplosionTime = 0.0;
 }

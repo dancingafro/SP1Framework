@@ -124,7 +124,6 @@ void update(double dt)
     // get the delta time
     g_dElapsedTime += dt;
     g_dDeltaTime = dt;
-
     switch (g_eGameState)
 	{
 		case S_LOADING: 
@@ -541,8 +540,12 @@ void renderEnemy()
 			{
 				g_sChar.m_iKills++;
 				g_sEnemy[i].m_bActive = false;
-				g_sEnemy[i].m_dExplosionTime = g_dDeltaTime + 1.5;
+				g_sEnemy[i].m_dExplosionTime = g_dElapsedTime + 0.25;
 			}
+		}
+		if (g_sEnemy[i].m_dExplosionTime > g_dElapsedTime)
+		{
+			renderExplosion(g_sEnemy[i].m_cLocation);
 		}
 	}
 }
@@ -663,18 +666,18 @@ void renderCharacterAttack()
 	}
 }
 
-void renderExplosion(SGameChar g_sEnemy)
+void renderExplosion(COORD cExplosionLocation)
 {
 	WORD co = 0x0E;
-		g_Console.writeToBuffer(g_sEnemy.m_cLocation, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
+	g_Console.writeToBuffer(cExplosionLocation, (char)35, co);                                     // Target location (exact)
+	g_Console.writeToBuffer({ cExplosionLocation.X, cExplosionLocation.Y - 1 }, (char)42, co);     // Target location (directly above)
+	g_Console.writeToBuffer({ cExplosionLocation.X + 1, cExplosionLocation.Y - 1 }, (char)42, co); // Target location (above right)
+	g_Console.writeToBuffer({ cExplosionLocation.X - 1, cExplosionLocation.Y - 1 }, (char)42, co); // Target location (above left)
+	g_Console.writeToBuffer({ cExplosionLocation.X + 1, cExplosionLocation.Y }, (char)42, co);     // Target location (directly right)
+	g_Console.writeToBuffer({ cExplosionLocation.X - 1, cExplosionLocation.Y }, (char)42, co);     // Target location (directly left)
+	g_Console.writeToBuffer({ cExplosionLocation.X - 1, cExplosionLocation.Y + 1 }, (char)42, co); // Target location (below left)
+	g_Console.writeToBuffer({ cExplosionLocation.X + 1, cExplosionLocation.Y + 1 }, (char)42, co); // Target location (below right
+	g_Console.writeToBuffer({ cExplosionLocation.X, cExplosionLocation.Y + 1 }, (char)42, co);     // Target location (directly below)
 }
 
 void renderFramerate()
