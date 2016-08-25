@@ -146,6 +146,8 @@ void update(double dt)
 			gameplay(); // gameplay logic when we are in the game
             break;
     }
+	//PlaySound(NULL, 0, 0);
+	
 }
 //--------------------------------------------------------------
 // Purpose  : Render function is to update the console screen
@@ -212,7 +214,6 @@ void gameplay()			// gameplay logic
 	processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
 	// sound can be played here too.
-
 	if (oldLocationx != g_sChar.m_cLocation.X || oldLocationy != g_sChar.m_cLocation.Y)
 	{
 		oldLocationx = g_sChar.m_cLocation.X;
@@ -376,7 +377,6 @@ void moveCharacter()
 			bSomethingHappened = true;
 		}
 	}
-	
     if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
@@ -543,7 +543,7 @@ void renderEnemy()
 		}
 		if (g_sEnemy[i].m_dExplosionTime > g_dElapsedTime)
 		{
-			renderExplosion(g_sEnemy[i].m_cLocation);
+			renderExplosion(&g_Console, g_sEnemy[i].m_cLocation.X - 1, g_sEnemy[i].m_cLocation.Y - 1);
 		}
 	}
 }
@@ -662,20 +662,6 @@ void renderCharacterAttack()
 		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, 0x0A);
 		g_sChar.m_bAttacking = false;
 	}
-}
-
-void renderExplosion(COORD cExplosionLocation)
-{
-	WORD co = 0x0E;
-	g_Console.writeToBuffer(cExplosionLocation, (char)42, co);                                     // Target location (exact)
-	g_Console.writeToBuffer({ cExplosionLocation.X, cExplosionLocation.Y - 1 }, (char)42, co);     // Target location (directly above)
-	g_Console.writeToBuffer({ cExplosionLocation.X + 1, cExplosionLocation.Y - 1 }, (char)42, co); // Target location (above right)
-	g_Console.writeToBuffer({ cExplosionLocation.X - 1, cExplosionLocation.Y - 1 }, (char)42, co); // Target location (above left)
-	g_Console.writeToBuffer({ cExplosionLocation.X + 1, cExplosionLocation.Y }, (char)42, co);     // Target location (directly right)
-	g_Console.writeToBuffer({ cExplosionLocation.X - 1, cExplosionLocation.Y }, (char)42, co);     // Target location (directly left)
-	g_Console.writeToBuffer({ cExplosionLocation.X - 1, cExplosionLocation.Y + 1 }, (char)42, co); // Target location (below left)
-	g_Console.writeToBuffer({ cExplosionLocation.X + 1, cExplosionLocation.Y + 1 }, (char)42, co); // Target location (below right
-	g_Console.writeToBuffer({ cExplosionLocation.X, cExplosionLocation.Y + 1 }, (char)42, co);     // Target location (directly below)
 }
 
 void renderFramerate()

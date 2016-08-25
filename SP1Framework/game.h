@@ -124,9 +124,9 @@ void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dE
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
 void instructionloading();
 void renderHUD();
-void renderExplosion(COORD cExplosionLocation);
 void menu(COORD c);
 void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col);
+void renderExplosion(Console *g_Console, short cX, short cY);
 
 
 #endif

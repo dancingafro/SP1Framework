@@ -10,7 +10,6 @@ void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElap
 	g_sChar -> m_bCanAttack = false;
 	g_sChar -> m_bAttacking = true;
 	*bSomethingHappened = true;
-	PlaySound(TEXT("SwordAttack.wav"), NULL, SND_FILENAME | SND_ASYNC);
 }
 
 void checkLeft(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened)
@@ -44,4 +43,16 @@ void checkRight(SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dEl
 	g_sChar->m_bAttacking = true;
 	*bSomethingHappened = true;
 	PlaySound(TEXT("SwordAttack.wav"), NULL, SND_FILENAME | SND_ASYNC);
+}
+
+void renderExplosion(Console *g_Console, short cX, short cY)
+{
+	WORD co = 0x0E;
+	for (short i = 0; i < 3; i++)
+	{
+		for (short j = 0; j < 3; j++)
+		{
+			g_Console->writeToBuffer({ cX + i, cY + j}, (char)42, co);
+		}
+	}
 }
