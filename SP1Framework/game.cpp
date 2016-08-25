@@ -575,7 +575,9 @@ void renderEnemy()
 		if (g_sEnemy[i].m_dExplosionTime > g_dElapsedTime)
 		{
 			renderExplosion(&g_Console, g_sEnemy[i].m_cLocation.X - 1, g_sEnemy[i].m_cLocation.Y - 1);
-			/* Nasrudi can fix the explosion, it happens at 0,0 instead of death location*/
+		}
+		else if (g_dElapsedTime > g_sEnemy[i].m_dExplosionTime && !g_sEnemy[i].m_bActive)
+		{
 			g_sEnemy[i].m_cLocation.X = 0;
 			g_sEnemy[i].m_cLocation.Y = 0;
 		}
