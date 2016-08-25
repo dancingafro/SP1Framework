@@ -1,8 +1,11 @@
 #include"Fogofwar.h"
-void FOW(int x,int y)
+
+void FOW(int x,int y, char(&map)[height][width], char(&fog)[height][width])
 {
+	float walls = 0.0f;
+	bool hitWall = false;
 	int radius = 2;
-	for (int lookrow = radius; lookrow >= -radius; lookrow--)
+	/*for (int lookrow = radius; lookrow >= -radius; lookrow--)
 	{
 		for (int lookcol = radius; lookcol >= -radius; lookcol--)
 		{
@@ -24,63 +27,171 @@ void FOW(int x,int y)
 			{
 				tempX = width - 1;
 			}
-			/*if (tempY < y)
-			{
-				if (tempY+1 < y)
-				{
-					if (map[tempY+2][tempX] == (char)219)
-					{
-						continue;
-					}
-				}
-				else if (map[tempY + 1][tempX] == (char)219)
-				{
-					continue;
-				}
-			}
-			else if (tempY > y)
-			{
-				if (tempY - 1 > y)
-				{
-					if (map[tempY - 2][tempX] == (char)219)
-					{
-						continue;
-					}
-				}
-				else if (map[tempY - 1][tempX] == (char)219)
-				{
-					continue;
-				}
-			}
-			if (tempX < x)
-			{
-				if (tempX + 1 < x)
-				{
-					if (map[tempY][tempX+2] == (char)219)
-					{
-						continue;
-					}
-				}
-				else if (map[tempY][tempX+1] == (char)219)
-				{
-					continue;
-				}
-			}
-			else if (tempX > x)
-			{
-				if (tempX - 1 > x)
-				{
-					if (map[tempY][tempX - 2] == (char)219)
-					{
-						continue;
-					}
-				}
-				else if (map[tempY][tempX - 1] == (char)219)
-				{
-					continue;
-				}
-			}*/
 			fog[tempY][tempX] = map[tempY][tempX];
+		}
+	}*/
+	//--------------------------------------------------------------
+	// reveal up/north side of the player
+	//--------------------------------------------------------------
+
+	for (int lookrow = y; lookrow >= y - radius; lookrow--)
+	{
+		for (int lookcol = x - ceil(walls / 2.0f); lookcol <= x + ceil(walls / 2.0f); lookcol++)
+		{
+			if (map[lookrow][x] == '.')
+			{
+				fog[lookrow][lookcol] = map[lookrow][lookcol];
+				fog[lookrow][lookcol] = map[lookrow][lookcol];
+			}
+			else
+			{
+				if (map[lookrow + 1][lookcol + 1] == (char)219 && lookcol == x - ceil(walls / 2.0f))
+				{
+					continue;
+				}
+				if (map[lookrow + 1][lookcol - 1] == (char)219 && lookcol == x + ceil(walls / 2.0f))
+				{
+					continue;
+				}
+				else
+				{
+					fog[lookrow][lookcol] = map[lookrow][lookcol];
+				}
+
+			}
+			if (map[lookrow][x] == (char)219 || map[lookrow][x] == (char)186 || map[lookrow][x] == (char)205)
+			{
+				hitWall = true;
+			}
+		}
+		walls++;
+		if (hitWall)
+		{
+			break;
+		}
+	}
+	walls = 0.0f;
+	hitWall = false;
+	//--------------------------------------------------------------
+	// reveal down/south side of the player
+	//--------------------------------------------------------------
+	for (int lookrow = y; lookrow <= y + radius; lookrow++)
+	{
+		for (int lookcol = x - ceil(walls / 2.0f); lookcol <= x + ceil(walls / 2.0f); lookcol++)
+		{
+			if (map[lookrow][x] == '.')
+			{
+				fog[lookrow][lookcol] = map[lookrow][lookcol];
+				fog[lookrow][lookcol] = map[lookrow][lookcol];
+			}
+			else
+			{
+				if (map[lookrow - 1][lookcol + 1] == (char)219 && lookcol == x - ceil(walls / 2.0f))
+				{
+					continue;
+				}
+				if (map[lookrow - 1][lookcol - 1] == (char)219 && lookcol == x + ceil(walls / 2.0f))
+				{
+					continue;
+				}
+				else
+				{
+					fog[lookrow][lookcol] = map[lookrow][lookcol];
+				}
+
+			}
+			if (map[lookrow][x] == (char)219|| map[lookrow][x] == (char)186|| map[lookrow][x] == (char)205)
+			{
+				hitWall = true;
+			}
+		}
+		walls++;
+		if (hitWall)
+		{
+			break;
+		}
+	}
+	walls = 0.0f;
+	hitWall = false;
+	//--------------------------------------------------------------
+	// reveal left/west side of the player
+	//--------------------------------------------------------------
+	for (int lookcol = x; lookcol >= x - radius; lookcol--)
+	{
+		for (int lookrow = y - ceil(walls / 2.0f); lookrow <= y + ceil(walls / 2.0f); lookrow++)
+		{
+			if (map[y][lookcol] == '.')
+			{
+				fog[lookrow][lookcol] = map[lookrow][lookcol];
+				fog[lookrow][lookcol] = map[lookrow][lookcol];
+			}
+			else
+			{
+				if (map[lookrow + 1][lookcol + 1] == (char)219 && lookrow == y - ceil(walls / 2.0f))
+				{
+					continue;
+				}
+				if (map[lookrow - 1][lookcol + 1] == (char)219 && lookrow == y + ceil(walls / 2.0f))
+				{
+					continue;
+				}
+				else
+				{
+					fog[lookrow][lookcol] = map[lookrow][lookcol];
+				}
+
+			}
+			if (map[y][lookcol] == (char)219 || map[y][lookcol] == (char)186 || map[y][lookcol] == (char)205)
+			{
+				hitWall = true;
+			}
+		}
+		walls++;
+		if (hitWall)
+		{
+			break;
+		}
+	}
+	walls = 0.0f;
+	hitWall = false;
+	//--------------------------------------------------------------
+	// reveal rigt/east side of the player
+	//--------------------------------------------------------------
+
+	for (int lookcol = x; lookcol <= x + radius; lookcol++)
+	{
+		for (int lookrow = y - ceil(walls / 2.0f); lookrow <= y + ceil(walls / 2.0f); lookrow++)
+		{
+			if (map[y][lookcol] == '.')
+			{
+				fog[lookrow][lookcol] = map[lookrow][lookcol];
+				fog[lookrow][lookcol] = map[lookrow][lookcol];
+			}
+			else
+			{
+				if (map[lookrow + 1][lookcol - 1] == (char)219 && lookrow == y - ceil(walls / 2.0f))
+				{
+					continue;
+				}
+				if (map[lookrow - 1][lookcol - 1] == (char)219 && lookrow == y + ceil(walls / 2.0f))
+				{
+					continue;
+				}
+				else
+				{
+					fog[lookrow][lookcol] = map[lookrow][lookcol];
+				}
+
+			}
+			if (map[y][lookcol] == (char)219 || map[y][lookcol] == (char)186 || map[y][lookcol] == (char)205)
+			{
+				hitWall = true;
+			}
+		}
+		walls++;
+		if (hitWall)
+		{
+			break;
 		}
 	}
 }

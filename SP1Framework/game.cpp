@@ -124,7 +124,6 @@ void update(double dt)
     // get the delta time
     g_dElapsedTime += dt;
     g_dDeltaTime = dt;
-
     switch (g_eGameState)
 	{
 		case S_LOADING: 
@@ -140,13 +139,15 @@ void update(double dt)
 			instructscreen();
 			break;
 		case S_GAMELOAD:
-			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy,g_sDoor,g_sTeleporters);
+			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy, g_sDoor, g_sTeleporters, map, fog);
 			gameLoad(level);
 			break;
         case S_GAME: 
 			gameplay(); // gameplay logic when we are in the game
             break;
     }
+	//PlaySound(NULL, 0, 0);
+	
 }
 //--------------------------------------------------------------
 // Purpose  : Render function is to update the console screen
@@ -177,13 +178,13 @@ void render()
 
 void Splashscreenloading()
 {
-	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters,map,fog);
 	g_eGameState = S_SPLASHSCREEN;
 }
 
 void instructionloading()
 {
-	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_INSTRUCTION;
 }
 
@@ -192,12 +193,12 @@ void gameLoad(int level)
 	switch (level)
 	{
 	case 1:
-		loadfile("maze2.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+		loadfile("maze2.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	case 2:
-		loadfile("maze3.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+		loadfile("maze3.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
@@ -213,12 +214,11 @@ void gameplay()			// gameplay logic
 	processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
 	// sound can be played here too.
-
 	if (oldLocationx != g_sChar.m_cLocation.X || oldLocationy != g_sChar.m_cLocation.Y)
 	{
 		oldLocationx = g_sChar.m_cLocation.X;
 		oldLocationy = g_sChar.m_cLocation.Y;
-		FOW(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y);
+		FOW(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, map, fog);
 	}
 
 	for (int i = 0; i < numEnemy; i++)
@@ -248,7 +248,6 @@ void moveCharacter()
 	{
 		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
 		{
-			//Beep(1440, 30);
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
 			{
 				
@@ -282,7 +281,6 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_A] && g_sChar.m_cLocation.X > 0)
 		{
-			//Beep(1440, 30);
 			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y))
 			{
 				
@@ -316,7 +314,8 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 		{
-			//Beep(1440, 30);
+			//PlaySound(TEXT("PlayerWalk1.wav"), NULL, SND_FILENAME | SND_ASYNC);
+
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
 			{
 				
@@ -350,7 +349,6 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_D] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 		{
-			//Beep(1440, 30);
 			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
 			{
 				
@@ -408,7 +406,6 @@ void moveCharacter()
 			bSomethingHappened = true;
 		}
 	}
-	
     if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
@@ -451,10 +448,20 @@ void renderSplashScreen()  // renders the splash screen
 		c.Y++;
 	}
 	
+	menu(c);
+}
+
+void menu(COORD c)
+{
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
-
+	c.X = 34;
+	c.Y = 17;
+	g_Console.writeToBuffer(c, "Start Game");
+	c.X = 33;
+	c.Y = 18;
+	g_Console.writeToBuffer(c, "Instructions");
 	if (g_abKeyPressed[K_DOWN])
 		g_menuselect = 1;
 	if (g_menuselect == 1 && g_abKeyPressed[K_UP])
@@ -465,20 +472,13 @@ void renderSplashScreen()  // renders the splash screen
 		c.Y = 17;
 		menuselect = true;
 		g_Console.writeToBuffer(c, "Start Game", 0xF0);
-		c.X = 33;
-		c.Y = 18;
-		g_Console.writeToBuffer(c, "Instructions");
 	}
 	if (g_menuselect == 1)
 	{
-		c.X = 34;
-		c.Y = 17;
 		menuselect = false;
-		g_Console.writeToBuffer(c, "Start Game");
 		c.X = 33;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Instructions", 0xF0);
-
 	}
 }
 
@@ -497,7 +497,7 @@ void renderloadinginstruct()  // renders the splash screen
 	}
 }
 
-void splashScreenWait()    // waits for time to pass in splash screen
+void splashScreenWait()
 {
 	if (g_abKeyPressed[K_RETURN])
 	{
@@ -567,11 +567,17 @@ void renderEnemy()
 			{
 				g_sChar.m_iKills++;
 				g_sEnemy[i].m_bActive = false;
-				g_sEnemy[i].m_cLocation.X = 0;
-				g_sEnemy[i].m_cLocation.Y = 0;
 				playerPoints->increasePoints();
 				g_sEnemy[i].m_dExplosionTime = g_dDeltaTime + 1.5;
+				g_sEnemy[i].m_dExplosionTime = g_dElapsedTime + 0.25;
 			}
+		}
+		if (g_sEnemy[i].m_dExplosionTime > g_dElapsedTime)
+		{
+			renderExplosion(&g_Console, g_sEnemy[i].m_cLocation.X - 1, g_sEnemy[i].m_cLocation.Y - 1);
+			/* Nasrudi can fix the explosion, it happens at 0,0 instead of death location*/
+			g_sEnemy[i].m_cLocation.X = 0;
+			g_sEnemy[i].m_cLocation.Y = 0;
 		}
 	}
 }
@@ -682,20 +688,6 @@ void renderCharacterAttack()
 		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, 0x0A);
 		g_sChar.m_bAttacking = false;
 	}
-}
-
-void renderExplosion(SGameChar g_sEnemy)
-{
-	WORD co = 0x0E;
-		g_Console.writeToBuffer(g_sEnemy.m_cLocation, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
-		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
 }
 
 void renderFramerate()

@@ -11,20 +11,19 @@
 
 #include "Framework\timer.h"
 #include "Framework\console.h"
-#include "points.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <fstream>
-#include <queue>
-#include <algorithm>
 #include <string>
+#include "points.h"
+#include <queue>
 
 using namespace std;
 
 const int width = 80;
 const int height = 35;
-const int totalEnemy = 11;
+const int totalEnemy = 22;
 const int totalTele = 80;
 
 extern CStopWatch g_swTimer;
@@ -73,7 +72,7 @@ struct SGameChar
     bool  m_bAttacking;
 	bool  m_seePlayer;
 	bool  m_bCanAttack;
-	bool  m_bHasExploded;
+	bool  m_bCanExplode;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;
 	unsigned int m_iKills = 0;
@@ -105,7 +104,7 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[]);
+void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
 void gameLoad(int level);
 void renderEnemy();
 void enemyBehaviour();
@@ -117,16 +116,17 @@ bool collision(int x, int y);
 void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnemy[], SGameChar *g_sChar);
 bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
 //bool lineOfSight();
-void FOW(int x, int y);
+void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);
 void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void checkLeft( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void checkDown( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
-void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
+void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
 void instructionloading();
 void renderHUD();
-void renderExplosion(SGameChar g_sEnemy);
 bool gotPlayerCollision(int x1, int y1, int x2, int y2);
-
+void menu(COORD c);
+void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col);
+void renderExplosion(Console *g_Console, short cX, short cY);
 
 #endif
