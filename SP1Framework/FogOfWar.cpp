@@ -1,5 +1,6 @@
 #include"Fogofwar.h"
-void FOW(int x,int y)
+
+void FOW(int x,int y, char(&map)[height][width], char(&fog)[height][width])
 {
 	float walls = 0.0f;
 	bool hitWall = false;
@@ -29,7 +30,11 @@ void FOW(int x,int y)
 			fog[tempY][tempX] = map[tempY][tempX];
 		}
 	}*/
-	for (int lookrow = y; lookrow >= y - radius; lookrow--)// Up/north
+	//--------------------------------------------------------------
+	// reveal up/north side of the player
+	//--------------------------------------------------------------
+
+	for (int lookrow = y; lookrow >= y - radius; lookrow--)
 	{
 		for (int lookcol = x - ceil(walls / 2.0f); lookcol <= x + ceil(walls / 2.0f); lookcol++)
 		{
@@ -67,7 +72,10 @@ void FOW(int x,int y)
 	}
 	walls = 0.0f;
 	hitWall = false;
-	for (int lookrow = y; lookrow <= y + radius; lookrow++)// down/south
+	//--------------------------------------------------------------
+	// reveal down/south side of the player
+	//--------------------------------------------------------------
+	for (int lookrow = y; lookrow <= y + radius; lookrow++)
 	{
 		for (int lookcol = x - ceil(walls / 2.0f); lookcol <= x + ceil(walls / 2.0f); lookcol++)
 		{
@@ -105,7 +113,10 @@ void FOW(int x,int y)
 	}
 	walls = 0.0f;
 	hitWall = false;
-	for (int lookcol = x; lookcol >= x - radius; lookcol--)// left/west
+	//--------------------------------------------------------------
+	// reveal left/west side of the player
+	//--------------------------------------------------------------
+	for (int lookcol = x; lookcol >= x - radius; lookcol--)
 	{
 		for (int lookrow = y - ceil(walls / 2.0f); lookrow <= y + ceil(walls / 2.0f); lookrow++)
 		{
@@ -143,6 +154,10 @@ void FOW(int x,int y)
 	}
 	walls = 0.0f;
 	hitWall = false;
+	//--------------------------------------------------------------
+	// reveal rigt/east side of the player
+	//--------------------------------------------------------------
+
 	for (int lookcol = x; lookcol <= x + radius; lookcol++)
 	{
 		for (int lookrow = y - ceil(walls / 2.0f); lookrow <= y + ceil(walls / 2.0f); lookrow++)

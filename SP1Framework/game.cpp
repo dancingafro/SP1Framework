@@ -139,7 +139,7 @@ void update(double dt)
 			instructscreen();
 			break;
 		case S_GAMELOAD:
-			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy,g_sDoor,g_sTeleporters);
+			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy, g_sDoor, g_sTeleporters, map, fog);
 			gameLoad(level);
 			break;
         case S_GAME: 
@@ -178,13 +178,13 @@ void render()
 
 void Splashscreenloading()
 {
-	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters,map,fog);
 	g_eGameState = S_SPLASHSCREEN;
 }
 
 void instructionloading()
 {
-	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_INSTRUCTION;
 }
 
@@ -193,12 +193,12 @@ void gameLoad(int level)
 	switch (level)
 	{
 	case 1:
-		loadfile("maze2.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+		loadfile("maze2.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	case 2:
-		loadfile("maze3.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters);
+		loadfile("maze3.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
@@ -213,12 +213,16 @@ void gameplay()			// gameplay logic
                         // sound can be played here too.
 	processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
+<<<<<<< HEAD
 	// sound can be played here too.
+=======
+
+>>>>>>> 44ef3940ae196663be188f0fd59b62fb21b8f4ad
 	if (oldLocationx != g_sChar.m_cLocation.X || oldLocationy != g_sChar.m_cLocation.Y)
 	{
 		oldLocationx = g_sChar.m_cLocation.X;
 		oldLocationy = g_sChar.m_cLocation.Y;
-		FOW(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y);
+		FOW(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, map, fog);
 	}
 
 	for (int i = 0; i < numEnemy; i++)
@@ -569,8 +573,6 @@ void enemyBehaviour()
 		//	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
 		//}
 	}
-	//randomMovement(&numEnemy, &g_dElapsedTime, g_sEnemy);
-	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
 }
 
 void checkCharacterAttack()

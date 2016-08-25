@@ -1,6 +1,6 @@
 #include"Loading.h"
 
-void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[])
+void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width])
 {
 	unsigned int row = 1;
 	string line = " ";
@@ -20,9 +20,7 @@ void loadfile(string mapname,int *numTele, int *numEnemy, SGameObj *g_sKey, SGam
 					map[row][col] = 'W';
 					break;
 				case 'T':
-					g_sTeleporters[*numTele].m_cLocation.X = col;
-					g_sTeleporters[*numTele].m_cLocation.Y = row;
-					g_sTeleporters[*numTele].m_bActive = true;
+					initializeTeleporters(&g_sTeleporters[*numTele], row, col);
 					map[row][col] = (char)43;
 					*numTele = *numTele + 1;
 					break;
@@ -92,4 +90,11 @@ void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col)
 	g_sEnemy->m_iHitpoints = 3;
 	g_sEnemy->m_bCanExplode = true;
 	g_sEnemy->m_dExplosionTime = 0.0;
+}
+
+void initializeTeleporters(SGameObj *g_sTeleporters, unsigned int row, unsigned int col)
+{
+	g_sTeleporters->m_cLocation.X = col;
+	g_sTeleporters->m_cLocation.Y = row;
+	g_sTeleporters->m_bActive = true;
 }
