@@ -31,7 +31,6 @@ void FOW(int x,int y, char(&map)[height][width], char(&fog)[height][width])
 		}
 	}*/
 	//--------------------------------------------------------------
-	// Initialisation function
 	// reveal up/north side of the player
 	//--------------------------------------------------------------
 
@@ -74,7 +73,6 @@ void FOW(int x,int y, char(&map)[height][width], char(&fog)[height][width])
 	walls = 0.0f;
 	hitWall = false;
 	//--------------------------------------------------------------
-	// Initialisation function
 	// reveal down/south side of the player
 	//--------------------------------------------------------------
 	for (int lookrow = y; lookrow <= y + radius; lookrow++)
@@ -116,7 +114,6 @@ void FOW(int x,int y, char(&map)[height][width], char(&fog)[height][width])
 	walls = 0.0f;
 	hitWall = false;
 	//--------------------------------------------------------------
-	// Initialisation function
 	// reveal left/west side of the player
 	//--------------------------------------------------------------
 	for (int lookcol = x; lookcol >= x - radius; lookcol--)
@@ -158,7 +155,6 @@ void FOW(int x,int y, char(&map)[height][width], char(&fog)[height][width])
 	walls = 0.0f;
 	hitWall = false;
 	//--------------------------------------------------------------
-	// Initialisation function
 	// reveal rigt/east side of the player
 	//--------------------------------------------------------------
 
