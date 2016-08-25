@@ -17,6 +17,7 @@
 #include <sstream>
 #include <fstream>
 #include <queue>
+#include <algorithm>
 #include <string>
 
 using namespace std;
@@ -125,6 +126,7 @@ void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEn
 void instructionloading();
 void renderHUD();
 void renderExplosion(SGameChar g_sEnemy);
+bool gotPlayerCollision(int x1, int y1, int x2, int y2);
 
 
 #endif
