@@ -1,6 +1,6 @@
 #include"ResetData.h"
 
-void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[])
+void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width])
 {
 	memset(map, ' ', sizeof(map[0][0] * height * width));
 	memset(fog, ' ', sizeof(fog[0][0] * height * width));

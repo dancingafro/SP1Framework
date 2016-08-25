@@ -3,7 +3,6 @@
 
 #include"game.h"
 
-extern char map[height][width];
-extern char fog[height][width];
-extern char instruct[height][width];
+void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col);
+void initializeTeleporters(SGameObj *g_sTeleporters, unsigned int row, unsigned int col);
 #endif
