@@ -72,7 +72,7 @@ struct SGameChar
     bool  m_bAttacking;
 	bool  m_seePlayer;
 	bool  m_bCanAttack;
-	bool  m_bHasExploded;
+	bool  m_bCanExplode;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;
 	unsigned int m_iKills = 0;
@@ -124,8 +124,9 @@ void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dE
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
 void instructionloading();
 void renderHUD();
-void renderExplosion(SGameChar g_sEnemy);
+void renderExplosion(COORD cExplosionLocation);
 void menu(COORD c);
+void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col);
 
 
 #endif
