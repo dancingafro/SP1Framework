@@ -3,7 +3,7 @@
 int     directionAIMove = 1;      // 1 = up, 2 = left, 3 = down, 4 =right
 double  timeSinceLastAIMove;
 
-void randomMovement(int *numEnemy, double *g_dElapsedTime, SGameChar *g_sEnemy)
+void randomMovement(int *numEnemy, double *g_dElapsedTime, SGameChar g_sEnemy[])
 {
 	// Lets the AI only be able to move after at least 1 second has passed since it's last movement
 	if (timeSinceLastAIMove == 0)
@@ -133,10 +133,10 @@ void breadthFirstSearch(double *g_dElapsedTime,int *numEnemy, SGameChar g_sEnemy
 
 			//-------------------------PREVENT PATHFINDING IF PLAYER NEXT TO AI----------------------------------------------------------------------
 			/*
-			if ((enemyLocation.first + 1, enemyLocation.second) == (playerLocation.first, playerLocation.second) ||
-				(enemyLocation.first - 1, enemyLocation.second) == (playerLocation.first, playerLocation.second) ||
-				(enemyLocation.first, enemyLocation.second + 1) == (playerLocation.first, playerLocation.second) ||
-				(enemyLocation.first, enemyLocation.second - 1) == (playerLocation.first, playerLocation.second))
+			if ((playerLocation.first + 1, playerLocation.second) == (enemyLocation.first, enemyLocation.second) ||
+				(playerLocation.first - 1, playerLocation.second) == (enemyLocation.first, enemyLocation.second) ||
+				(playerLocation.first, playerLocation.second + 1) == (enemyLocation.first, enemyLocation.second) ||
+				(playerLocation.first, playerLocation.second - 1) == (enemyLocation.first, enemyLocation.second))
 			{
 				return;
 			}
@@ -253,9 +253,11 @@ void breadthFirstSearch(double *g_dElapsedTime,int *numEnemy, SGameChar g_sEnemy
 				enemyX = tempX;
 				enemyY = tempY;
 			}
-
-			g_sEnemy[a].m_cLocation.X = enemyX;
-			g_sEnemy[a].m_cLocation.Y = enemyY;
+			if ((enemyX != (*g_sChar).m_cLocation.X || enemyY != (*g_sChar).m_cLocation.Y))
+			{
+				g_sEnemy[a].m_cLocation.X = enemyX;
+				g_sEnemy[a].m_cLocation.Y = enemyY;
+			}
 			//-----------------TRACING THE PATH BACK VIA PARENT-------------------------------------------------------------------------
 
 		}

@@ -251,6 +251,13 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
 			{
 				g_sChar.m_cLocation.Y--;
+				for (int a = 0; a < numEnemy; a++)
+				{
+					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					{
+						g_sChar.m_cLocation.Y++;
+					}
+				}
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -271,6 +278,13 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y))
 			{
 				g_sChar.m_cLocation.X--;
+				for (int a = 0; a < numEnemy; a++)
+				{
+					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					{
+						g_sChar.m_cLocation.X++;
+					}
+				}
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -291,6 +305,13 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
 			{
 				g_sChar.m_cLocation.Y++;
+				for (int a = 0; a < numEnemy; a++)
+				{
+					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					{
+						g_sChar.m_cLocation.Y--;
+					}
+				}
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -311,6 +332,13 @@ void moveCharacter()
 			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
 			{
 				g_sChar.m_cLocation.X++;
+				for (int a = 0; a < numEnemy; a++)
+				{
+					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					{
+						g_sChar.m_cLocation.X--;
+					}
+				}
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -394,10 +422,20 @@ void renderSplashScreen()  // renders the splash screen
 		c.Y++;
 	}
 	
+	menu(c);
+}
+
+void menu(COORD c)
+{
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
-
+	c.X = 34;
+	c.Y = 17;
+	g_Console.writeToBuffer(c, "Start Game");
+	c.X = 33;
+	c.Y = 18;
+	g_Console.writeToBuffer(c, "Instructions");
 	if (g_abKeyPressed[K_DOWN])
 		g_menuselect = 1;
 	if (g_menuselect == 1 && g_abKeyPressed[K_UP])
@@ -408,20 +446,13 @@ void renderSplashScreen()  // renders the splash screen
 		c.Y = 17;
 		menuselect = true;
 		g_Console.writeToBuffer(c, "Start Game", 0xF0);
-		c.X = 33;
-		c.Y = 18;
-		g_Console.writeToBuffer(c, "Instructions");
 	}
 	if (g_menuselect == 1)
 	{
-		c.X = 34;
-		c.Y = 17;
 		menuselect = false;
-		g_Console.writeToBuffer(c, "Start Game");
 		c.X = 33;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Instructions", 0xF0);
-
 	}
 }
 
@@ -510,6 +541,7 @@ void renderEnemy()
 			{
 				g_sChar.m_iKills++;
 				g_sEnemy[i].m_bActive = false;
+				g_sEnemy[i].m_dExplosionTime = g_dDeltaTime + 1.5;
 			}
 		}
 	}
@@ -629,6 +661,20 @@ void renderCharacterAttack()
 		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, 0x0A);
 		g_sChar.m_bAttacking = false;
 	}
+}
+
+void renderExplosion(SGameChar g_sEnemy)
+{
+	WORD co = 0x0E;
+		g_Console.writeToBuffer(g_sEnemy.m_cLocation, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y - 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
+		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
 }
 
 void renderFramerate()

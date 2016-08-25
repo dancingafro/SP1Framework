@@ -72,10 +72,12 @@ struct SGameChar
     bool  m_bAttacking;
 	bool  m_seePlayer;
 	bool  m_bCanAttack;
+	bool  m_bHasExploded;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;
 	unsigned int m_iKills = 0;
 	double m_dAttackRate;
+	double m_dExplosionTime;
 };
 struct SGameObj
 {
@@ -110,7 +112,7 @@ void randomMovement(int *numEnemy, double *g_dElapsedTime, SGameChar g_sEnemy[])
 void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
-bool collision(int x,int y);
+bool collision(int x, int y);
 void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnemy[], SGameChar *g_sChar);
 bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
 //bool lineOfSight();
@@ -122,5 +124,8 @@ void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dE
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[]);
 void instructionloading();
 void renderHUD();
+void renderExplosion(SGameChar g_sEnemy);
+void menu(COORD c);
+
 
 #endif
