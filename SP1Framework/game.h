@@ -125,11 +125,7 @@ void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEn
 void instructionloading();
 void renderHUD();
 void menu(COORD c);
-<<<<<<< HEAD
 void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col);
 void renderExplosion(Console *g_Console, short cX, short cY);
-
-=======
->>>>>>> 44ef3940ae196663be188f0fd59b62fb21b8f4ad
 
 #endif

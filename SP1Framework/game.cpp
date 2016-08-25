@@ -213,11 +213,7 @@ void gameplay()			// gameplay logic
                         // sound can be played here too.
 	processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
-<<<<<<< HEAD
 	// sound can be played here too.
-=======
-
->>>>>>> 44ef3940ae196663be188f0fd59b62fb21b8f4ad
 	if (oldLocationx != g_sChar.m_cLocation.X || oldLocationy != g_sChar.m_cLocation.Y)
 	{
 		oldLocationx = g_sChar.m_cLocation.X;
