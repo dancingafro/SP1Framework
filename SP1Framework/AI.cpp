@@ -3,7 +3,7 @@
 int     directionAIMove = 1;      // 1 = up, 2 = left, 3 = down, 4 =right
 double  timeSinceLastAIMove;
 
-void randomMovement(int *numEnemy, double *g_dElapsedTime, SGameChar *g_sEnemy)
+void randomMovement(int *numEnemy, double *g_dElapsedTime, SGameChar g_sEnemy[])
 {
 	// Lets the AI only be able to move after at least 1 second has passed since it's last movement
 	if (timeSinceLastAIMove == 0)

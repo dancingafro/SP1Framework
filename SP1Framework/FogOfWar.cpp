@@ -1,6 +1,8 @@
 #include"Fogofwar.h"
 void FOW(int x,int y)
 {
+	float walls = 0.0f;
+	bool hitWall = false;
 	int radius = 2;
 	for (int lookrow = radius; lookrow >= -radius; lookrow--)
 	{
@@ -83,4 +85,11 @@ void FOW(int x,int y)
 			fog[tempY][tempX] = map[tempY][tempX];
 		}
 	}
+	/*for (int lookrow = y; lookrow >= -radius; lookrow--)
+	{
+		for (int lookcol = x+ceil(-walls/2.0f); lookcol >= x+ceil(walls / 2.0f); lookcol++)
+		{
+			fog[tempY][tempX] = map[tempY][tempX];
+		}
+	}*/
 }

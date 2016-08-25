@@ -23,7 +23,7 @@ using namespace std;
 
 const int width = 80;
 const int height = 35;
-const int totalEnemy = 11;
+const int totalEnemy = 22;
 const int totalTele = 80;
 
 extern CStopWatch g_swTimer;
@@ -125,6 +125,7 @@ void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEn
 void instructionloading();
 void renderHUD();
 void renderExplosion(SGameChar g_sEnemy);
+void menu(COORD c);
 
 
 #endif

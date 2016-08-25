@@ -31,8 +31,11 @@
     <Text Include="instructions.txt" />
     <Text Include="maze2.txt" />
     <Text Include="maze3.txt" />
+<<<<<<< HEAD
   </ItemGroup>
   <ItemGroup>
     <Media Include="testmusic.mp3" />
+=======
+>>>>>>> 977b5f38502a79c1c973adf4231ffc20a2ac7c26
   </ItemGroup>
 </Project>
