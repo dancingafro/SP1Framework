@@ -105,7 +105,7 @@ void breadthFirstSearch(double *g_dElapsedTime,int *numEnemy, SGameChar g_sEnemy
 	}
 	else
 	{
-		if (*g_dElapsedTime - timeSinceLastAIMove > 1)
+		if (*g_dElapsedTime - timeSinceLastAIMove > 0.1)
 		{
 			timeSinceLastAIMove = 0;
 		}
@@ -113,8 +113,11 @@ void breadthFirstSearch(double *g_dElapsedTime,int *numEnemy, SGameChar g_sEnemy
 	}
 	for (int a = 0; a < *numEnemy; a++)
 	{
-		if (g_sEnemy[a].m_cLocation.X != (*g_sChar).m_cLocation.X || g_sEnemy[a].m_cLocation.Y != (*g_sChar).m_cLocation.Y)
+		if ((g_sEnemy[a].m_cLocation.X != (*g_sChar).m_cLocation.X || g_sEnemy[a].m_cLocation.Y != (*g_sChar).m_cLocation.Y) && g_sEnemy[a].m_bActive)
 		{
+			bool gotAINearby = false;
+			vector<int> AICannotMove1;
+			vector<int> AICannotMove2;
 			int pathFindAI[25][80][3] = { 0, };
 			int enemyX = g_sEnemy[a].m_cLocation.X;
 			int enemyY = g_sEnemy[a].m_cLocation.Y;
@@ -253,12 +256,59 @@ void breadthFirstSearch(double *g_dElapsedTime,int *numEnemy, SGameChar g_sEnemy
 				enemyX = tempX;
 				enemyY = tempY;
 			}
+			//-----------------TRACING THE PATH BACK VIA PARENT-------------------------------------------------------------------------
+
+			//-----------------AI TO AI COLLISION---------------------------------------------------------------------------------------
+			
+			if (a != (*numEnemy - 1))
+			{
+				for (int i = a + 1; i < *numEnemy; i++)
+				{
+					if (enemyX == g_sEnemy[i].m_cLocation.X && enemyY == g_sEnemy[i].m_cLocation.Y)
+					{
+						gotAINearby = true;
+						//AICannotMove1.push_back(i);
+					}
+				}
+			}
+			if (a != 0)
+			{
+				for (int y = a - 1; y >= 0; y--)
+				{
+
+					if (enemyX == g_sEnemy[y].m_cLocation.X && enemyY == g_sEnemy[y].m_cLocation.Y)
+					{
+						gotAINearby = true;
+						//AICannotMove2.push_back(y);
+					}
+				}
+			}
+			/*
+			if (find(AICannotMove1.begin(), AICannotMove1.end(), a) != AICannotMove1.end())
+			{
+				gotAINearby = true;
+			}
+			if (find(AICannotMove2.begin(), AICannotMove2.end(), a) != AICannotMove2.end())
+			{
+				gotAINearby = true;
+			}
+			*/
+			if (gotAINearby)
+			{
+				continue;
+			}
+			//-----------------AI TO AI COLLISION---------------------------------------------------------------------------------------
+
+
+			//-----------------CALCULATE THE NEXT SINGLE MOVEMENT-----------------------------------------------------------------------
+
 			if ((enemyX != (*g_sChar).m_cLocation.X || enemyY != (*g_sChar).m_cLocation.Y))
 			{
 				g_sEnemy[a].m_cLocation.X = enemyX;
 				g_sEnemy[a].m_cLocation.Y = enemyY;
 			}
-			//-----------------TRACING THE PATH BACK VIA PARENT-------------------------------------------------------------------------
+
+			//-----------------CALCULATE THE NEXT SINGLE MOVEMENT-----------------------------------------------------------------------
 
 		}
 	}

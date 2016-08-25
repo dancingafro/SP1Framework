@@ -233,6 +233,7 @@ void gameplay()			// gameplay logic
 void moveCharacter()
 {
     bool bSomethingHappened = false;
+	bool noEnemyNearby = true;
 	
     if (g_dBounceTime > g_dElapsedTime)
         return;
@@ -249,14 +250,21 @@ void moveCharacter()
 		{
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
 			{
-				g_sChar.m_cLocation.Y--;
+				
 				for (int a = 0; a < numEnemy; a++)
 				{
-					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					if (gotPlayerCollision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
 					{
-						g_sChar.m_cLocation.Y++;
+						noEnemyNearby = false;
+						break;
 					}
 				}
+				if (noEnemyNearby)
+				{
+					g_sChar.m_cLocation.Y--;
+				}
+				noEnemyNearby = true;
+				
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -275,14 +283,21 @@ void moveCharacter()
 		{
 			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y))
 			{
-				g_sChar.m_cLocation.X--;
+				
 				for (int a = 0; a < numEnemy; a++)
 				{
-					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					if (gotPlayerCollision(g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
 					{
-						g_sChar.m_cLocation.X++;
+						noEnemyNearby = false;
+						break;
 					}
 				}
+				if (noEnemyNearby)
+				{
+					g_sChar.m_cLocation.X--;
+				}
+				noEnemyNearby = true;
+				
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -303,14 +318,21 @@ void moveCharacter()
 
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
 			{
-				g_sChar.m_cLocation.Y++;
+				
 				for (int a = 0; a < numEnemy; a++)
 				{
-					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					if (gotPlayerCollision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
 					{
-						g_sChar.m_cLocation.Y--;
+						noEnemyNearby = false;
+						break;
 					}
 				}
+				if (noEnemyNearby)
+				{
+					g_sChar.m_cLocation.Y++;
+				}
+				noEnemyNearby = true;
+				
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -329,14 +351,21 @@ void moveCharacter()
 		{
 			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
 			{
-				g_sChar.m_cLocation.X++;
+				
 				for (int a = 0; a < numEnemy; a++)
 				{
-					if (g_sChar.m_cLocation.X == g_sEnemy[a].m_cLocation.X && g_sChar.m_cLocation.Y == g_sEnemy[a].m_cLocation.Y)
+					if (gotPlayerCollision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
 					{
-						g_sChar.m_cLocation.X--;
+						noEnemyNearby = false;
+						break;
 					}
 				}
+				if (noEnemyNearby)
+				{
+					g_sChar.m_cLocation.X++;
+				}
+				noEnemyNearby = true;
+				
 				if (g_sChar.m_cLocation.Y == g_sDoor[1].m_cLocation.Y && g_sChar.m_cLocation.X == g_sDoor[1].m_cLocation.X)
 				{
 					level++;
@@ -538,12 +567,19 @@ void renderEnemy()
 			{
 				g_sChar.m_iKills++;
 				g_sEnemy[i].m_bActive = false;
+				playerPoints->increasePoints();
+				g_sEnemy[i].m_dExplosionTime = g_dDeltaTime + 1.5;
 				g_sEnemy[i].m_dExplosionTime = g_dElapsedTime + 0.25;
 			}
 		}
 		if (g_sEnemy[i].m_dExplosionTime > g_dElapsedTime)
 		{
 			renderExplosion(&g_Console, g_sEnemy[i].m_cLocation.X - 1, g_sEnemy[i].m_cLocation.Y - 1);
+		}
+		else if (g_dElapsedTime > g_sEnemy[i].m_dExplosionTime && !g_sEnemy[i].m_bActive)
+		{
+			g_sEnemy[i].m_cLocation.X = 0;
+			g_sEnemy[i].m_cLocation.Y = 0;
 		}
 	}
 }
@@ -561,14 +597,8 @@ void renderObject()
 
 void enemyBehaviour()
 {
-	for (int i = 0; i < numEnemy; i++)
-	{
-		randomMovement(&numEnemy,&g_dElapsedTime, g_sEnemy);
-		//if (g_sEnemy[i].m_cLocation.X != g_sChar.m_cLocation.X || g_sEnemy[i].m_cLocation.Y != g_sChar.m_cLocation.Y)
-		//{
-		//	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
-		//}
-	}
+	//randomMovement(&numEnemy,&g_dElapsedTime, g_sEnemy);
+	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
 }
 
 void checkCharacterAttack()
