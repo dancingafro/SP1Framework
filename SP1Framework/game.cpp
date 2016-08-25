@@ -59,6 +59,7 @@ void init( void )
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Bitstream Vera Sans");
+	PlaySound(TEXT("testmusic"), NULL, SND_ALIAS);
 }
 
 //--------------------------------------------------------------
@@ -124,7 +125,6 @@ void update(double dt)
     // get the delta time
     g_dElapsedTime += dt;
     g_dDeltaTime = dt;
-
     switch (g_eGameState)
 	{
 		case S_LOADING: 
@@ -672,6 +672,7 @@ void renderExplosion(SGameChar g_sEnemy)
 		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X - 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
 		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X + 1, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
 		g_Console.writeToBuffer({ g_sEnemy.m_cLocation.X, g_sEnemy.m_cLocation.Y + 1 }, (char)35, co);
+		
 }
 
 void renderFramerate()
