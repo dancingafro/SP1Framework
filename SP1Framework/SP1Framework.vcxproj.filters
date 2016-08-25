@@ -32,4 +32,8 @@
     <Text Include="maze2.txt" />
     <Text Include="maze3.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="SwordAttack.wav" />
+    <Media Include="PlayerWalk1.wav" />
+  </ItemGroup>
 </Project>

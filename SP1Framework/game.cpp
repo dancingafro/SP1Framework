@@ -246,7 +246,6 @@ void moveCharacter()
 	{
 		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
 		{
-			//Beep(1440, 30);
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
 			{
 				g_sChar.m_cLocation.Y--;
@@ -273,7 +272,6 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_A] && g_sChar.m_cLocation.X > 0)
 		{
-			//Beep(1440, 30);
 			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y))
 			{
 				g_sChar.m_cLocation.X--;
@@ -300,7 +298,8 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 		{
-			//Beep(1440, 30);
+			//PlaySound(TEXT("PlayerWalk1.wav"), NULL, SND_FILENAME | SND_ASYNC);
+
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
 			{
 				g_sChar.m_cLocation.Y++;
@@ -327,7 +326,6 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_D] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 		{
-			//Beep(1440, 30);
 			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
 			{
 				g_sChar.m_cLocation.X++;
@@ -470,7 +468,7 @@ void renderloadinginstruct()  // renders the splash screen
 	}
 }
 
-void splashScreenWait()    // waits for time to pass in splash screen
+void splashScreenWait()
 {
 	if (g_abKeyPressed[K_RETURN])
 	{
@@ -669,7 +667,7 @@ void renderCharacterAttack()
 void renderExplosion(COORD cExplosionLocation)
 {
 	WORD co = 0x0E;
-	g_Console.writeToBuffer(cExplosionLocation, (char)35, co);                                     // Target location (exact)
+	g_Console.writeToBuffer(cExplosionLocation, (char)42, co);                                     // Target location (exact)
 	g_Console.writeToBuffer({ cExplosionLocation.X, cExplosionLocation.Y - 1 }, (char)42, co);     // Target location (directly above)
 	g_Console.writeToBuffer({ cExplosionLocation.X + 1, cExplosionLocation.Y - 1 }, (char)42, co); // Target location (above right)
 	g_Console.writeToBuffer({ cExplosionLocation.X - 1, cExplosionLocation.Y - 1 }, (char)42, co); // Target location (above left)
