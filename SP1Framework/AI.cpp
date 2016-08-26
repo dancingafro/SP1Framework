@@ -105,7 +105,7 @@ void breadthFirstSearch(double *g_dElapsedTime,int *numEnemy, SGameChar g_sEnemy
 	}
 	else
 	{
-		if (*g_dElapsedTime - timeSinceLastAIMove > 0.1)
+		if (*g_dElapsedTime - timeSinceLastAIMove > 1)
 		{
 			timeSinceLastAIMove = 0;
 		}
