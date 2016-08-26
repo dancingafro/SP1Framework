@@ -38,6 +38,7 @@ Console g_Console(width, height, "Dungeon Explorer");
 // Input    : void
 // Output   : void
 //--------------------------------------------------------------
+
 void init( void )
 {
     // Set precision for floating point output
@@ -68,6 +69,7 @@ void init( void )
 // Input    : Void
 // Output   : void
 //--------------------------------------------------------------
+
 void shutdown( void )
 {
     // Reset to white text on black background
@@ -86,6 +88,7 @@ void shutdown( void )
 // Input    : Void
 // Output   : void
 //--------------------------------------------------------------
+
 void getInput( void )
 {    
     g_abKeyPressed[K_UP]			= isKeyPressed(VK_UP);
@@ -105,6 +108,7 @@ void getInput( void )
 	g_abKeyPressed[K_2]				= isKeyPressed(VK_2); 
 	g_abKeyPressed[K_3]             = isKeyPressed(VK_3);
 }
+
 //--------------------------------------------------------------
 // Purpose  : Update function
 //            This is the update function
@@ -119,6 +123,7 @@ void getInput( void )
 // Input    : dt = deltatime
 // Output   : void
 //--------------------------------------------------------------
+
 void update(double dt)
 {
     // get the delta time
@@ -149,6 +154,7 @@ void update(double dt)
 	//PlaySound(NULL, 0, 0);
 	
 }
+
 //--------------------------------------------------------------
 // Purpose  : Render function is to update the console screen
 //            At this point, you should know exactly what to draw onto the screen.
@@ -157,6 +163,7 @@ void update(double dt)
 // Input    : void
 // Output   : void
 //--------------------------------------------------------------
+
 void render()
 {
     clearScreen();      // clears the current screen and draw from scratch 
@@ -580,6 +587,17 @@ void renderEnemy()
 		{
 			g_sEnemy[i].m_cLocation.X = 0;
 			g_sEnemy[i].m_cLocation.Y = 0;
+		}
+	}
+}
+
+void enemyatt(COORD a, COORD b)
+{
+	for (int i = 0; i < numEnemy; i++)
+	{
+		if ((a.X = b.X + 1) || (a.X = b.X - 1) || (a.Y = b.Y + 1) || (a.Y = b.Y - 1))
+		{
+			g_sChar.m_iHitpoints--;
 		}
 	}
 }

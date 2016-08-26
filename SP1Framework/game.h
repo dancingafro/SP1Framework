@@ -79,6 +79,7 @@ struct SGameChar
 	double m_dAttackRate;
 	double m_dExplosionTime;
 };
+
 struct SGameObj
 {
 	COORD m_cLocation;
@@ -128,5 +129,6 @@ bool gotPlayerCollision(int x1, int y1, int x2, int y2);
 void menu(COORD c);
 void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col);
 void renderExplosion(Console *g_Console, short cX, short cY);
+void enemyatt(COORD a, COORD b);
 
 #endif

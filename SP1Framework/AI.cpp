@@ -199,6 +199,7 @@ void breadthFirstSearch(double *g_dElapsedTime,int *numEnemy, SGameChar g_sEnemy
 						pathFindAI[current.first - 1][current.second][2] = current.second; // add X-coords of parent node (the node where the neighbouring node came from)
 					}
 				}
+
 				if (collision(current.second, current.first + 1))				// if below current node no wall
 				{
 					if (pathFindAI[current.first + 1][current.second][0] == 0)
