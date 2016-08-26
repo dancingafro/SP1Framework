@@ -28,6 +28,7 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 int numTele = 0;
 int numEnemy = 0;
 int g_menuselect = 0;
+int enemyatttime = 0;
 // Console object
 Console g_Console(width, height, "Dungeon Explorer");
 
@@ -573,15 +574,18 @@ void renderEnemy()
 void enemyatt(COORD a, COORD b)
 {
 	bool enemyclose = false;
-	if ((a.X = b.X + 1) || (a.X = b.X - 1) || (a.Y = b.Y + 1) || (a.Y = b.Y - 1))
+	if (((a.X == b.X + 1) && (a.Y == b.Y)) || ((a.X == b.X - 1) && (a.Y == b.Y)) || ((a.Y == b.Y + 1) && (a.X == b.X)) || ((a.Y == b.Y - 1) && (a.X == b.X)))
 	{
 		enemyclose = true;
 	}
 
-	while (enemyclose)
+	if (enemyclose)
 	{
-		g_sChar.m_iHitpoints--;
-
+		while (g_dElapsedTime > enemyatttime + 2)
+		{
+			g_sChar.m_iHitpoints--;
+			enemyatttime = (int)g_dElapsedTime;
+		}
 	}
 }
 
