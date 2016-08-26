@@ -33,7 +33,10 @@
     <Text Include="maze3.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="SwordAttack.wav" />
-    <Media Include="PlayerWalk1.wav" />
+    <Media Include="snd_PlayerAttackMiss.wav" />
+    <Media Include="snd_PlayerHitEnemy.wav" />
+    <Media Include="snd_PlayerHitWall.wav" />
+    <Media Include="snd_PlayerWalk1.wav" />
+    <Media Include="snd_EnemyDie.wav" />
   </ItemGroup>
 </Project>

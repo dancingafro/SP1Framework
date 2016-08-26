@@ -27,7 +27,7 @@ bool gotPlayerCollision(int x1, int y1, int x2, int y2)		// x1 - x coord of firs
 	return (x1 == x2 && y1 == y2);
 }
 
-bool EnemyIsAttacked(int x1, int x2,int y1, int y2)
+bool EnemyIsAttacked(int x1, int y1,int x2, int y2)
 {
 	if (x1 == x2 && y1 == y2)
 	{

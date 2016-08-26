@@ -52,7 +52,7 @@ void init( void )
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
 	g_sChar.m_iHitpoints = 10;
-	g_sChar.m_dAttackRate = 0.375;
+	g_sChar.m_dAttackRate = 0.25;
 	g_sChar.m_iKills = 0;
 
 	oldLocationx = 0;
@@ -244,8 +244,7 @@ void moveCharacter()
 	
     if (g_dBounceTime > g_dElapsedTime)
         return;
-    // Updating the location of the character based on the key press
-    // providing a beep sound whenver we shift the character
+
 	if (g_abKeyPressed[K_2])
 	{
 		g_sChar.m_iKills++;
@@ -567,27 +566,7 @@ void renderEnemy()
 				g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x07);
 			}
 		}
-		if (g_sEnemy[i].m_bActive && EnemyIsAttacked(g_sEnemy[i].m_cLocation.X, g_sChar.m_cAttackLocation.X, g_sEnemy[i].m_cLocation.Y, g_sChar.m_cAttackLocation.Y))
-		{
-			g_sEnemy[i].m_iHitpoints--;
-			if (g_sEnemy[i].m_iHitpoints == 0)
-			{
-				g_sChar.m_iKills++;
-				g_sEnemy[i].m_bActive = false;
-				playerPoints->increasePoints();
-				g_sEnemy[i].m_dExplosionTime = g_dDeltaTime + 1.5;
-				g_sEnemy[i].m_dExplosionTime = g_dElapsedTime + 0.25;
-			}
-		}
-		if (g_sEnemy[i].m_dExplosionTime > g_dElapsedTime)
-		{
-			renderExplosion(&g_Console, g_sEnemy[i].m_cLocation.X - 1, g_sEnemy[i].m_cLocation.Y - 1);
-		}
-		else if (g_dElapsedTime > g_sEnemy[i].m_dExplosionTime && !g_sEnemy[i].m_bActive)
-		{
-			g_sEnemy[i].m_cLocation.X = 0;
-			g_sEnemy[i].m_cLocation.Y = 0;
-		}
+		eCheckForDamage( &g_Console, &g_sEnemy[i], &g_sChar, &g_dElapsedTime);
 	}
 }
 
@@ -637,24 +616,27 @@ void checkCharacterAttack()
 	{
 		g_sChar.m_bCanAttack = true;
 	}
-	
 	if (g_sChar.m_bCanAttack)
 	{
 		if (g_abKeyPressed[K_UP])
 		{
-			checkUp( &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened );
+			checkUp( &g_sChar );
+			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
-			checkLeft(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			checkLeft( &g_sChar );
+			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
-			checkDown(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			checkDown( &g_sChar );
+			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
-			checkRight(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			checkRight( &g_sChar );
+			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 	}
 }
