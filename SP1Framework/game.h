@@ -75,7 +75,7 @@ struct SGameChar
 	bool  m_bCanExplode;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;
-	unsigned int m_iKills = 0;
+	unsigned int m_iKills;
 	double m_dAttackRate;
 	double m_dExplosionTime;
 };
@@ -117,10 +117,10 @@ void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnem
 bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
 //bool lineOfSight();
 void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);
-void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
-void checkLeft( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
-void checkDown( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
-void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
+void checkUp( SGameChar *g_sChar );
+void checkLeft( SGameChar *g_sChar );
+void checkDown( SGameChar *g_sChar );
+void checkRight( SGameChar *g_sChar );
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
 void instructionloading();
 void renderHUD();
@@ -128,5 +128,9 @@ bool gotPlayerCollision(int x1, int y1, int x2, int y2);
 void menu(COORD c);
 void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col);
 void renderExplosion(Console *g_Console, short cX, short cY);
+void playAttackSound(unsigned int iAtkType);
+void launchPlayerAttack( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
+void eCheckForDamage (Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sChar, double *g_dElapsedTime );
+unsigned int checkAtkType( COORD cAtkLctn);
 
 #endif
