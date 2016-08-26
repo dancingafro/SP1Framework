@@ -12,10 +12,11 @@
 
 <wASD> to move
 <ARROwS> to attack
+<SbAR> to teleport
 
-K is a key, pick it up to open doors
-T is a teleporter, its random
-X is a door unlocked by keys
-P is a door unlocked by killing all monsters
+K is a key
+T is a RNG teleporter
+X is a door unlocked using keys
+P is a door unlocked through killing all monsters
 
 <backspace> to enter game

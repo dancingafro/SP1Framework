@@ -129,13 +129,10 @@ bool gotPlayerCollision(int x1, int y1, int x2, int y2);
 void menu(COORD c);
 void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col);
 void renderExplosion(Console *g_Console, short cX, short cY);
-<<<<<<< HEAD
 void enemyatt(COORD a, COORD b);
-=======
 void playAttackSound(unsigned int iAtkType);
 void launchPlayerAttack( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void eCheckForDamage (Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sChar, double *g_dElapsedTime );
 unsigned int checkAtkType( COORD cAtkLctn);
->>>>>>> e711dbb743ad041253d94f1a95abba999d96b861
 
 #endif
