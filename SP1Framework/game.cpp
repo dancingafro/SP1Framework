@@ -573,14 +573,9 @@ void renderEnemy()
 
 void enemyatt(COORD a, COORD b)
 {
-	bool enemyclose = false;
 	if (((a.X == b.X + 1) && (a.Y == b.Y)) || ((a.X == b.X - 1) && (a.Y == b.Y)) || ((a.Y == b.Y + 1) && (a.X == b.X)) || ((a.Y == b.Y - 1) && (a.X == b.X)))
 	{
-		enemyclose = true;
-	}
-
-	if (enemyclose)
-	{
+		enemyatttime = (int)g_dElapsedTime;
 		while (g_dElapsedTime > enemyatttime + 2)
 		{
 			g_sChar.m_iHitpoints--;
