@@ -11,7 +11,7 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  g_dCharNextAttackTime;
 bool    g_abKeyPressed[K_COUNT];
-
+bool allEnemydead = false;
 // Game specific variables here
 SGameObj	g_sKey;
 SGameObj	g_sDoor[2];
@@ -153,9 +153,9 @@ void update(double dt)
         case S_GAME: 
 			gameplay(); // gameplay logic when we are in the game
             break;
-	//	case S_GAMEOVER:
-	//		overscreen();
-	//		break;
+		case S_GAMEOVER:
+			overscreen();
+			break;
 		case S_OVERLOAD:
 			overloading();
 			break;
@@ -235,7 +235,7 @@ void gameLoad(int level)
 
 void gameplay()			// gameplay logic
 {
-                        // sound can be played here too.
+	// sound can be played here too.
 	processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
 	if (oldLocationx != g_sChar.m_cLocation.X || oldLocationy != g_sChar.m_cLocation.Y)
@@ -245,12 +245,22 @@ void gameplay()			// gameplay logic
 		FOW(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, map, fog);
 	}
 
+	allEnemydead = true;
 	for (int i = 0; i < numEnemy; i++)
 	{
 		if (g_sEnemy[i].m_bActive)
 		{
+			allEnemydead = false;
 			enemyBehaviour(&g_sEnemy[i]);
 		}
+	}
+	if (g_sChar.m_iHitpoints <= 0)
+	{
+		g_eGameState = S_OVERLOAD;
+	}
+	if (allEnemydead)
+	{
+		map[g_sDoor[1].m_cLocation.Y][g_sDoor[1].m_cLocation.X] = 'E';
 	}
 }
 
@@ -439,7 +449,6 @@ void processUserInput()
         g_bQuitGame = true;
 	if (g_abKeyPressed[K_1])
 	{
-		map[g_sDoor[1].m_cLocation.Y][g_sDoor[1].m_cLocation.X] = 'E';
 		for (int i = 0; i < numEnemy; i++)
 		{
 			g_sEnemy[i].m_bActive = false;
@@ -546,19 +555,6 @@ void govermenu(COORD c)
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Quit Game", 0xF0);
 	}
-	if (goverselect == 0)
-	{
-		g_eGameState = S_LOADING;
-
-		g_dCharNextAttackTime = 0.0;
-		g_sChar.m_cAttackLocation = { 0, 0 };
-		g_sChar.m_bAttacking = false;
-		g_sChar.m_iHitpoints = 10;
-		g_sChar.m_dAttackRate = 0.25;
-		g_sChar.m_iKills = 0;
-	}
-	else if (goverselect == 1)
-		g_bQuitGame = true;
 }
 
 void renderloadinginstruct()  // renders the splash screen
@@ -590,26 +586,21 @@ void splashScreenWait()
 	}
 }
 
-//void overscreen()
-//{
-//	if (g_abKeyPressed[K_RETURN])
-//	{
-//		govertime = g_dElapsedTime + 0.5;
-//		if (goverselect == 0) 
-//		{
-//			g_eGameState = S_LOADING;
-//
-//			g_dCharNextAttackTime = 0.0;
-//			g_sChar.m_cAttackLocation = { 0, 0 };
-//			g_sChar.m_bAttacking = false;
-//			g_sChar.m_iHitpoints = 10;
-//			g_sChar.m_dAttackRate = 0.25;
-//			g_sChar.m_iKills = 0;
-//		}
-//		else if (goverselect == 1)
-//			g_bQuitGame = true;
-//	}
-//}
+void overscreen()
+{
+	if (g_abKeyPressed[K_RETURN])
+	{
+		govertime = g_dElapsedTime + 0.5;
+		if (goverselect == 0)
+		{
+			g_sChar.m_iHitpoints = 10;
+
+			g_eGameState = S_LOADING;
+		}
+		else if (goverselect == 1)
+			g_bQuitGame = true;
+	}
+}
 
 void instructscreen()
 {
@@ -699,10 +690,10 @@ void enemyatt(COORD a, COORD b)
 {
 	if (((a.X == b.X + 1) && (a.Y == b.Y)) || ((a.X == b.X - 1) && (a.Y == b.Y)) || ((a.Y == b.Y + 1) && (a.X == b.X)) || ((a.Y == b.Y - 1) && (a.X == b.X)))
 	{
-		while (g_dElapsedTime > enemyatttime + 1)
+		while (g_dElapsedTime > enemyatttime)
 		{
 			g_sChar.m_iHitpoints--;
-			enemyatttime = (int)g_dElapsedTime;
+			enemyatttime = (int)g_dElapsedTime + 1;
 		}
 	}
 }
@@ -720,6 +711,14 @@ void renderObject()
 
 void enemyBehaviour(SGameChar *g_sEnemy)
 {
+	enemyatt(g_sEnemy->m_cLocation, g_sChar.m_cLocation);
+
+	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
+		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
+	/*else
+	{
+		randomMovement(g_dElapsedTime, g_sEnemy);
+=======
 	
 	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
 	{
@@ -728,6 +727,7 @@ void enemyBehaviour(SGameChar *g_sEnemy)
 	/*else
 	{
 		randomMovement(g_dElapsedTime, &g_sEnemy[a]);
+>>>>>>> 22a7dd052f7f2a44784d24266a0427d0d38f7929
 	}*/
 }
 
@@ -748,22 +748,22 @@ void checkCharacterAttack()
 	{
 		if (g_abKeyPressed[K_UP])
 		{
-			setAttackUp( &g_sChar );
+			setAttack(1, &g_sChar );
 			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
-			setAttackLeft( &g_sChar );
+			setAttack(3, &g_sChar);
 			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
-			setAttackDown( &g_sChar );
+			setAttack(2, &g_sChar);
 			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
-			setAttackRight( &g_sChar );
+			setAttack(4, &g_sChar);
 			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 	}

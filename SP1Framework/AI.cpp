@@ -453,6 +453,7 @@ bool lineOfSight( SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][wi
 			break;
 		}
 	}
+	g_sEnemy->m_seePlayer = false;
 	return false;
 	/*
 	int enemyX = g_sEnemy->m_cLocation.X;

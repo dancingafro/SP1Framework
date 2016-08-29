@@ -6,25 +6,27 @@ double ntt = 0.0;
 bool bEnemyIsHit;
 unsigned int iAtkType;
 
-void setAttackUp( SGameChar *g_sChar )
+void setAttack(int directions, SGameChar *g_sChar )
 {
-	g_sChar->m_cAttackLocation = { g_sChar -> m_cLocation.X, g_sChar -> m_cLocation.Y - 1 };
+	switch (directions)
+	{
+	case 1:
+		g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X, g_sChar->m_cLocation.Y - 1 };
+		break;
+	case 2:
+		g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X, g_sChar->m_cLocation.Y + 1 };
+		break;
+	case 3:
+		g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X - 1, g_sChar->m_cLocation.Y };
+		break;
+	case 4:
+		g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X + 1, g_sChar->m_cLocation.Y };
+		break;
+	default:
+		break;
+	}
 }
 
-void setAttackLeft( SGameChar *g_sChar )
-{
-	g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X - 1, g_sChar->m_cLocation.Y };
-}
-
-void setAttackDown( SGameChar *g_sChar )
-{
-	g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X, g_sChar->m_cLocation.Y + 1 };
-}
-
-void setAttackRight( SGameChar *g_sChar )
-{
-	g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X + 1, g_sChar->m_cLocation.Y };
-}
 
 void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened )
 {
