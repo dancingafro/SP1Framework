@@ -41,7 +41,6 @@ void FOW(int x,int y, char(&map)[height][width], char(&fog)[height][width])
 			if (map[lookrow][x] == '.')
 			{
 				fog[lookrow][lookcol] = map[lookrow][lookcol];
-				fog[lookrow][lookcol] = map[lookrow][lookcol];
 			}
 			else
 			{

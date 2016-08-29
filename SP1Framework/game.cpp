@@ -670,6 +670,11 @@ void enemyBehaviour()
 
 	randomMovement(&numEnemy,&g_dElapsedTime, g_sEnemy);
 	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
+	for (int a = 0; a < numEnemy; a++)
+	{
+		if (lineOfSight(a, g_sEnemy, &g_sChar, map))
+			breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
+	}
 }
 
 void checkCharacterAttack()

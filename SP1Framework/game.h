@@ -18,6 +18,7 @@
 #include <string>
 #include "points.h"
 #include <queue>
+#include <cmath>
 
 using namespace std;
 
@@ -68,6 +69,7 @@ enum EGAMESTATES
 struct SGameChar
 {
     COORD m_cLocation;
+	COORD m_cLastSeenLocation;
 	COORD m_cAttackLocation;
 	bool  m_bActive;
 	bool  m_haveKey;
@@ -76,6 +78,7 @@ struct SGameChar
 	bool  m_bCanAttack;
 	bool  m_bCanExplode;
 	bool  m_bRecentlyAttacked;
+	int   m_directionFacing;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;
 	unsigned int m_iKills;
@@ -121,7 +124,8 @@ void renderCharacterAttack();
 bool collision(int x, int y);
 void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnemy[], SGameChar *g_sChar);
 bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
-//bool lineOfSight();
+bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[height][width]);
+int  playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar);
 void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);
 void setAttackUp( SGameChar *g_sChar );
 void setAttackLeft( SGameChar *g_sChar );
