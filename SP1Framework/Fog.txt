@@ -25,7 +25,7 @@
 ................................................................................
 NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 N                                                                              N
-N H/P:                                                                         N
+N H/P:                Target H/P:                                              N
 N KILLS:                                                                       N
 N                                                                              N
 N                                                                              N

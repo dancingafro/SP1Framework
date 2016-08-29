@@ -12,6 +12,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="points.cpp" />
     <ClCompile Include="ResetData.cpp" />
+    <ClCompile Include="HUD.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision.h" />

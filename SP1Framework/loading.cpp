@@ -93,6 +93,7 @@ void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col)
 	g_sEnemy->m_iHitpoints = 3;
 	g_sEnemy->m_bCanExplode = true;
 	g_sEnemy->m_dExplosionTime = 0.0;
+	g_sEnemy->m_bRecentlyAttacked = false;
 }
 
 void initializeTeleporters(SGameObj *g_sTeleporters, unsigned int row, unsigned int col)
