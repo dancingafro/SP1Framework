@@ -19,6 +19,9 @@ void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGa
 				case 'w':
 					map[row][col] = 'W';
 					break;
+				case 'b':
+					map[row][col] = 'B';
+					break;
 				case 'T':
 					initializeTeleporters(&g_sTeleporters[*numTele], row, col);
 					map[row][col] = (char)43;

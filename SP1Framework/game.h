@@ -57,9 +57,11 @@ enum EGAMESTATES
 	S_LOADING,
 	S_INSTRUCTION,
 	S_INSTRUCTLOAD,
-    S_SPLASHSCREEN,
+	S_SPLASHSCREEN,
 	S_GAMELOAD,
-    S_GAME,
+	S_GAME,
+	S_GAMEOVER,
+	S_OVERLOAD,
     S_COUNT
 };
 
@@ -78,10 +80,11 @@ struct SGameChar
 	int   m_directionFacing;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;
-	unsigned int m_iKills = 0;
+	unsigned int m_iKills;
 	double m_dAttackRate;
 	double m_dExplosionTime;
 };
+
 struct SGameObj
 {
 	COORD m_cLocation;
@@ -96,12 +99,14 @@ void shutdown    ( void );      // do clean up, free memory
 void Splashscreenloading();
 void splashScreenWait();    // waits for time to pass in splash screen
 void instructscreen();
+void gameover();
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
 void renderloadinginstruct();
+void renderGameover();
 void renderGame();          // renders the game stuff
 void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
@@ -121,10 +126,10 @@ bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
 bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[height][width]);
 int  playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar);
 void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);
-void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
-void checkLeft( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
-void checkDown( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
-void checkRight( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
+void checkUp( SGameChar *g_sChar );
+void checkLeft( SGameChar *g_sChar );
+void checkDown( SGameChar *g_sChar );
+void checkRight( SGameChar *g_sChar );
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
 void instructionloading();
 void renderHUD();
@@ -132,5 +137,13 @@ bool gotPlayerCollision(int x1, int y1, int x2, int y2);
 void menu(COORD c);
 void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col);
 void renderExplosion(Console *g_Console, short cX, short cY);
+void enemyatt(COORD a, COORD b);
+void playAttackSound(unsigned int iAtkType);
+void launchPlayerAttack( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
+void eCheckForDamage (Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sChar, double *g_dElapsedTime );
+unsigned int checkAtkType( COORD cAtkLctn);
+void overloading();
+void overscreen();
+void govermenu(COORD c);
 
 #endif

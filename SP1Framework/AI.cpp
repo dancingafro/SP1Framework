@@ -204,7 +204,6 @@ void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnem
 						break;
 					}
 				}
-
 				//-----------------ADD CURRENT ITEMS IN QUEUE TO CLOSED LIST AFTER ADDING NEIGHBOURING NODES--------------------------------
 
 				//-----------------TRACING THE PATH BACK VIA PARENT-------------------------------------------------------------------------
