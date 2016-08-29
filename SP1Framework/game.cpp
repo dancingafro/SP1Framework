@@ -23,7 +23,8 @@ char map[height][width];
 char fog[height][width];
 int oldLocationx;
 int oldLocationy;
-double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
+double  g_dBounceTime;// this is to prevent key bouncing, so we won't trigger keypresses more than once
+double govertime;
 int numTele = 0;
 int numEnemy = 0;
 int g_menuselect = 0;
@@ -541,6 +542,7 @@ void govermenu(COORD c)
 		c.X = 34;
 		c.Y = 17;
 		g_Console.writeToBuffer(c, "Main Menu", 0xF0);
+
 	}
 	if (goverselect == 1)
 	{
@@ -548,6 +550,19 @@ void govermenu(COORD c)
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Quit Game", 0xF0);
 	}
+	if (goverselect == 0)
+	{
+		g_eGameState = S_LOADING;
+
+		g_dCharNextAttackTime = 0.0;
+		g_sChar.m_cAttackLocation = { 0, 0 };
+		g_sChar.m_bAttacking = false;
+		g_sChar.m_iHitpoints = 10;
+		g_sChar.m_dAttackRate = 0.25;
+		g_sChar.m_iKills = 0;
+	}
+	else if (goverselect == 1)
+		g_bQuitGame = true;
 }
 
 void renderloadinginstruct()  // renders the splash screen
@@ -567,6 +582,9 @@ void renderloadinginstruct()  // renders the splash screen
 
 void splashScreenWait()
 {
+	renderSplashScreen();
+	if (g_dElapsedTime < govertime)
+		return;
 	if (g_abKeyPressed[K_RETURN])
 	{
 		if(g_menuselect == 0)
@@ -576,16 +594,26 @@ void splashScreenWait()
 	}
 }
 
-void overscreen()
-{
-	if (g_abKeyPressed[K_RETURN])
-	{
-		if (goverselect == 0)
-			g_eGameState = S_SPLASHSCREEN;
-		else if (goverselect == 1)
-			g_bQuitGame = true;
-	}
-}
+//void overscreen()
+//{
+//	if (g_abKeyPressed[K_RETURN])
+//	{
+//		govertime = g_dElapsedTime + 0.5;
+//		if (goverselect == 0) 
+//		{
+//			g_eGameState = S_LOADING;
+//
+//			g_dCharNextAttackTime = 0.0;
+//			g_sChar.m_cAttackLocation = { 0, 0 };
+//			g_sChar.m_bAttacking = false;
+//			g_sChar.m_iHitpoints = 10;
+//			g_sChar.m_dAttackRate = 0.25;
+//			g_sChar.m_iKills = 0;
+//		}
+//		else if (goverselect == 1)
+//			g_bQuitGame = true;
+//	}
+//}
 
 void instructscreen()
 {
@@ -645,8 +673,6 @@ void renderEnemy()
 
 void enemyatt(COORD a, COORD b)
 {
-	bool enemyclose = false;
-	if ((a.X == b.X + 1) || (a.X == b.X - 1) || (a.Y == b.Y + 1) || (a.Y == b.Y - 1))
 	if (((a.X == b.X + 1) && (a.Y == b.Y)) || ((a.X == b.X - 1) && (a.Y == b.Y)) || ((a.Y == b.Y + 1) && (a.X == b.X)) || ((a.Y == b.Y - 1) && (a.X == b.X)))
 	{
 		while (g_dElapsedTime > enemyatttime + 1)
@@ -670,10 +696,10 @@ void renderObject()
 
 void enemyBehaviour()
 {
-	//for (int i = 0; i < numEnemy; i++)
-	//{
-	//	enemyatt(g_sChar.m_cLocation, g_sEnemy[i].m_cLocation);
-	//}
+	for (int i = 0; i < numEnemy; i++)
+	{
+		enemyatt(g_sChar.m_cLocation, g_sEnemy[i].m_cLocation);
+	}
 
 	randomMovement(&numEnemy,&g_dElapsedTime, g_sEnemy);
 	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
