@@ -1,4 +1,7 @@
 #include "game.h"
+#include "CheckAttack.h"
+
+unsigned int iEnemyHP;
 
 void renderHUD(SGameChar *g_sChar, Console *g_Console)
 {
@@ -39,5 +42,21 @@ void renderHUD(SGameChar *g_sChar, Console *g_Console)
 		g_Console->writeToBuffer(c, cKillCountTens, 0x0F);
 		c.X = 9;
 		g_Console->writeToBuffer(c, cKillCountOnes, 0x0F);
+	}
+}
+void SelectedEnemyHP(unsigned int iHP)
+{
+	iEnemyHP = iHP;
+}
+void eRenderHP(Console *g_Console)
+{
+	COORD c = { 0,28 };
+	string sHPString = "Enemy H/P:";
+	for (unsigned int i = 0; i < iEnemyHP; i++)
+	{
+		c.X = 23;
+		g_Console->writeToBuffer(c, sHPString, 0x0F);
+		c.X = 33 + i;
+		g_Console->writeToBuffer(c, (char)219, 0x0C);
 	}
 }

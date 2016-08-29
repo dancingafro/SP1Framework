@@ -92,11 +92,13 @@
     <ClCompile Include="ResetData.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CheckAttack.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Fogofwar.h" />
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="points.h" />
     <ClInclude Include="ResetData.h" />

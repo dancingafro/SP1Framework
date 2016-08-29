@@ -23,6 +23,8 @@
     <ClInclude Include="Loading.h" />
     <ClInclude Include="points.h" />
     <ClInclude Include="ResetData.h" />
+    <ClInclude Include="CheckAttack.h" />
+    <ClInclude Include="HUD.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Splashscreen.txt" />

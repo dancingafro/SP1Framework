@@ -1,9 +1,10 @@
 #include "game.h"
+#include "CheckAttack.h"
+#include "HUD.h"
 
 double ntt = 0.0;
 bool bEnemyIsHit;
 unsigned int iAtkType;
-SGameChar lTargetedEnemy;
 
 void setAttackUp( SGameChar *g_sChar )
 {
@@ -25,7 +26,7 @@ void setAttackRight( SGameChar *g_sChar )
 	g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X + 1, g_sChar->m_cLocation.Y };
 }
 
-void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, SGameChar *g_sEnemy, double *g_dCharNextAttackTime, double *g_dElapsedTime, int *numEnemy, bool *bSomethingHappened )
+void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened )
 {
 	COORD cAtkLctn = g_sChar->m_cAttackLocation;
 	ntt = *g_dElapsedTime + g_sChar->m_dAttackRate;
@@ -42,6 +43,7 @@ void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sCha
 	if (g_sEnemy->m_bActive && EnemyIsAttacked(g_sEnemy->m_cLocation.X, g_sEnemy->m_cLocation.Y, g_sChar->m_cAttackLocation.X, g_sChar->m_cAttackLocation.Y))
 	{
 		g_sEnemy->m_iHitpoints--;
+		SelectedEnemyHP(g_sEnemy->m_iHitpoints);
 		PlaySound(TEXT("snd_PlayerHitEnemy.wav"), NULL, SND_FILENAME | SND_ASYNC);
 		if (g_sEnemy->m_iHitpoints == 0)
 		{
@@ -50,6 +52,7 @@ void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sCha
 			//playerPoints->increasePoints();
 			PlaySound(TEXT("snd_EnemyDie.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			g_sEnemy->m_dExplosionTime = *g_dElapsedTime + 0.25;
+
 		}
 	}
 	if (g_sEnemy->m_dExplosionTime > *g_dElapsedTime)

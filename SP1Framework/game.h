@@ -127,25 +127,17 @@ bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
 bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[height][width]);
 int  playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar);
 void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);
-void setAttackUp( SGameChar *g_sChar );
-void setAttackLeft( SGameChar *g_sChar );
-void setAttackDown( SGameChar *g_sChar );
-void setAttackRight( SGameChar *g_sChar );
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
 void instructionloading();
-void renderHUD(SGameChar *g_sChar, Console *g_Console);
+//void renderHUD(SGameChar *g_sChar, Console *g_Console);
 bool gotPlayerCollision(int x1, int y1, int x2, int y2);
 void menu(COORD c);
 void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col);
-void renderExplosion(Console *g_Console, short cX, short cY);
 void enemyatt(COORD a, COORD b);
-void playAttackSound(unsigned int iAtkType);
-void launchPlayerAttack( Console *g_Console, SGameChar *g_sChar, SGameChar *g_sEnemy, double *g_dCharNextAttackTime, double *g_dElapsedTime, int *numEnemy, bool *bSomethingHappened );
-void eCheckForDamage (Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sChar, double *g_dElapsedTime );
-unsigned int checkAtkType( COORD cAtkLctn);
 void overloading();
 void overscreen();
 void govermenu(COORD c);
-void eRenderHP(SGameChar g_sEnemy, bool bTargetedEnemy, Console *g_Console);
+//void eRenderHP(Console *g_Console);
+//void SelectedEnemyHP(unsigned int iHP);
 
 #endif

@@ -2,6 +2,8 @@
 //
 //
 #include "game.h"
+#include "CheckAttack.h"
+#include "HUD.h"
 
 points* playerPoints = new points();
 
@@ -151,9 +153,9 @@ void update(double dt)
         case S_GAME: 
 			gameplay(); // gameplay logic when we are in the game
             break;
-		case S_GAMEOVER:
-			overscreen();
-			break;
+	//	case S_GAMEOVER:
+	//		overscreen();
+	//		break;
 		case S_OVERLOAD:
 			overloading();
 			break;
@@ -664,6 +666,7 @@ void renderEnemy()
 		}
 		eCheckForDamage( &g_Console, &g_sEnemy[i], &g_sChar, &g_dElapsedTime);
 	}
+	eRenderHP(&g_Console);
 }
 
 void enemyatt(COORD a, COORD b)
@@ -723,22 +726,22 @@ void checkCharacterAttack()
 		if (g_abKeyPressed[K_UP])
 		{
 			setAttackUp( &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_sEnemy[totalEnemy], &g_dCharNextAttackTime, &g_dElapsedTime, &numEnemy, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
 			setAttackLeft( &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_sEnemy[totalEnemy], &g_dCharNextAttackTime, &g_dElapsedTime, &numEnemy, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
 			setAttackDown( &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_sEnemy[totalEnemy], &g_dCharNextAttackTime, &g_dElapsedTime, &numEnemy, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
 			setAttackRight( &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_sEnemy[totalEnemy], &g_dCharNextAttackTime, &g_dElapsedTime, &numEnemy, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 	}
 }
