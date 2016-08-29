@@ -3,28 +3,29 @@
 double ntt = 0.0;
 bool bEnemyIsHit;
 unsigned int iAtkType;
+SGameChar lTargetedEnemy;
 
-void checkUp( SGameChar *g_sChar )
+void setAttackUp( SGameChar *g_sChar )
 {
 	g_sChar->m_cAttackLocation = { g_sChar -> m_cLocation.X, g_sChar -> m_cLocation.Y - 1 };
 }
 
-void checkLeft( SGameChar *g_sChar )
+void setAttackLeft( SGameChar *g_sChar )
 {
 	g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X - 1, g_sChar->m_cLocation.Y };
 }
 
-void checkDown( SGameChar *g_sChar )
+void setAttackDown( SGameChar *g_sChar )
 {
 	g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X, g_sChar->m_cLocation.Y + 1 };
 }
 
-void checkRight( SGameChar *g_sChar )
+void setAttackRight( SGameChar *g_sChar )
 {
 	g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X + 1, g_sChar->m_cLocation.Y };
 }
 
-void launchPlayerAttack( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened )
+void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, SGameChar *g_sEnemy, double *g_dCharNextAttackTime, double *g_dElapsedTime, int *numEnemy, bool *bSomethingHappened )
 {
 	COORD cAtkLctn = g_sChar->m_cAttackLocation;
 	ntt = *g_dElapsedTime + g_sChar->m_dAttackRate;
@@ -34,31 +35,6 @@ void launchPlayerAttack( SGameChar *g_sChar, double *g_dCharNextAttackTime, doub
 	*bSomethingHappened = true;
 	iAtkType = checkAtkType( cAtkLctn);
 	playAttackSound(iAtkType);
-}
-
-void renderExplosion( Console *g_Console, short cX, short cY )
-{
-	WORD co = 0x0E;
-	for (short i = 0; i < 3; i++)
-	{
-		for (short j = 0; j < 3; j++)
-		{
-			g_Console->writeToBuffer({ cX + i, cY + j}, (char)42, co);
-		}
-	}
-}
-
-void playAttackSound(unsigned int iAtkType)
-{
-	switch (iAtkType)
-	{
-		case 0:
-			PlaySound(TEXT("snd_PlayerAttackMiss.wav"), NULL, SND_FILENAME | SND_ASYNC);
-			break;
-		case 1:
-			PlaySound(TEXT("snd_PlayerHitWall.wav"), NULL, SND_FILENAME | SND_ASYNC);
-			break;
-	}
 }
 
 void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sChar, double *g_dElapsedTime )
@@ -98,4 +74,29 @@ unsigned int checkAtkType( COORD cAtkLctn )
 		iAtkType = 0;
 	}
 	return iAtkType;
+}
+
+void playAttackSound(unsigned int iAtkType)
+{
+	switch (iAtkType)
+	{
+	case 0:
+		PlaySound(TEXT("snd_PlayerAttackMiss.wav"), NULL, SND_FILENAME | SND_ASYNC);
+		break;
+	case 1:
+		PlaySound(TEXT("snd_PlayerHitWall.wav"), NULL, SND_FILENAME | SND_ASYNC);
+		break;
+	}
+}
+
+void renderExplosion(Console *g_Console, short cX, short cY)
+{
+	WORD co = 0x0E;
+	for (short i = 0; i < 3; i++)
+	{
+		for (short j = 0; j < 3; j++)
+		{
+			g_Console->writeToBuffer({ cX + i, cY + j }, (char)42, co);
+		}
+	}
 }

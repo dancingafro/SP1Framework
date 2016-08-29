@@ -8,8 +8,7 @@ points* playerPoints = new points();
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  g_dCharNextAttackTime;
-bool    g_abKeyPressed[K_COUNT]; 
-
+bool    g_abKeyPressed[K_COUNT];
 
 // Game specific variables here
 SGameObj	g_sKey;
@@ -264,7 +263,7 @@ void moveCharacter()
 
 	if (g_abKeyPressed[K_2])
 	{
-		g_sChar.m_iKills++;
+		g_sChar.m_iHitpoints--;
 		bSomethingHappened = true;
 	}
 	if (!g_sChar.m_bAttacking)
@@ -273,7 +272,6 @@ void moveCharacter()
 		{
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
 			{
-				
 				for (int a = 0; a < numEnemy; a++)
 				{
 					if (gotPlayerCollision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
@@ -337,8 +335,6 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 		{
-			//PlaySound(TEXT("PlayerWalk1.wav"), NULL, SND_FILENAME | SND_ASYNC);
-
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
 			{
 				
@@ -374,7 +370,6 @@ void moveCharacter()
 		{
 			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
 			{
-				
 				for (int a = 0; a < numEnemy; a++)
 				{
 					if (gotPlayerCollision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
@@ -631,7 +626,7 @@ void renderGame()
 	renderEnemy();		// renders an enemy into the buffer
 	checkCharacterAttack();
 	renderCharacterAttack();
-	renderHUD();
+	renderHUD(&g_sChar, &g_Console);
 }
 
 void renderMap()
@@ -703,16 +698,16 @@ void enemyBehaviour()
 
 	randomMovement(&numEnemy,&g_dElapsedTime, g_sEnemy);
 	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
+	for (int a = 0; a < numEnemy; a++)
+	{
+		if (lineOfSight(a, g_sEnemy, &g_sChar, map))
+			breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
+	}
 }
 
 void checkCharacterAttack()
 {
 	bool bSomethingHappened = false;
-	if (g_sChar.m_iHitpoints <= 0)
-	{
-////////VVVVVVVVVVVVVVVVVVV       FOR TESTING ONLY!! MUST CHANGE!!      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		g_eGameState = S_OVERLOAD;
-	}
 	if (g_sChar.m_bAttacking || g_dCharNextAttackTime > g_dElapsedTime) // (N) If player is launching or next attack time has not come
 	{
 		g_sChar.m_cAttackLocation = { 0,0 };
@@ -727,66 +722,24 @@ void checkCharacterAttack()
 	{
 		if (g_abKeyPressed[K_UP])
 		{
-			checkUp( &g_sChar );
-			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttackUp( &g_sChar );
+			launchPlayerAttack(&g_Console, &g_sChar, &g_sEnemy[totalEnemy], &g_dCharNextAttackTime, &g_dElapsedTime, &numEnemy, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
-			checkLeft( &g_sChar );
-			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttackLeft( &g_sChar );
+			launchPlayerAttack(&g_Console, &g_sChar, &g_sEnemy[totalEnemy], &g_dCharNextAttackTime, &g_dElapsedTime, &numEnemy, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
-			checkDown( &g_sChar );
-			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttackDown( &g_sChar );
+			launchPlayerAttack(&g_Console, &g_sChar, &g_sEnemy[totalEnemy], &g_dCharNextAttackTime, &g_dElapsedTime, &numEnemy, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
-			checkRight( &g_sChar );
-			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttackRight( &g_sChar );
+			launchPlayerAttack(&g_Console, &g_sChar, &g_sEnemy[totalEnemy], &g_dCharNextAttackTime, &g_dElapsedTime, &numEnemy, &bSomethingHappened);
 		}
-	}
-}
-
-void renderHUD()
-{
-	WORD HPColor = 0x0A;
-	char cKillCountOnes = '0';
-	char cKillCountTens = '0';
-	COORD c;
-	c.Y = 28;
-	unsigned int iHP = g_sChar.m_iHitpoints;
-
-	for (unsigned int i = 1; i <= iHP; i++)
-	{
-		c.X = 5 + i;
-		if (g_sChar.m_iHitpoints <= 7 && g_sChar.m_iHitpoints > 3)
-		{
-			HPColor = 0x0E;
-		}
-		else if (g_sChar.m_iHitpoints <= 3)
-		{
-			HPColor = 0x0C;
-		}
-		g_Console.writeToBuffer(c, (char)219, HPColor);
-	}
-	c.Y = 29;
-	c.X = 8;
-	if (g_sChar.m_iKills <= 9)
-	{
-		cKillCountOnes += g_sChar.m_iKills;
-		g_Console.writeToBuffer(c, '0', 0x0F);
-		c.X = 9;
-		g_Console.writeToBuffer(c, cKillCountOnes, 0x0F);
-	}
-	else if (g_sChar.m_iKills > 9)
-	{
-		int r = g_sChar.m_iKills - 10;
-		cKillCountOnes += r;
-		cKillCountTens = '1';
-		g_Console.writeToBuffer(c, cKillCountTens, 0x0F);
-		c.X = 9;
-		g_Console.writeToBuffer(c, cKillCountOnes, 0x0F);
 	}
 }
 
