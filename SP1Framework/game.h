@@ -18,6 +18,7 @@
 #include <string>
 #include "points.h"
 #include <queue>
+#include <cmath>
 
 using namespace std;
 
@@ -66,6 +67,7 @@ enum EGAMESTATES
 struct SGameChar
 {
     COORD m_cLocation;
+	COORD m_cLastSeenLocation;
 	COORD m_cAttackLocation;
 	bool  m_bActive;
 	bool  m_haveKey;
@@ -73,6 +75,7 @@ struct SGameChar
 	bool  m_seePlayer;
 	bool  m_bCanAttack;
 	bool  m_bCanExplode;
+	int   m_directionFacing;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;
 	unsigned int m_iKills = 0;
@@ -115,7 +118,8 @@ void renderCharacterAttack();
 bool collision(int x, int y);
 void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnemy[], SGameChar *g_sChar);
 bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
-//bool lineOfSight();
+bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[height][width]);
+int  playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar);
 void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);
 void checkUp( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void checkLeft( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
