@@ -31,6 +31,7 @@
     <Text Include="instructions.txt" />
     <Text Include="maze2.txt" />
     <Text Include="maze3.txt" />
+    <Text Include="gameover.txt" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="snd_PlayerAttackMiss.wav" />

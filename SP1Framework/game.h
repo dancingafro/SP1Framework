@@ -56,9 +56,11 @@ enum EGAMESTATES
 	S_LOADING,
 	S_INSTRUCTION,
 	S_INSTRUCTLOAD,
-    S_SPLASHSCREEN,
+	S_SPLASHSCREEN,
 	S_GAMELOAD,
-    S_GAME,
+	S_GAME,
+	S_GAMEOVER,
+	S_OVERLOAD,
     S_COUNT
 };
 
@@ -94,12 +96,14 @@ void shutdown    ( void );      // do clean up, free memory
 void Splashscreenloading();
 void splashScreenWait();    // waits for time to pass in splash screen
 void instructscreen();
+void gameover();
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
 void renderloadinginstruct();
+void renderGameover();
 void renderGame();          // renders the game stuff
 void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
@@ -134,5 +138,8 @@ void playAttackSound(unsigned int iAtkType);
 void launchPlayerAttack( SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened );
 void eCheckForDamage (Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sChar, double *g_dElapsedTime );
 unsigned int checkAtkType( COORD cAtkLctn);
+void overloading();
+void overscreen();
+void govermenu(COORD c);
 
 #endif

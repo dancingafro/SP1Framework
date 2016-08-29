@@ -105,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Fog.txt" />
+    <Text Include="gameover.txt" />
     <Text Include="instructions.txt" />
     <Text Include="maze2.txt" />
     <Text Include="maze3.txt" />

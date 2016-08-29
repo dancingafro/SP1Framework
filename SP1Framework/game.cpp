@@ -23,11 +23,12 @@ char map[height][width];
 char fog[height][width];
 int oldLocationx;
 int oldLocationy;
-bool menuselect = true;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 int numTele = 0;
 int numEnemy = 0;
 int g_menuselect = 0;
+int goverselect = 0;
+int enemyatttime = 0;
 // Console object
 Console g_Console(width, height, "Dungeon Explorer");
 
@@ -150,6 +151,12 @@ void update(double dt)
         case S_GAME: 
 			gameplay(); // gameplay logic when we are in the game
             break;
+		case S_GAMEOVER:
+			overscreen();
+			break;
+		case S_OVERLOAD:
+			overloading();
+			break;
     }
 	//PlaySound(NULL, 0, 0);
 	
@@ -178,6 +185,9 @@ void render()
         case S_GAME: 
 			renderGame();
             break;
+		case S_GAMEOVER:
+			renderGameover();
+			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -193,6 +203,12 @@ void instructionloading()
 {
 	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_INSTRUCTION;
+}
+
+void overloading()
+{
+	loadfile("gameover.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+	g_eGameState = S_GAMEOVER;
 }
 
 void gameLoad(int level)
@@ -457,6 +473,25 @@ void renderSplashScreen()  // renders the splash screen
 	menu(c);
 }
 
+void renderGameover()
+{
+	COORD c = g_Console.getConsoleSize();
+	c.X = 12;
+	c.Y = 5;
+	ifstream file;
+	string line;
+	file.open("gameover.txt");
+
+	while (!file.eof())
+	{
+		getline(file, line);
+		g_Console.writeToBuffer(c, line);
+		c.Y++;	
+	}
+	file.close();
+	govermenu(c);
+}
+
 void menu(COORD c)
 {
 	c.X = 27;
@@ -476,15 +511,42 @@ void menu(COORD c)
 	{
 		c.X = 34;
 		c.Y = 17;
-		menuselect = true;
 		g_Console.writeToBuffer(c, "Start Game", 0xF0);
 	}
 	if (g_menuselect == 1)
 	{
-		menuselect = false;
 		c.X = 33;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Instructions", 0xF0);
+	}
+}
+
+void govermenu(COORD c)
+{
+	c.X = 27;
+	c.Y = 15;
+	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
+	c.X = 34;
+	c.Y = 17;
+	g_Console.writeToBuffer(c, "Main Menu");
+	c.X = 34;
+	c.Y = 18;
+	g_Console.writeToBuffer(c, "Quit Game");
+	if (g_abKeyPressed[K_DOWN])
+		goverselect = 1;
+	if (goverselect == 1 && g_abKeyPressed[K_UP])
+		goverselect = 0;
+	if (goverselect == 0)
+	{
+		c.X = 34;
+		c.Y = 17;
+		g_Console.writeToBuffer(c, "Main Menu", 0xF0);
+	}
+	if (goverselect == 1)
+	{
+		c.X = 34;
+		c.Y = 18;
+		g_Console.writeToBuffer(c, "Quit Game", 0xF0);
 	}
 }
 
@@ -511,6 +573,17 @@ void splashScreenWait()
 		g_eGameState = S_GAMELOAD;
 		else if (g_menuselect == 1)
 		g_eGameState = S_INSTRUCTLOAD;
+	}
+}
+
+void overscreen()
+{
+	if (g_abKeyPressed[K_RETURN])
+	{
+		if (goverselect == 0)
+			g_eGameState = S_SPLASHSCREEN;
+		else if (goverselect == 1)
+			g_bQuitGame = true;
 	}
 }
 
@@ -574,14 +647,13 @@ void enemyatt(COORD a, COORD b)
 {
 	bool enemyclose = false;
 	if ((a.X == b.X + 1) || (a.X == b.X - 1) || (a.Y == b.Y + 1) || (a.Y == b.Y - 1))
+	if (((a.X == b.X + 1) && (a.Y == b.Y)) || ((a.X == b.X - 1) && (a.Y == b.Y)) || ((a.Y == b.Y + 1) && (a.X == b.X)) || ((a.Y == b.Y - 1) && (a.X == b.X)))
 	{
-		enemyclose = true;
-	}
-
-	while (enemyclose)
-	{
-		g_sChar.m_iHitpoints--;
-
+		while (g_dElapsedTime > enemyatttime + 1)
+		{
+			g_sChar.m_iHitpoints--;
+			enemyatttime = (int)g_dElapsedTime;
+		}
 	}
 }
 
@@ -613,7 +685,7 @@ void checkCharacterAttack()
 	if (g_sChar.m_iHitpoints <= 0)
 	{
 ////////VVVVVVVVVVVVVVVVVVV       FOR TESTING ONLY!! MUST CHANGE!!      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		g_bQuitGame = true;
+		g_eGameState = S_OVERLOAD;
 	}
 	if (g_sChar.m_bAttacking || g_dCharNextAttackTime > g_dElapsedTime) // (N) If player is launching or next attack time has not come
 	{
