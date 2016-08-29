@@ -573,7 +573,7 @@ void renderEnemy()
 void enemyatt(COORD a, COORD b)
 {
 	bool enemyclose = false;
-	if ((a.X = b.X + 1) || (a.X = b.X - 1) || (a.Y = b.Y + 1) || (a.Y = b.Y - 1))
+	if ((a.X == b.X + 1) || (a.X == b.X - 1) || (a.Y == b.Y + 1) || (a.Y == b.Y - 1))
 	{
 		enemyclose = true;
 	}
@@ -598,10 +598,10 @@ void renderObject()
 
 void enemyBehaviour()
 {
-	for (int i = 0; i < numEnemy; i++)
-	{
-		enemyatt(g_sChar.m_cLocation, g_sEnemy[i].m_cLocation);
-	}
+	//for (int i = 0; i < numEnemy; i++)
+	//{
+	//	enemyatt(g_sChar.m_cLocation, g_sEnemy[i].m_cLocation);
+	//}
 
 	randomMovement(&numEnemy,&g_dElapsedTime, g_sEnemy);
 	breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
