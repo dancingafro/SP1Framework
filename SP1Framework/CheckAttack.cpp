@@ -40,7 +40,7 @@ void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharN
 
 void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sChar, double *g_dElapsedTime )
 {
-	if (g_sEnemy->m_bActive && EnemyIsAttacked(g_sEnemy->m_cLocation.X, g_sEnemy->m_cLocation.Y, g_sChar->m_cAttackLocation.X, g_sChar->m_cAttackLocation.Y))
+	if (g_sEnemy->m_bActive && PositionCollision(g_sEnemy->m_cLocation.X, g_sEnemy->m_cLocation.Y, g_sChar->m_cAttackLocation.X, g_sChar->m_cAttackLocation.Y))
 	{
 		g_sEnemy->m_iHitpoints--;
 		SelectedEnemyHP(g_sEnemy->m_iHitpoints);
