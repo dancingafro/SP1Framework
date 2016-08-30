@@ -238,7 +238,6 @@ void gameplay()			// gameplay logic
                         // sound can be played here too.
 	processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
-	// sound can be played here too.
 	if (oldLocationx != g_sChar.m_cLocation.X || oldLocationy != g_sChar.m_cLocation.Y)
 	{
 		oldLocationx = g_sChar.m_cLocation.X;
@@ -276,7 +275,7 @@ void moveCharacter()
 			{
 				for (int a = 0; a < numEnemy; a++)
 				{
-					if (gotPlayerCollision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
+					if (PositionCollision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
 					{
 						noEnemyNearby = false;
 						break;
@@ -309,7 +308,7 @@ void moveCharacter()
 				
 				for (int a = 0; a < numEnemy; a++)
 				{
-					if (gotPlayerCollision(g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
+					if (PositionCollision(g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
 					{
 						noEnemyNearby = false;
 						break;
@@ -342,7 +341,7 @@ void moveCharacter()
 				
 				for (int a = 0; a < numEnemy; a++)
 				{
-					if (gotPlayerCollision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
+					if (PositionCollision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
 					{
 						noEnemyNearby = false;
 						break;
@@ -374,7 +373,7 @@ void moveCharacter()
 			{
 				for (int a = 0; a < numEnemy; a++)
 				{
-					if (gotPlayerCollision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
+					if (PositionCollision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
 					{
 						noEnemyNearby = false;
 						break;
@@ -634,15 +633,38 @@ void renderGame()
 void renderMap()
 {
 	COORD c = g_Console.getConsoleSize();
-
+	WORD color = 0xf0;
 	c.X = 0;
 	c.Y = 0;
-	string line;
 	for (int y = 0; y < height; y++)
 	{
-		line = fog[y];
-		g_Console.writeToBuffer(c, line);
-		c.Y++;			
+		c.Y = y;
+		for (int x = 0; x < width; x++)
+		{
+			c.X = x;
+			switch (fog[y][x])
+			{
+			case (char)219:
+				color = 0x0f;
+				break;
+			case (char)186:
+				color = 0x03;
+				break;
+			case (char)205:
+				color = 0x03;
+				break;
+			case '.':
+				color = 0x01;
+				break;
+			case (char)43:
+				color = 0x05;
+				break;
+			default:
+				color = 0x0f;
+				break;
+			}
+			g_Console.writeToBuffer(c, fog[y][x], color);
+		}
 	}
 }
 	

@@ -22,16 +22,7 @@ bool collision(int x,int y)
 	}
 }
 
-bool gotPlayerCollision(int x1, int y1, int x2, int y2)		// x1 - x coord of first char, y1 - y coord of first char, x2 - x coord of second char, y2 - y coord of second char
+bool PositionCollision(int x1, int y1, int x2, int y2)		// x1 - x coord of first char, y1 - y coord of first char, x2 - x coord of second char, y2 - y coord of second char
 {
 	return (x1 == x2 && y1 == y2);
-}
-
-bool EnemyIsAttacked(int x1, int y1,int x2, int y2)
-{
-	if (x1 == x2 && y1 == y2)
-	{
-		return true;
-	}
-	return false;
 }
