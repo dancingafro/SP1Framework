@@ -675,6 +675,10 @@ void renderEnemy()
 			if (g_sEnemy[i].m_bActive)
 			{
 				g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x07);
+				if (g_sEnemy[i].m_seePlayer)
+				{
+					g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x05);
+				}
 			}
 		}
 		eCheckForDamage( &g_Console, &g_sEnemy[i], &g_sChar, &g_dElapsedTime);
@@ -714,6 +718,16 @@ void enemyBehaviour(SGameChar *g_sEnemy)
 	/*else
 	{
 		randomMovement(g_dElapsedTime, g_sEnemy);
+=======
+	
+	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
+	{
+		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
+	}
+	/*else
+	{
+		randomMovement(g_dElapsedTime, &g_sEnemy[a]);
+>>>>>>> 22a7dd052f7f2a44784d24266a0427d0d38f7929
 	}*/
 }
 

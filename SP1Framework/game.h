@@ -84,7 +84,7 @@ struct SGameChar
 	unsigned int m_iKills;
 	double m_dAttackRate;
 	double m_dExplosionTime;
-	double m_dTimeSinceLastAIMove;
+	double m_dTimeSinceLastAIMove = 0;
 };
 
 struct SGameObj
