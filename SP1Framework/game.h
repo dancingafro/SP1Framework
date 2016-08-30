@@ -84,6 +84,7 @@ struct SGameChar
 	unsigned int m_iKills;
 	double m_dAttackRate;
 	double m_dExplosionTime;
+	double m_dTimeSinceLastAIMove;
 };
 
 struct SGameObj
@@ -117,12 +118,12 @@ void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGa
 void gameLoad(int level);
 void renderEnemy();
 void enemyBehaviour(SGameChar *g_sEnemy);
-void randomMovement(double *g_dElapsedTime, SGameChar *g_sEnemy);
+void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy);
 void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
 bool collision(int x, int y);
-void breadthFirstSearch(double *g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar);
+void breadthFirstSearch(double g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar);
 bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
 bool lineOfSight(SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][width]);
 int  playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar);

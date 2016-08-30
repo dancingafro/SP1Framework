@@ -695,10 +695,10 @@ void renderObject()
 void enemyBehaviour(SGameChar *g_sEnemy)
 {
 		if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
-			breadthFirstSearch(&g_dElapsedTime,g_sEnemy, &g_sChar);
+			breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
 		/*else
 		{
-			randomMovement(&g_dElapsedTime, &g_sEnemy[a]);
+			randomMovement(g_dElapsedTime, &g_sEnemy[a]);
 		}*/
 }
 
