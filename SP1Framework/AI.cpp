@@ -1,16 +1,23 @@
 #include "game.h"
 
 int     directionAIMove = 1;      // 1 = up, 2 = left, 3 = down, 4 =right
-double  timeSinceLastAIMove=0;
 
-void randomMovement(double *g_dElapsedTime, SGameChar *g_sEnemy)
+void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy)
 {
-	directionAIMove = g_sEnemy->m_directionFacing;
-	// Lets the AI only be able to move after at least 1 second has passed since it's last movement
-	if (*g_dElapsedTime > timeSinceLastAIMove)
+	// Lets the AI only be able to move after at least X second has passed since it's last movement
+	if (g_sEnemy->m_dTimeSinceLastAIMove == 0)
 	{
+		g_sEnemy->m_dTimeSinceLastAIMove = g_dElapsedTime;
+	}
+	else
+	{
+		if (g_dElapsedTime - g_sEnemy->m_dTimeSinceLastAIMove > 1)
+		{
+			g_sEnemy->m_dTimeSinceLastAIMove = 0;
+		}
 		return;
 	}
+	directionAIMove = g_sEnemy->m_directionFacing;
 	
 	if (directionAIMove == 1)
 	{
@@ -63,22 +70,20 @@ void randomMovement(double *g_dElapsedTime, SGameChar *g_sEnemy)
 			directionAIMove = (rand() % 4 + 1);
 		}
 	}
-
-	timeSinceLastAIMove = *g_dElapsedTime + 1;
 }
 
-void breadthFirstSearch(double *g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar)
+void breadthFirstSearch(double g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar)
 {
-	// Lets the AI only be able to move after at least 1 second has passed since it's last movement
-	if (timeSinceLastAIMove == 0)
+	// Lets the AI only be able to move after at least X second has passed since it's last movement
+	if (g_sEnemy->m_dTimeSinceLastAIMove == 0)
 	{
-		timeSinceLastAIMove = *g_dElapsedTime;
+		g_sEnemy->m_dTimeSinceLastAIMove = g_dElapsedTime;
 	}
 	else
 	{
-		if (*g_dElapsedTime - timeSinceLastAIMove > 1)
+		if (g_dElapsedTime - g_sEnemy->m_dTimeSinceLastAIMove > 1)
 		{
-			timeSinceLastAIMove = 0;
+			g_sEnemy->m_dTimeSinceLastAIMove = 0;
 		}
 		return;
 	}
@@ -276,7 +281,7 @@ bool lineOfSight( SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][wi
 	int y = g_sEnemy->m_cLocation.Y;
 	float walls = 0.0f;
 	bool hitWall = false;
-	int radius = 5;
+	int radius = 3;
 	int playerY = g_sChar->m_cLocation.Y;
 	int playerX = g_sChar->m_cLocation.X;
 
