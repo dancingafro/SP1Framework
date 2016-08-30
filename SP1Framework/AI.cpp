@@ -1,80 +1,73 @@
 #include "game.h"
 
 int     directionAIMove = 1;      // 1 = up, 2 = left, 3 = down, 4 =right
-double  timeSinceLastAIMove;
+double  timeSinceLastAIMove=0;
 
-void randomMovement(int *numEnemy, double *g_dElapsedTime, SGameChar g_sEnemy[])
+void randomMovement(double *g_dElapsedTime, SGameChar *g_sEnemy)
 {
+	directionAIMove = g_sEnemy->m_directionFacing;
 	// Lets the AI only be able to move after at least 1 second has passed since it's last movement
-	if (timeSinceLastAIMove == 0)
+	if (*g_dElapsedTime > timeSinceLastAIMove)
 	{
-		timeSinceLastAIMove = *g_dElapsedTime;
-	}
-	else
-	{
-		if (*g_dElapsedTime - timeSinceLastAIMove > 0.5)
-		{
-			timeSinceLastAIMove = 0;
-		}
 		return;
 	}
-	for (int a = 0; a < *numEnemy; a++)
+	
+	if (directionAIMove == 1)
 	{
-		if (directionAIMove == 1)
+		if (collision(g_sEnemy->m_cLocation.X, g_sEnemy->m_cLocation.Y - 1))     // Check if above AI got wall
 		{
-			if (collision(g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y - 1))     // Check if above AI got wall
-			{
-				g_sEnemy[a].m_cLocation.Y--;
-				g_sEnemy[a].m_directionFacing = 1;
-			}
-			else       // Above AI got wall
-			{
-				directionAIMove = (rand() % 4 + 1);
-			}
-
+			g_sEnemy->m_cLocation.Y--;
+			//g_sEnemy->m_directionFacing = 1;
 		}
-		if (directionAIMove == 2)
+		else       // Above AI got wall
 		{
-			if (collision(g_sEnemy[a].m_cLocation.X - 1, g_sEnemy[a].m_cLocation.Y))     // Check if above AI got wall
-			{
-				g_sEnemy[a].m_cLocation.X--;
-				g_sEnemy[a].m_directionFacing = 2;
-			}
-			else       // Above AI got wall
-			{
-				directionAIMove = (rand() % 4 + 1);
-			}
-
+			directionAIMove = (rand() % 4 + 1);
 		}
-		if (directionAIMove == 3)
-		{
-			if (collision(g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y + 1))     // Check if above AI got wall
-			{
-				g_sEnemy[a].m_cLocation.Y++;
-				g_sEnemy[a].m_directionFacing = 3;
-			}
-			else       // Above AI got wall
-			{
-				directionAIMove = (rand() % 4 + 1);
-			}
 
-		}
-		if (directionAIMove == 4)
+	}
+	else if (directionAIMove == 2)
+	{
+		if (collision(g_sEnemy->m_cLocation.X - 1, g_sEnemy->m_cLocation.Y))     // Check if above AI got wall
 		{
-			if (collision(g_sEnemy[a].m_cLocation.X + 1, g_sEnemy[a].m_cLocation.Y))     // Check if above AI got wall
-			{
-				g_sEnemy[a].m_cLocation.X++;
-				g_sEnemy[a].m_directionFacing = 4;
-			}
-			else       // Above AI got wall
-			{
-				directionAIMove = (rand() % 4 + 1);
-			}
+			g_sEnemy->m_cLocation.X--;
+			//g_sEnemy->m_directionFacing = 2;
+		}
+		else       // Above AI got wall
+		{
+			directionAIMove = (rand() % 4 + 1);
+		}
+
+	}
+	else if (directionAIMove == 3)
+	{
+		if (collision(g_sEnemy->m_cLocation.X, g_sEnemy->m_cLocation.Y + 1))     // Check if above AI got wall
+		{
+			g_sEnemy->m_cLocation.Y++;
+			//g_sEnemy->m_directionFacing = 3;
+		}
+		else       // Above AI got wall
+		{
+			directionAIMove = (rand() % 4 + 1);
+		}
+
+	}
+	else if (directionAIMove == 4)
+	{
+		if (collision(g_sEnemy->m_cLocation.X + 1, g_sEnemy->m_cLocation.Y))     // Check if above AI got wall
+		{
+			g_sEnemy->m_cLocation.X++;
+			//g_sEnemy->m_directionFacing = 4;
+		}
+		else       // Above AI got wall
+		{
+			directionAIMove = (rand() % 4 + 1);
 		}
 	}
+
+	timeSinceLastAIMove = *g_dElapsedTime + 1;
 }
 
-void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnemy[], SGameChar *g_sChar)
+void breadthFirstSearch(double *g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar)
 {
 	// Lets the AI only be able to move after at least 1 second has passed since it's last movement
 	if (timeSinceLastAIMove == 0)
@@ -89,207 +82,219 @@ void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnem
 		}
 		return;
 	}
-	for (int a = 0; a < *numEnemy; a++)
+	if (g_sEnemy->m_seePlayer)
 	{
-		if (g_sEnemy[a].m_seePlayer)
+		if ((g_sEnemy->m_cLocation.X != g_sChar->m_cLocation.X || g_sEnemy->m_cLocation.Y != g_sChar->m_cLocation.Y) && g_sEnemy->m_bActive)
 		{
-			if ((g_sEnemy[a].m_cLocation.X != (*g_sChar).m_cLocation.X || g_sEnemy[a].m_cLocation.Y != (*g_sChar).m_cLocation.Y) && g_sEnemy[a].m_bActive && g_sEnemy[a].m_seePlayer)
+			bool gotAINearby = false;
+			vector<int> AICannotMove1;
+			vector<int> AICannotMove2;
+			int pathFindAI[25][80][3] = { 0, };
+			//int enemyX = g_sChar->m_cLocation.X;
+			//int enemyY = g_sChar->m_cLocation.Y;
+			int enemyX = g_sEnemy->m_cLocation.X;
+			int enemyY = g_sEnemy->m_cLocation.Y;
+			pathFindAI[enemyY][enemyX][0] = 'c';	 // 0 - open list, c - closed list
+			pathFindAI[enemyY][enemyX][1] = enemyY;  // 1 - Y-coords parent
+			pathFindAI[enemyY][enemyX][2] = enemyX;  // 2 - X-coords parent
+			pair<int, int> coords;
+			pair<int, int> current;
+			pair<int, int> playerLocation;
+			pair<int, int> enemyLocation;
+			queue<pair<int, int>> listOfNodes;   // to store the neighbouring nodes that are in the open list
+
+			playerLocation = make_pair(g_sEnemy->m_cLastSeenLocation.Y, g_sEnemy->m_cLastSeenLocation.X);    // coords of player last seen location
+
+			//-------------------------QUEUE NEIGHBOURING--------------------------------------------------------------------------------------------
+			if (collision(enemyX, enemyY - 1))				// if above current node no wall
 			{
-				bool gotAINearby = false;
-				vector<int> AICannotMove1;
-				vector<int> AICannotMove2;
-				int pathFindAI[25][80][3] = { 0, };
-				int enemyX = g_sEnemy[a].m_cLocation.X;
-				int enemyY = g_sEnemy[a].m_cLocation.Y;
-				pathFindAI[enemyY][enemyX][0] = 'c';	 // 0 - open list, c - closed list
-				pathFindAI[enemyY][enemyX][1] = enemyY;  // 1 - Y-coords parent
-				pathFindAI[enemyY][enemyX][2] = enemyX;  // 2 - X-coords parent
-				pair<int, int> coords;
-				pair<int, int> current;
-				pair<int, int> playerLocation;
-				pair<int, int> enemyLocation;
-				queue<pair<int, int>> listOfNodes;   // to store the neighbouring nodes that are in the open list
+				coords = make_pair(enemyY - 1, enemyX);		// add above node to queue
+				listOfNodes.push(coords);
+				pathFindAI[enemyY - 1][enemyX][0] = 'c';	// add node to closed list
+				pathFindAI[enemyY - 1][enemyX][1] = enemyY; // add Y-coords of parent node (the node where the neighbouring node came from)
+				pathFindAI[enemyY - 1][enemyX][2] = enemyX; // add X-coords of parent node (the node where the neighbouring node came from)
+			}
+			if (collision(enemyX, enemyY + 1))				// if below current node no wall
+			{
+				coords = make_pair(enemyY + 1, enemyX);		// add below node to queue
+				listOfNodes.push(coords);
+				pathFindAI[enemyY + 1][enemyX][0] = 'c';	// add node to closed list
+				pathFindAI[enemyY + 1][enemyX][1] = enemyY; // add Y-coords of parent node (the node where the neighbouring node came from)
+				pathFindAI[enemyY + 1][enemyX][2] = enemyX; // add X-coords of parent node (the node where the neighbouring node came from)
+			}
+			if (collision(enemyX - 1, enemyY))				// if to the left of current node no wall
+			{
+				coords = make_pair(enemyY, enemyX - 1);		// add left node to queue
+				listOfNodes.push(coords);
+				pathFindAI[enemyY][enemyX - 1][0] = 'c';	// add node to closed list
+				pathFindAI[enemyY][enemyX - 1][1] = enemyY; // add Y-coords of parent node (the node where the neighbouring node came from)
+				pathFindAI[enemyY][enemyX - 1][2] = enemyX; // add X-coords of parent node (the node where the neighbouring node came from)
+			}
+			if (collision(enemyX + 1, enemyY))				// if to the right of current node no wall
+			{
+				coords = make_pair(enemyY, enemyX + 1);		// add right node to queue
+				listOfNodes.push(coords);
+				pathFindAI[enemyY][enemyX + 1][0] = 'c';	// add node to closed list
+				pathFindAI[enemyY][enemyX + 1][1] = enemyY; // add Y-coords of parent node (the node where the neighbouring node came from)
+				pathFindAI[enemyY][enemyX + 1][2] = enemyX; // add X-coords of parent node (the node where the neighbouring node came from)
+			}
+			//-------------------------QUEUE NEIGHBOURING--------------------------------------------------------------------------------------------
 
-				enemyLocation = make_pair(g_sEnemy[a].m_cLocation.Y, g_sEnemy[a].m_cLocation.X);   // coords of enemy
-				playerLocation = make_pair((*g_sChar).m_cLastSeenLocation.Y, (*g_sChar).m_cLastSeenLocation.X);    // coords of player
-
-				//-------------------------QUEUE NEIGHBOURING--------------------------------------------------------------------------------------------
-				if (collision(enemyX, enemyY - 1))				// if above current node no wall
-				{
-					coords = make_pair(enemyY - 1, enemyX);		// add above node to queue
-					listOfNodes.push(coords);
-					pathFindAI[enemyY - 1][enemyX][0] = 'c';	// add node to closed list
-					pathFindAI[enemyY - 1][enemyX][1] = enemyY; // add Y-coords of parent node (the node where the neighbouring node came from)
-					pathFindAI[enemyY - 1][enemyX][2] = enemyX; // add X-coords of parent node (the node where the neighbouring node came from)
-				}
-				if (collision(enemyX, enemyY + 1))				// if below current node no wall
-				{
-					coords = make_pair(enemyY + 1, enemyX);		// add below node to queue
-					listOfNodes.push(coords);
-					pathFindAI[enemyY + 1][enemyX][0] = 'c';	// add node to closed list
-					pathFindAI[enemyY + 1][enemyX][1] = enemyY; // add Y-coords of parent node (the node where the neighbouring node came from)
-					pathFindAI[enemyY + 1][enemyX][2] = enemyX; // add X-coords of parent node (the node where the neighbouring node came from)
-				}
-				if (collision(enemyX - 1, enemyY))				// if to the left of current node no wall
-				{
-					coords = make_pair(enemyY, enemyX - 1);		// add left node to queue
-					listOfNodes.push(coords);
-					pathFindAI[enemyY][enemyX - 1][0] = 'c';	// add node to closed list
-					pathFindAI[enemyY][enemyX - 1][1] = enemyY; // add Y-coords of parent node (the node where the neighbouring node came from)
-					pathFindAI[enemyY][enemyX - 1][2] = enemyX; // add X-coords of parent node (the node where the neighbouring node came from)
-				}
-				if (collision(enemyX + 1, enemyY))				// if to the right of current node no wall
-				{
-					coords = make_pair(enemyY, enemyX + 1);		// add right node to queue
-					listOfNodes.push(coords);
-					pathFindAI[enemyY][enemyX + 1][0] = 'c';	// add node to closed list
-					pathFindAI[enemyY][enemyX + 1][1] = enemyY; // add Y-coords of parent node (the node where the neighbouring node came from)
-					pathFindAI[enemyY][enemyX + 1][2] = enemyX; // add X-coords of parent node (the node where the neighbouring node came from)
-				}
-				//-------------------------QUEUE NEIGHBOURING--------------------------------------------------------------------------------------------
-
-				//-----------------ADD CURRENT ITEMS IN QUEUE TO CLOSED LIST AFTER ADDING NEIGHBOURING NODES--------------------------------
+			//-----------------ADD CURRENT ITEMS IN QUEUE TO CLOSED LIST AFTER ADDING NEIGHBOURING NODES--------------------------------
 
 
-				while (current != playerLocation)
+			while (current != playerLocation)
+			{
+				current = listOfNodes.front();			 // current.first = y-coords, current.second = x-coords
+				listOfNodes.pop();
+				if (collision(current.second, current.first - 1))				// if above current node no wall
 				{
-					current = listOfNodes.front();			 // current.first = y-coords, current.second = x-coords
-					listOfNodes.pop();
-					if (collision(current.second, current.first - 1))				// if above current node no wall
+					if (pathFindAI[current.first - 1][current.second][0] == 0)
 					{
-						if (pathFindAI[current.first - 1][current.second][0] == 0)
-						{
-							coords = make_pair(current.first - 1, current.second);		// add above node to queue
-							listOfNodes.push(coords);
-							pathFindAI[current.first - 1][current.second][0] = 'c';		// add node to closed list
-							pathFindAI[current.first - 1][current.second][1] = current.first; // add Y-coords of parent node (the node where the neighbouring node came from)
-							pathFindAI[current.first - 1][current.second][2] = current.second; // add X-coords of parent node (the node where the neighbouring node came from)
-						}
-					}
-					if (collision(current.second, current.first + 1))				// if below current node no wall
-					{
-						if (pathFindAI[current.first + 1][current.second][0] == 0)
-						{
-							coords = make_pair(current.first + 1, current.second);		// add below node to queue
-							listOfNodes.push(coords);
-							pathFindAI[current.first + 1][current.second][0] = 'c';		// add node to closed list
-							pathFindAI[current.first + 1][current.second][1] = current.first; // add Y-coords of parent node (the node where the neighbouring node came from)
-							pathFindAI[current.first + 1][current.second][2] = current.second; // add X-coords of parent node (the node where the neighbouring node came from)
-						}
-					}
-					if (collision(current.second - 1, current.first))				// if to the left of current node no wall
-					{
-						if (pathFindAI[current.first][current.second - 1][0] == 0)
-						{
-							coords = make_pair(current.first, current.second - 1);		// add left node to queue
-							listOfNodes.push(coords);
-							pathFindAI[current.first][current.second - 1][0] = 'c';		// add node to closed list
-							pathFindAI[current.first][current.second - 1][1] = current.first; // add Y-coords of parent node (the node where the neighbouring node came from)
-							pathFindAI[current.first][current.second - 1][2] = current.second; // add X-coords of parent node (the node where the neighbouring node came from)
-						}
-					}
-					if (collision(current.second + 1, current.first))				// if to the right of current node no wall
-					{
-						if (pathFindAI[current.first][current.second + 1][0] == 0)
-						{
-							coords = make_pair(current.first, current.second + 1);		// add right node to queue
-							listOfNodes.push(coords);
-							pathFindAI[current.first][current.second + 1][0] = 'c';		// add node to closed list
-							pathFindAI[current.first][current.second + 1][1] = current.first; // add Y-coords of parent node (the node where the neighbouring node came from)
-							pathFindAI[current.first][current.second + 1][2] = current.second; // add X-coords of parent node (the node where the neighbouring node came from)
-						}
-					}
-					if (listOfNodes.empty())
-					{
-						break;
+						coords = make_pair(current.first - 1, current.second);		// add above node to queue
+						listOfNodes.push(coords);
+						pathFindAI[current.first - 1][current.second][0] = 'c';		// add node to closed list
+						pathFindAI[current.first - 1][current.second][1] = current.first; // add Y-coords of parent node (the node where the neighbouring node came from)
+						pathFindAI[current.first - 1][current.second][2] = current.second; // add X-coords of parent node (the node where the neighbouring node came from)
 					}
 				}
-				//-----------------ADD CURRENT ITEMS IN QUEUE TO CLOSED LIST AFTER ADDING NEIGHBOURING NODES--------------------------------
+				if (collision(current.second, current.first + 1))				// if below current node no wall
+				{
+					if (pathFindAI[current.first + 1][current.second][0] == 0)
+					{
+						coords = make_pair(current.first + 1, current.second);		// add below node to queue
+						listOfNodes.push(coords);
+						pathFindAI[current.first + 1][current.second][0] = 'c';		// add node to closed list
+						pathFindAI[current.first + 1][current.second][1] = current.first; // add Y-coords of parent node (the node where the neighbouring node came from)
+						pathFindAI[current.first + 1][current.second][2] = current.second; // add X-coords of parent node (the node where the neighbouring node came from)
+					}
+				}
+				if (collision(current.second - 1, current.first))				// if to the left of current node no wall
+				{
+					if (pathFindAI[current.first][current.second - 1][0] == 0)
+					{
+						coords = make_pair(current.first, current.second - 1);		// add left node to queue
+						listOfNodes.push(coords);
+						pathFindAI[current.first][current.second - 1][0] = 'c';		// add node to closed list
+						pathFindAI[current.first][current.second - 1][1] = current.first; // add Y-coords of parent node (the node where the neighbouring node came from)
+						pathFindAI[current.first][current.second - 1][2] = current.second; // add X-coords of parent node (the node where the neighbouring node came from)
+					}
+				}
+				if (collision(current.second + 1, current.first))				// if to the right of current node no wall
+				{
+					if (pathFindAI[current.first][current.second + 1][0] == 0)
+					{
+						coords = make_pair(current.first, current.second + 1);		// add right node to queue
+						listOfNodes.push(coords);
+						pathFindAI[current.first][current.second + 1][0] = 'c';		// add node to closed list
+						pathFindAI[current.first][current.second + 1][1] = current.first; // add Y-coords of parent node (the node where the neighbouring node came from)
+						pathFindAI[current.first][current.second + 1][2] = current.second; // add X-coords of parent node (the node where the neighbouring node came from)
+					}
+				}
+				if (listOfNodes.empty())
+				{
+					g_sEnemy->m_seePlayer = false;
+					break;
+				}
+			}
+			//-----------------ADD CURRENT ITEMS IN QUEUE TO CLOSED LIST AFTER ADDING NEIGHBOURING NODES--------------------------------
 
-				//-----------------TRACING THE PATH BACK VIA PARENT-------------------------------------------------------------------------
+			//-----------------TRACING THE PATH BACK VIA PARENT-------------------------------------------------------------------------
 
-				int tempX = current.second;
-				int tempY = current.first;
+			int tempX = current.second;
+			int tempY = current.first;
+
+			enemyX = tempX;
+			enemyY = tempY;
+
+			while (true)
+			{
+				if (pathFindAI[enemyY][enemyX][1] == g_sEnemy->m_cLocation.Y && pathFindAI[enemyY][enemyX][2] == g_sEnemy->m_cLocation.X)
+				{
+					break;
+				}
+				tempY = pathFindAI[enemyY][enemyX][1];
+				tempX = pathFindAI[enemyY][enemyX][2];
 
 				enemyX = tempX;
 				enemyY = tempY;
-
-				while (true)
-				{
-					if (pathFindAI[enemyY][enemyX][1] == g_sEnemy[a].m_cLocation.Y && pathFindAI[enemyY][enemyX][2] == g_sEnemy[a].m_cLocation.X)
-					{
-						break;
-					}
-					tempY = pathFindAI[enemyY][enemyX][1];
-					tempX = pathFindAI[enemyY][enemyX][2];
-
-					enemyX = tempX;
-					enemyY = tempY;
-				}
-				//-----------------TRACING THE PATH BACK VIA PARENT-------------------------------------------------------------------------
-
-				//-----------------AI TO AI COLLISION---------------------------------------------------------------------------------------
-
-				if (a != (*numEnemy - 1))
-				{
-					for (int i = a + 1; i < *numEnemy; i++)
-					{
-						if (enemyX == g_sEnemy[i].m_cLocation.X && enemyY == g_sEnemy[i].m_cLocation.Y)
-						{
-							gotAINearby = true;
-						}
-					}
-				}
-				if (a != 0)
-				{
-					for (int y = a - 1; y >= 0; y--)
-					{
-
-						if (enemyX == g_sEnemy[y].m_cLocation.X && enemyY == g_sEnemy[y].m_cLocation.Y)
-						{
-							gotAINearby = true;
-						}
-					}
-				}
-				if (gotAINearby)
-				{
-					return;
-				}
-				//-----------------AI TO AI COLLISION---------------------------------------------------------------------------------------
-
-
-				//-----------------CALCULATE THE NEXT SINGLE MOVEMENT-----------------------------------------------------------------------
-
-				if ((enemyX != (*g_sChar).m_cLocation.X || enemyY != (*g_sChar).m_cLocation.Y))
-				{
-					g_sEnemy[a].m_cLocation.X = enemyX;
-					g_sEnemy[a].m_cLocation.Y = enemyY;
-				}
-
-				//-----------------CALCULATE THE NEXT SINGLE MOVEMENT-----------------------------------------------------------------------
-
 			}
+			//-----------------TRACING THE PATH BACK VIA PARENT-------------------------------------------------------------------------
+
+			//-----------------AI TO AI COLLISION---------------------------------------------------------------------------------------
+
+			/*if (a != (*numEnemy - 1))
+			{
+				for (int i = a + 1; i < *numEnemy; i++)
+				{
+					if (enemyX == g_sEnemy[i].m_cLocation.X && enemyY == g_sEnemy[i].m_cLocation.Y)
+					{
+						gotAINearby = true;
+					}
+				}
+			}
+			if (a != 0)
+			{
+				for (int y = a - 1; y >= 0; y--)
+				{
+
+					if (enemyX == g_sEnemy[y].m_cLocation.X && enemyY == g_sEnemy[y].m_cLocation.Y)
+					{
+						gotAINearby = true;
+					}
+				}
+			}
+			if (gotAINearby)
+			{
+				return;
+			}*/
+			//-----------------AI TO AI COLLISION---------------------------------------------------------------------------------------
+
+
+			//-----------------CALCULATE THE NEXT SINGLE MOVEMENT-----------------------------------------------------------------------
+
+			//if ((enemyX != g_sEnemy->m_cLastSeenLocation.X || enemyY != g_sEnemy->m_cLastSeenLocation.Y))
+			if ((enemyX != g_sChar->m_cLocation.X || enemyY != g_sChar->m_cLocation.Y))
+			{
+				g_sEnemy->m_cLocation.X = enemyX;
+				g_sEnemy->m_cLocation.Y = enemyY;
+			}
+			return;
+			//-----------------CALCULATE THE NEXT SINGLE MOVEMENT-----------------------------------------------------------------------
+
+
 		}
+
+
 	}
 }
 
 
-bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[height][width])
+bool lineOfSight( SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][width])
 {
-	int x = g_sEnemy[a].m_cLocation.X;
-	int y = g_sEnemy[a].m_cLocation.Y;
+	int x = g_sEnemy->m_cLocation.X;
+	int y = g_sEnemy->m_cLocation.Y;
 	float walls = 0.0f;
 	bool hitWall = false;
-	int radius = 2;
-	int playerY = (*g_sChar).m_cLocation.Y;
-	int playerX = (*g_sChar).m_cLocation.X;
+	int radius = 5;
+	int playerY = g_sChar->m_cLocation.Y;
+	int playerX = g_sChar->m_cLocation.X;
 
 	for (int lookrow = y; lookrow >= y - radius; lookrow--)
 	{
 		for (int lookcol = x - ceil(walls / 2.0f); lookcol <= x + ceil(walls / 2.0f); lookcol++)
-		{
-			
-			if (map[lookrow][x] == (char)219)
+		{	
+			if (map[lookrow][x] == '.')
+			{
+				if (lookcol == playerX && lookrow == playerY)
+				{
+					g_sEnemy->m_seePlayer = true;
+					g_sEnemy->m_cLastSeenLocation.X = playerX;
+					g_sEnemy->m_cLastSeenLocation.Y = playerY;
+					return true;
+				}
+			}
+			else
 			{
 				if (map[lookrow + 1][lookcol + 1] == (char)219 && lookcol == x - ceil(walls / 2.0f))
 				{
@@ -299,18 +304,19 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 				{
 					continue;
 				}
+				if (lookcol == playerX && lookrow == playerY)
+				{
+					g_sEnemy->m_seePlayer = true;
+					g_sEnemy->m_cLastSeenLocation.X = playerX;
+					g_sEnemy->m_cLastSeenLocation.Y = playerY;
+					return true;
+				}
 			}
 			if (map[lookrow][x] == (char)219 || map[lookrow][x] == (char)186 || map[lookrow][x] == (char)205)
 			{
 				hitWall = true;
 			}
-			if (lookcol == playerX && lookrow == playerY)
-			{
-				g_sEnemy[a].m_seePlayer = true;
-				(*g_sChar).m_cLastSeenLocation.X = playerX;
-				(*g_sChar).m_cLastSeenLocation.Y = playerY;
-				return true;
-			}
+			
 		}
 		walls++;
 		if (hitWall)
@@ -326,7 +332,17 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 	{
 		for (int lookcol = x - ceil(walls / 2.0f); lookcol <= x + ceil(walls / 2.0f); lookcol++)
 		{
-			if (map[lookrow][x] == (char)219)
+			if (map[lookrow][x] == '.')
+			{
+				if (lookcol == playerX && lookrow == playerY)
+				{
+					g_sEnemy->m_seePlayer = true;
+					g_sEnemy->m_cLastSeenLocation.X = playerX;
+					g_sEnemy->m_cLastSeenLocation.Y = playerY;
+					return true;
+				}
+			}
+			else
 			{
 				if (map[lookrow - 1][lookcol + 1] == (char)219 && lookcol == x - ceil(walls / 2.0f))
 				{
@@ -336,17 +352,17 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 				{
 					continue;
 				}
+				if (lookcol == playerX && lookrow == playerY)
+				{
+					g_sEnemy->m_seePlayer = true;
+					g_sEnemy->m_cLastSeenLocation.X = playerX;
+					g_sEnemy->m_cLastSeenLocation.Y = playerY;
+					return true;
+				}
 			}
 			if (map[lookrow][x] == (char)219 || map[lookrow][x] == (char)186 || map[lookrow][x] == (char)205)
 			{
 				hitWall = true;
-			}
-			if (lookcol == playerX && lookrow == playerY)
-			{
-				g_sEnemy[a].m_seePlayer = true;
-				(*g_sChar).m_cLastSeenLocation.X = playerX;
-				(*g_sChar).m_cLastSeenLocation.Y = playerY;
-				return true;
 			}
 		}
 		walls++;
@@ -359,12 +375,21 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 	hitWall = false;
 
 
-
 	for (int lookcol = x; lookcol >= x - radius; lookcol--)
 	{
 		for (int lookrow = y - ceil(walls / 2.0f); lookrow <= y + ceil(walls / 2.0f); lookrow++)
 		{
-			if (map[y][lookcol] == (char)219)
+			if (map[y][lookcol] == '.')
+			{
+				if (lookcol == playerX && lookrow == playerY)
+				{
+					g_sEnemy->m_seePlayer = true;
+					g_sEnemy->m_cLastSeenLocation.X = playerX;
+					g_sEnemy->m_cLastSeenLocation.Y = playerY;
+					return true;
+				}
+			}
+			else
 			{
 				if (map[lookrow + 1][lookcol + 1] == (char)219 && lookrow == y - ceil(walls / 2.0f))
 				{
@@ -374,17 +399,17 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 				{
 					continue;
 				}
+				if (lookcol == playerX && lookrow == playerY)
+				{
+					g_sEnemy->m_seePlayer = true;
+					g_sEnemy->m_cLastSeenLocation.X = playerX;
+					g_sEnemy->m_cLastSeenLocation.Y = playerY;
+					return true;
+				}
 			}
 			if (map[y][lookcol] == (char)219 || map[y][lookcol] == (char)186 || map[y][lookcol] == (char)205)
 			{
 				hitWall = true;
-			}
-			if (lookcol == playerX && lookrow == playerY)
-			{
-				g_sEnemy[a].m_seePlayer = true;
-				(*g_sChar).m_cLastSeenLocation.X = playerX;
-				(*g_sChar).m_cLastSeenLocation.Y = playerY;
-				return true;
 			}
 		}
 		walls++;
@@ -397,12 +422,21 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 	hitWall = false;
 
 
-
 	for (int lookcol = x; lookcol <= x + radius; lookcol++)
 	{
 		for (int lookrow = y - ceil(walls / 2.0f); lookrow <= y + ceil(walls / 2.0f); lookrow++)
 		{
-			if (map[y][lookcol] == (char)219)
+			if (map[y][lookcol] == '.')
+			{
+				if (lookcol == playerX && lookrow == playerY)
+				{
+					g_sEnemy->m_seePlayer = true;
+					g_sEnemy->m_cLastSeenLocation.X = playerX;
+					g_sEnemy->m_cLastSeenLocation.Y = playerY;
+					return true;
+				}
+			}
+			else
 			{
 				if (map[lookrow + 1][lookcol - 1] == (char)219 && lookrow == y - ceil(walls / 2.0f))
 				{
@@ -412,17 +446,17 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 				{
 					continue;
 				}
+				if (lookcol == playerX && lookrow == playerY)
+				{
+					g_sEnemy->m_seePlayer = true;
+					g_sEnemy->m_cLastSeenLocation.X = playerX;
+					g_sEnemy->m_cLastSeenLocation.Y = playerY;
+					return true;
+				}
 			}
 			if (map[y][lookcol] == (char)219 || map[y][lookcol] == (char)186 || map[y][lookcol] == (char)205)
 			{
 				hitWall = true;
-			}
-			if (lookcol == playerX && lookrow == playerY)
-			{
-				g_sEnemy[a].m_seePlayer = true;
-				(*g_sChar).m_cLastSeenLocation.X = playerX;
-				(*g_sChar).m_cLastSeenLocation.Y = playerY;
-				return true;
 			}
 		}
 		walls++;
@@ -431,12 +465,13 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 			break;
 		}
 	}
+	return false;
 	/*
-	int enemyX = g_sEnemy[a].m_cLocation.X;
-	int enemyY = g_sEnemy[a].m_cLocation.Y;
+	int enemyX = g_sEnemy->m_cLocation.X;
+	int enemyY = g_sEnemy->m_cLocation.Y;
 
-	int distanceFromPlayerToEnemyX = (*g_sChar).m_cLocation.X - enemyX;
-	int distanceFromPlayerToEnemyY = (*g_sChar).m_cLocation.Y - enemyY;
+	int distanceFromPlayerToEnemyX = g_sChar->m_cLocation.X - enemyX;
+	int distanceFromPlayerToEnemyY = g_sChar->m_cLocation.Y - enemyY;
 
 	int distanceX = abs(distanceFromPlayerToEnemyX);
 	int distanceY = abs(distanceFromPlayerToEnemyY);
@@ -462,8 +497,8 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 		signY = -1;
 	}
 
-	int x = g_sEnemy[a].m_cLocation.X;
-	int y = g_sEnemy[a].m_cLocation.Y;
+	int x = g_sEnemy->m_cLocation.X;
+	int y = g_sEnemy->m_cLocation.Y;
 
 	double increaseNonDominant;
 
@@ -480,11 +515,11 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 			x += signX;
 			increaseNonDominant += (distanceY * 2);
 
-			if (x == (*g_sChar).m_cLocation.X && y == (*g_sChar).m_cLocation.Y)
+			if (x == g_sChar->m_cLocation.X && y == g_sChar->m_cLocation.Y)
 			{
-				(*g_sChar).m_cLastSeenLocation.X = x;
-				(*g_sChar).m_cLastSeenLocation.Y = y;
-				g_sEnemy[a].m_seePlayer = true;
+				g_sChar->m_cLastSeenLocation.X = x;
+				g_sChar->m_cLastSeenLocation.Y = y;
+				g_sEnemy->m_seePlayer = true;
 				return true;
 			}
 		} while (collision(x, y));
@@ -503,11 +538,11 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 			y += signY;
 			increaseNonDominant += (distanceX * 2);
 
-			if (x == (*g_sChar).m_cLocation.X && y == (*g_sChar).m_cLocation.Y)
+			if (x == g_sChar->m_cLocation.X && y == g_sChar->m_cLocation.Y)
 			{
-				(*g_sChar).m_cLastSeenLocation.X = x;
-				(*g_sChar).m_cLastSeenLocation.Y = y;
-				g_sEnemy[a].m_seePlayer = true;
+				g_sChar->m_cLastSeenLocation.X = x;
+				g_sChar->m_cLastSeenLocation.Y = y;
+				g_sEnemy->m_seePlayer = true;
 				return true;
 			}
 		} while (collision(x, y));
@@ -518,10 +553,10 @@ bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[hei
 
 int playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar)
 {
-	int x1 = g_sEnemy[a].m_cLocation.X;
-	int y1 = g_sEnemy[a].m_cLocation.Y;
-	int x2 = (*g_sChar).m_cLocation.X;
-	int y2 = (*g_sChar).m_cLocation.Y;
+	int x1 = g_sEnemy->m_cLocation.X;
+	int y1 = g_sEnemy->m_cLocation.Y;
+	int x2 = g_sChar->m_cLocation.X;
+	int y2 = g_sChar->m_cLocation.Y;
 	int distance = sqrt(pow(x1 - x2, 2) - pow(y1 - y2, 2));
 	return distance;
 }

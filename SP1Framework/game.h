@@ -77,7 +77,7 @@ struct SGameChar
 	bool  m_seePlayer;
 	bool  m_bCanAttack;
 	bool  m_bCanExplode;
-	int   m_directionFacing;
+	int   m_directionFacing = 1;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;
 	unsigned int m_iKills;
@@ -115,15 +115,15 @@ void renderToScreen();      // dump the contents of the buffer to the screen, on
 void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
 void gameLoad(int level);
 void renderEnemy();
-void enemyBehaviour();
-void randomMovement(int *numEnemy, double *g_dElapsedTime, SGameChar g_sEnemy[]);
+void enemyBehaviour(SGameChar *g_sEnemy);
+void randomMovement(double *g_dElapsedTime, SGameChar *g_sEnemy);
 void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
 bool collision(int x, int y);
-void breadthFirstSearch(double *g_dElapsedTime, int *numEnemy, SGameChar g_sEnemy[], SGameChar *g_sChar);
+void breadthFirstSearch(double *g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar);
 bool EnemyIsAttacked(int x1, int x2, int y1, int y2);
-bool lineOfSight(int a, SGameChar g_sEnemy[], SGameChar *g_sChar, char(&map)[height][width]);
+bool lineOfSight(SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][width]);
 int  playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar);
 void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);
 void checkUp( SGameChar *g_sChar );

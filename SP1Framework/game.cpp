@@ -248,7 +248,7 @@ void gameplay()			// gameplay logic
 	{
 		if (g_sEnemy[i].m_bActive)
 		{
-			enemyBehaviour();
+			enemyBehaviour(&g_sEnemy[i]);
 		}
 	}
 }
@@ -615,7 +615,7 @@ void renderMap()
 	string line;
 	for (int y = 0; y < height; y++)
 	{
-		line = fog[y];
+		line = map[y];
 		g_Console.writeToBuffer(c, line);
 		c.Y++;			
 	}
@@ -632,7 +632,7 @@ void renderEnemy()
 {	
 	for (int i = 0; i < numEnemy; i++)
 	{
-		if (fog[g_sEnemy[i].m_cLocation.Y][g_sEnemy[i].m_cLocation.X]!=' ')
+		if (map[g_sEnemy[i].m_cLocation.Y][g_sEnemy[i].m_cLocation.X]!=' ')
 		{
 			if (g_sEnemy[i].m_bActive)
 			{
@@ -668,13 +668,14 @@ void renderObject()
 	}
 }
 
-void enemyBehaviour()
+void enemyBehaviour(SGameChar *g_sEnemy)
 {
-	for (int a = 0; a < numEnemy; a++)
-	{
-		if (lineOfSight(a, g_sEnemy, &g_sChar, map))
-			breadthFirstSearch(&g_dElapsedTime, &numEnemy, g_sEnemy, &g_sChar);
-	}
+		if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
+			breadthFirstSearch(&g_dElapsedTime,g_sEnemy, &g_sChar);
+		/*else
+		{
+			randomMovement(&g_dElapsedTime, &g_sEnemy[a]);
+		}*/
 }
 
 void checkCharacterAttack()
