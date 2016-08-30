@@ -5,16 +5,8 @@ int     directionAIMove = 1;      // 1 = up, 2 = left, 3 = down, 4 =right
 void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy)
 {
 	// Lets the AI only be able to move after at least X second has passed since it's last movement
-	if (g_sEnemy->m_dTimeSinceLastAIMove == 0)
+	if (g_dElapsedTime < g_sEnemy->m_dTimeSinceLastAIMove)
 	{
-		g_sEnemy->m_dTimeSinceLastAIMove = g_dElapsedTime;
-	}
-	else
-	{
-		if (g_dElapsedTime - g_sEnemy->m_dTimeSinceLastAIMove > 1)
-		{
-			g_sEnemy->m_dTimeSinceLastAIMove = 0;
-		}
 		return;
 	}
 	directionAIMove = g_sEnemy->m_directionFacing;
@@ -24,7 +16,6 @@ void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy)
 		if (collision(g_sEnemy->m_cLocation.X, g_sEnemy->m_cLocation.Y - 1))     // Check if above AI got wall
 		{
 			g_sEnemy->m_cLocation.Y--;
-			//g_sEnemy->m_directionFacing = 1;
 		}
 		else       // Above AI got wall
 		{
@@ -37,7 +28,6 @@ void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy)
 		if (collision(g_sEnemy->m_cLocation.X - 1, g_sEnemy->m_cLocation.Y))     // Check if above AI got wall
 		{
 			g_sEnemy->m_cLocation.X--;
-			//g_sEnemy->m_directionFacing = 2;
 		}
 		else       // Above AI got wall
 		{
@@ -50,7 +40,6 @@ void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy)
 		if (collision(g_sEnemy->m_cLocation.X, g_sEnemy->m_cLocation.Y + 1))     // Check if above AI got wall
 		{
 			g_sEnemy->m_cLocation.Y++;
-			//g_sEnemy->m_directionFacing = 3;
 		}
 		else       // Above AI got wall
 		{
@@ -63,28 +52,20 @@ void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy)
 		if (collision(g_sEnemy->m_cLocation.X + 1, g_sEnemy->m_cLocation.Y))     // Check if above AI got wall
 		{
 			g_sEnemy->m_cLocation.X++;
-			//g_sEnemy->m_directionFacing = 4;
 		}
 		else       // Above AI got wall
 		{
 			directionAIMove = (rand() % 4 + 1);
 		}
 	}
+	g_sEnemy->m_dTimeSinceLastAIMove = g_dElapsedTime + 1;
 }
 
 void breadthFirstSearch(double g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar)
 {
 	// Lets the AI only be able to move after at least X second has passed since it's last movement
-	if (g_sEnemy->m_dTimeSinceLastAIMove == 0)
+	if (g_dElapsedTime < g_sEnemy->m_dTimeSinceLastAIMove)
 	{
-		g_sEnemy->m_dTimeSinceLastAIMove = g_dElapsedTime;
-	}
-	else
-	{
-		if (g_dElapsedTime - g_sEnemy->m_dTimeSinceLastAIMove > 1)
-		{
-			g_sEnemy->m_dTimeSinceLastAIMove = 0;
-		}
 		return;
 	}
 	if (g_sEnemy->m_seePlayer)
@@ -264,13 +245,11 @@ void breadthFirstSearch(double g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g
 				g_sEnemy->m_cLocation.X = enemyX;
 				g_sEnemy->m_cLocation.Y = enemyY;
 			}
-			
 			//-----------------CALCULATE THE NEXT SINGLE MOVEMENT-----------------------------------------------------------------------
 
 
 		}
-
-
+		g_sEnemy->m_dTimeSinceLastAIMove = g_dElapsedTime + 0.4;
 	}
 }
 
@@ -326,6 +305,7 @@ bool lineOfSight( SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][wi
 		walls++;
 		if (hitWall)
 		{
+			g_sEnemy->m_seePlayer = false;
 			break;
 		}
 	}
@@ -367,6 +347,7 @@ bool lineOfSight( SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][wi
 			}
 			if (map[lookrow][x] == (char)219 || map[lookrow][x] == (char)186 || map[lookrow][x] == (char)205)
 			{
+				g_sEnemy->m_seePlayer = false;
 				hitWall = true;
 			}
 		}
@@ -414,6 +395,7 @@ bool lineOfSight( SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][wi
 			}
 			if (map[y][lookcol] == (char)219 || map[y][lookcol] == (char)186 || map[y][lookcol] == (char)205)
 			{
+				g_sEnemy->m_seePlayer = false;
 				hitWall = true;
 			}
 		}
@@ -467,6 +449,7 @@ bool lineOfSight( SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][wi
 		walls++;
 		if (hitWall)
 		{
+			g_sEnemy->m_seePlayer = false;
 			break;
 		}
 	}

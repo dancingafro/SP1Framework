@@ -662,6 +662,10 @@ void renderEnemy()
 			if (g_sEnemy[i].m_bActive)
 			{
 				g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x07);
+				if (g_sEnemy[i].m_seePlayer)
+				{
+					g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x05);
+				}
 			}
 		}
 		eCheckForDamage( &g_Console, &g_sEnemy[i], &g_sChar, &g_dElapsedTime);
@@ -694,12 +698,15 @@ void renderObject()
 
 void enemyBehaviour(SGameChar *g_sEnemy)
 {
-		if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
-			breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
-		/*else
-		{
-			randomMovement(g_dElapsedTime, &g_sEnemy[a]);
-		}*/
+	
+	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
+	{
+		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
+	}
+	/*else
+	{
+		randomMovement(g_dElapsedTime, &g_sEnemy[a]);
+	}*/
 }
 
 void checkCharacterAttack()
