@@ -259,7 +259,7 @@ void breadthFirstSearch(double *g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *
 				g_sEnemy->m_cLocation.X = enemyX;
 				g_sEnemy->m_cLocation.Y = enemyY;
 			}
-			return;
+			
 			//-----------------CALCULATE THE NEXT SINGLE MOVEMENT-----------------------------------------------------------------------
 
 

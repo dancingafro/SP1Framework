@@ -2,14 +2,15 @@
 //
 //
 #include "game.h"
+#include "CheckAttack.h"
+#include "HUD.h"
 
 points* playerPoints = new points();
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  g_dCharNextAttackTime;
-bool    g_abKeyPressed[K_COUNT]; 
-
+bool    g_abKeyPressed[K_COUNT];
 
 // Game specific variables here
 SGameObj	g_sKey;
@@ -23,7 +24,8 @@ char map[height][width];
 char fog[height][width];
 int oldLocationx;
 int oldLocationy;
-double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
+double  g_dBounceTime;// this is to prevent key bouncing, so we won't trigger keypresses more than once
+double govertime;
 int numTele = 0;
 int numEnemy = 0;
 int g_menuselect = 0;
@@ -151,9 +153,9 @@ void update(double dt)
         case S_GAME: 
 			gameplay(); // gameplay logic when we are in the game
             break;
-		case S_GAMEOVER:
-			overscreen();
-			break;
+	//	case S_GAMEOVER:
+	//		overscreen();
+	//		break;
 		case S_OVERLOAD:
 			overloading();
 			break;
@@ -263,7 +265,7 @@ void moveCharacter()
 
 	if (g_abKeyPressed[K_2])
 	{
-		g_sChar.m_iKills++;
+		g_sChar.m_iHitpoints--;
 		bSomethingHappened = true;
 	}
 	if (!g_sChar.m_bAttacking)
@@ -272,7 +274,6 @@ void moveCharacter()
 		{
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
 			{
-				
 				for (int a = 0; a < numEnemy; a++)
 				{
 					if (gotPlayerCollision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
@@ -336,8 +337,6 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 		{
-			//PlaySound(TEXT("PlayerWalk1.wav"), NULL, SND_FILENAME | SND_ASYNC);
-
 			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
 			{
 				
@@ -373,7 +372,6 @@ void moveCharacter()
 		{
 			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
 			{
-				
 				for (int a = 0; a < numEnemy; a++)
 				{
 					if (gotPlayerCollision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y, g_sEnemy[a].m_cLocation.X, g_sEnemy[a].m_cLocation.Y) && g_sEnemy[a].m_bActive)
@@ -541,6 +539,7 @@ void govermenu(COORD c)
 		c.X = 34;
 		c.Y = 17;
 		g_Console.writeToBuffer(c, "Main Menu", 0xF0);
+
 	}
 	if (goverselect == 1)
 	{
@@ -548,6 +547,19 @@ void govermenu(COORD c)
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Quit Game", 0xF0);
 	}
+	if (goverselect == 0)
+	{
+		g_eGameState = S_LOADING;
+
+		g_dCharNextAttackTime = 0.0;
+		g_sChar.m_cAttackLocation = { 0, 0 };
+		g_sChar.m_bAttacking = false;
+		g_sChar.m_iHitpoints = 10;
+		g_sChar.m_dAttackRate = 0.25;
+		g_sChar.m_iKills = 0;
+	}
+	else if (goverselect == 1)
+		g_bQuitGame = true;
 }
 
 void renderloadinginstruct()  // renders the splash screen
@@ -567,6 +579,9 @@ void renderloadinginstruct()  // renders the splash screen
 
 void splashScreenWait()
 {
+	renderSplashScreen();
+	if (g_dElapsedTime < govertime)
+		return;
 	if (g_abKeyPressed[K_RETURN])
 	{
 		if(g_menuselect == 0)
@@ -576,16 +591,26 @@ void splashScreenWait()
 	}
 }
 
-void overscreen()
-{
-	if (g_abKeyPressed[K_RETURN])
-	{
-		if (goverselect == 0)
-			g_eGameState = S_SPLASHSCREEN;
-		else if (goverselect == 1)
-			g_bQuitGame = true;
-	}
-}
+//void overscreen()
+//{
+//	if (g_abKeyPressed[K_RETURN])
+//	{
+//		govertime = g_dElapsedTime + 0.5;
+//		if (goverselect == 0) 
+//		{
+//			g_eGameState = S_LOADING;
+//
+//			g_dCharNextAttackTime = 0.0;
+//			g_sChar.m_cAttackLocation = { 0, 0 };
+//			g_sChar.m_bAttacking = false;
+//			g_sChar.m_iHitpoints = 10;
+//			g_sChar.m_dAttackRate = 0.25;
+//			g_sChar.m_iKills = 0;
+//		}
+//		else if (goverselect == 1)
+//			g_bQuitGame = true;
+//	}
+//}
 
 void instructscreen()
 {
@@ -603,7 +628,7 @@ void renderGame()
 	renderEnemy();		// renders an enemy into the buffer
 	checkCharacterAttack();
 	renderCharacterAttack();
-	renderHUD();
+	renderHUD(&g_sChar, &g_Console);
 }
 
 void renderMap()
@@ -615,7 +640,7 @@ void renderMap()
 	string line;
 	for (int y = 0; y < height; y++)
 	{
-		line = map[y];
+		line = fog[y];
 		g_Console.writeToBuffer(c, line);
 		c.Y++;			
 	}
@@ -632,7 +657,7 @@ void renderEnemy()
 {	
 	for (int i = 0; i < numEnemy; i++)
 	{
-		if (map[g_sEnemy[i].m_cLocation.Y][g_sEnemy[i].m_cLocation.X]!=' ')
+		if (fog[g_sEnemy[i].m_cLocation.Y][g_sEnemy[i].m_cLocation.X]!=' ')
 		{
 			if (g_sEnemy[i].m_bActive)
 			{
@@ -641,12 +666,11 @@ void renderEnemy()
 		}
 		eCheckForDamage( &g_Console, &g_sEnemy[i], &g_sChar, &g_dElapsedTime);
 	}
+	eRenderHP(&g_Console);
 }
 
 void enemyatt(COORD a, COORD b)
 {
-	bool enemyclose = false;
-	if ((a.X == b.X + 1) || (a.X == b.X - 1) || (a.Y == b.Y + 1) || (a.Y == b.Y - 1))
 	if (((a.X == b.X + 1) && (a.Y == b.Y)) || ((a.X == b.X - 1) && (a.Y == b.Y)) || ((a.Y == b.Y + 1) && (a.X == b.X)) || ((a.Y == b.Y - 1) && (a.X == b.X)))
 	{
 		while (g_dElapsedTime > enemyatttime + 1)
@@ -681,11 +705,6 @@ void enemyBehaviour(SGameChar *g_sEnemy)
 void checkCharacterAttack()
 {
 	bool bSomethingHappened = false;
-	if (g_sChar.m_iHitpoints <= 0)
-	{
-////////VVVVVVVVVVVVVVVVVVV       FOR TESTING ONLY!! MUST CHANGE!!      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		g_eGameState = S_OVERLOAD;
-	}
 	if (g_sChar.m_bAttacking || g_dCharNextAttackTime > g_dElapsedTime) // (N) If player is launching or next attack time has not come
 	{
 		g_sChar.m_cAttackLocation = { 0,0 };
@@ -700,66 +719,24 @@ void checkCharacterAttack()
 	{
 		if (g_abKeyPressed[K_UP])
 		{
-			checkUp( &g_sChar );
-			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttackUp( &g_sChar );
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
-			checkLeft( &g_sChar );
-			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttackLeft( &g_sChar );
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
-			checkDown( &g_sChar );
-			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttackDown( &g_sChar );
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
-			checkRight( &g_sChar );
-			launchPlayerAttack(&g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttackRight( &g_sChar );
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
 		}
-	}
-}
-
-void renderHUD()
-{
-	WORD HPColor = 0x0A;
-	char cKillCountOnes = '0';
-	char cKillCountTens = '0';
-	COORD c;
-	c.Y = 28;
-	unsigned int iHP = g_sChar.m_iHitpoints;
-
-	for (unsigned int i = 1; i <= iHP; i++)
-	{
-		c.X = 5 + i;
-		if (g_sChar.m_iHitpoints <= 7 && g_sChar.m_iHitpoints > 3)
-		{
-			HPColor = 0x0E;
-		}
-		else if (g_sChar.m_iHitpoints <= 3)
-		{
-			HPColor = 0x0C;
-		}
-		g_Console.writeToBuffer(c, (char)219, HPColor);
-	}
-	c.Y = 29;
-	c.X = 8;
-	if (g_sChar.m_iKills <= 9)
-	{
-		cKillCountOnes += g_sChar.m_iKills;
-		g_Console.writeToBuffer(c, '0', 0x0F);
-		c.X = 9;
-		g_Console.writeToBuffer(c, cKillCountOnes, 0x0F);
-	}
-	else if (g_sChar.m_iKills > 9)
-	{
-		int r = g_sChar.m_iKills - 10;
-		cKillCountOnes += r;
-		cKillCountTens = '1';
-		g_Console.writeToBuffer(c, cKillCountTens, 0x0F);
-		c.X = 9;
-		g_Console.writeToBuffer(c, cKillCountOnes, 0x0F);
 	}
 }
 
