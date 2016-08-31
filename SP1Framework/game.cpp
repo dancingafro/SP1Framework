@@ -262,6 +262,7 @@ void gameplay()			// gameplay logic
 	if (allEnemydead)
 	{
 		map[g_sDoor[1].m_cLocation.Y][g_sDoor[1].m_cLocation.X] = 'E';
+		MapData[g_sDoor[1].m_cLocation.Y][g_sDoor[1].m_cLocation.X] = EXIT;
 	}
 }
 
@@ -554,15 +555,40 @@ void govermenu(COORD c)
 void renderloadinginstruct()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
-
+	WORD color = 0xf0;
 	c.X = 0;
-	string line;
+	c.Y = 0;
 	for (int y = 0; y < height; y++)
 	{
 		c.Y = y;
-		line = map[y];
-		g_Console.writeToBuffer(c, line);
+		for (int x = 0; x < width; x++)
+		{
+			c.X = x;
+			switch (map[y][x])
+			{
+			case (char)219:
+				color = 0x0f;
+				break;
+			case (char)186:
+				color = 0x03;
+				break;
+			case (char)205:
+				color = 0x03;
+				break;
+			case '.':
+				color = 0x01;
+				break;
+			case (char)43:
+				color = 0x05;
+				break;
+			default:
+				color = 0x0f;
+				break;
+			}
+			g_Console.writeToBuffer(c, map[y][x], color);
+		}
 	}
+	g_Console.writeToBuffer(g_sKey.m_cLocation, (char)254);
 }
 
 void splashScreenWait()
