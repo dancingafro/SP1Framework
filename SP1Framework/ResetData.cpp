@@ -1,9 +1,10 @@
 #include"ResetData.h"
 
-void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width])
+void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[], MAPDATA(&MapData)[height][width], char(&map)[height][width], char(&fog)[height][width])
 {
 	memset(map, ' ', sizeof(map[0][0] * height * width));
 	memset(fog, ' ', sizeof(fog[0][0] * height * width));
+	memset(MapData, NOTHING, sizeof(MapData[0][0] * height * width));
 	for (unsigned int i = 0; i < totalTele; i++)
 	{
 		g_sTeleporters[i].m_cLocation.X = 0;

@@ -18,10 +18,10 @@ SGameObj	g_sDoor[2];
 SGameObj	g_sTeleporters[totalTele];
 SGameChar   g_sChar;
 SGameChar   g_sEnemy[totalEnemy];
-GVARABLES   MapData;
 EGAMESTATES g_eGameState;
 int level = 1;
 char map[height][width];
+MAPDATA MapData[height][width];
 char fog[height][width];
 int oldLocationx;
 int oldLocationy;
@@ -148,7 +148,7 @@ void update(double dt)
 			instructscreen();
 			break;
 		case S_GAMELOAD:
-			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy, g_sDoor, g_sTeleporters, map, fog);
+			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy, g_sDoor, g_sTeleporters, MapData, map, fog);
 			gameLoad(level);
 			break;
         case S_GAME: 
@@ -198,19 +198,19 @@ void render()
 
 void Splashscreenloading()
 {
-	loadfile("Splashscreen.txt", &numTele, &numEnemy,&MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters,map,fog);
+	loadfile("Splashscreen.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters,map,fog);
 	g_eGameState = S_SPLASHSCREEN;
 }
 
 void instructionloading()
 {
-	loadfile("instructions.txt", &numTele, &numEnemy, &MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+	loadfile("instructions.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_INSTRUCTION;
 }
 
 void overloading()
 {
-	loadfile("gameover.txt", &numTele, &numEnemy, &MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+	loadfile("gameover.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_GAMEOVER;
 }
 
@@ -219,12 +219,12 @@ void gameLoad(int level)
 	switch (level)
 	{
 	case 1:
-		loadfile("maze2.txt", &numTele, &numEnemy, &MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+		loadfile("maze2.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	case 2:
-		loadfile("maze3.txt", &numTele, &numEnemy, &MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+		loadfile("maze3.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
@@ -283,7 +283,7 @@ void moveCharacter()
 	{
 		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
 		{
-			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, map))
+			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, MapData))
 			{
 				for (int a = 0; a < numEnemy; a++)
 				{
@@ -307,6 +307,7 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -315,7 +316,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_A] && g_sChar.m_cLocation.X > 0)
 		{
-			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y, map))
+			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y, MapData))
 			{
 				
 				for (int a = 0; a < numEnemy; a++)
@@ -340,6 +341,7 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -348,7 +350,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 		{
-			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1, map))
+			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1, MapData))
 			{
 				
 				for (int a = 0; a < numEnemy; a++)
@@ -373,6 +375,7 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -381,7 +384,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_D] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 		{
-			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y, map))
+			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y, MapData))
 			{
 				for (int a = 0; a < numEnemy; a++)
 				{
@@ -405,8 +408,8 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
-					playerPoints->increasePoints();
 				}
 			}
 			bSomethingHappened = true;
