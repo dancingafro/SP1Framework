@@ -82,6 +82,7 @@
     <Media Include="snd_PlayerHitWall.wav" />
     <Media Include="snd_PlayerWalk1.wav" />
     <Media Include="snd_EnemyDie.wav" />
+    <Media Include="snd_EnemyHitPlayer.wav" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

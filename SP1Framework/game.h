@@ -71,6 +71,7 @@ struct SGameChar
     COORD m_cLocation;
 	COORD m_cLastSeenLocation;
 	COORD m_cAttackLocation;
+	COORD m_cAttackRenderLocation;
 	bool  m_bActive;
 	bool  m_haveKey;
     bool  m_bAttacking;
@@ -78,13 +79,14 @@ struct SGameChar
 	bool  m_bCanAttack;
 	bool  m_bCanExplode;
 	int   m_directionFacing = 1;
-	bool  m_bRecentlyAttacked;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;
 	unsigned int m_iKills;
 	double m_dAttackRate;
 	double m_dExplosionTime;
 	double m_dTimeSinceLastAIMove = 0;
+	double m_dAttackRenderTime;
+	double m_dNextAttackTime;
 };
 
 struct SGameObj
@@ -129,14 +131,10 @@ int  playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar);
 void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
 void instructionloading();
-//void renderHUD(SGameChar *g_sChar, Console *g_Console);
 bool PositionCollision(int x1, int y1, int x2, int y2);
 void menu(COORD c);
-void enemyatt(COORD a, COORD b);
 void overloading();
 void overscreen();
 void govermenu(COORD c);
-//void eRenderHP(Console *g_Console);
-//void SelectedEnemyHP(unsigned int iHP);
 
 #endif

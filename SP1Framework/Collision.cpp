@@ -26,3 +26,20 @@ bool PositionCollision(int x1, int y1, int x2, int y2)		// x1 - x coord of first
 {
 	return (x1 == x2 && y1 == y2);
 }
+
+bool CheckAroundSelf(COORD cTarget, COORD cSelf)
+{
+	COORD cSelfUp = { cSelf.X,cSelf.Y - 1 };
+	COORD cSelfDown = { cSelf.X,cSelf.Y + 1 };
+	COORD cSelfRight = { cSelf.X + 1,cSelf.Y };
+	COORD cSelfLeft = { cSelf.X - 1,cSelf.Y };
+
+	if (PositionCollision(cTarget.X, cTarget.Y, cSelfUp.X, cSelfUp.Y) || PositionCollision(cTarget.X, cTarget.Y, cSelfLeft.X, cSelfLeft.Y) || PositionCollision(cTarget.X, cTarget.Y, cSelfRight.X, cSelfRight.Y) || PositionCollision(cTarget.X, cTarget.Y, cSelfDown.X, cSelfDown.Y))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

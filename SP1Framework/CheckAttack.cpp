@@ -28,16 +28,25 @@ void setAttack(int directions, SGameChar *g_sChar )
 }
 
 
-void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened )
+void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dElapsedTime, bool *bSomethingHappened )
 {
 	COORD cAtkLctn = g_sChar->m_cAttackLocation;
 	ntt = *g_dElapsedTime + g_sChar->m_dAttackRate;
-	*g_dCharNextAttackTime = ntt;
+	g_sChar->m_dNextAttackTime = ntt;
 	g_sChar->m_bCanAttack = false;
 	g_sChar->m_bAttacking = true;
+	g_sChar->m_cAttackRenderLocation = g_sChar->m_cAttackLocation;
+	g_sChar->m_dAttackRenderTime = *g_dElapsedTime + 0.5;
 	*bSomethingHappened = true;
 	iAtkType = checkAtkType( cAtkLctn);
 	playAttackSound(iAtkType);
+}
+
+void launchEnemyAttack(SGameChar *g_sChar, SGameChar *g_sEnemy, double *g_dElapsedTime)
+{
+	g_sEnemy->m_cAttackLocation = g_sChar->m_cLocation;
+	g_sEnemy->m_dNextAttackTime = *g_dElapsedTime + g_sEnemy->m_dAttackRate;
+	cCheckForDamage(g_sChar, *g_sEnemy);
 }
 
 void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sChar, double *g_dElapsedTime )
@@ -50,6 +59,14 @@ void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sCha
 		if (g_sEnemy->m_iHitpoints == 0)
 		{
 			g_sChar->m_iKills++;
+			if (g_sChar->m_iHitpoints < 9)
+			{
+				g_sChar->m_iHitpoints += 2;
+			}
+			else
+			{
+				g_sChar->m_iHitpoints = 10;
+			}
 			g_sEnemy->m_bActive = false;
 			//playerPoints->increasePoints();
 			PlaySound(TEXT("snd_EnemyDie.wav"), NULL, SND_FILENAME | SND_ASYNC);
@@ -65,6 +82,15 @@ void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sCha
 	{
 		g_sEnemy->m_cLocation.X = 0;
 		g_sEnemy->m_cLocation.Y = 0;
+	}
+}
+
+void cCheckForDamage(SGameChar *g_sChar, SGameChar g_sEnemy)
+{
+	if (g_sChar->m_cLocation.X == g_sEnemy.m_cAttackLocation.X && g_sChar->m_cLocation.Y == g_sEnemy.m_cAttackLocation.Y)
+	{
+		PlaySound(TEXT("snd_EnemyHitPlayer.wav"), NULL, SND_FILENAME | SND_ASYNC);
+		g_sChar->m_iHitpoints -= g_sEnemy.m_iDamage;
 	}
 }
 

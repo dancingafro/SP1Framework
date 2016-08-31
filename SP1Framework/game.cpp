@@ -9,7 +9,7 @@ points* playerPoints = new points();
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
-double  g_dCharNextAttackTime;
+//double  g_dCharNextAttackTime;
 bool    g_abKeyPressed[K_COUNT];
 bool allEnemydead = false;
 // Game specific variables here
@@ -30,7 +30,6 @@ int numTele = 0;
 int numEnemy = 0;
 int g_menuselect = 0;
 int goverselect = 0;
-int enemyatttime = 0;
 // Console object
 Console g_Console(width, height, "Dungeon Explorer");
 
@@ -51,12 +50,14 @@ void init( void )
     // sets the initial state for the game
 	g_eGameState = S_LOADING;
 
-	g_dCharNextAttackTime = 0.0;
+	//g_dCharNextAttackTime = 0.0;
 	g_sChar.m_cAttackLocation = { 0, 0 };
 	g_sChar.m_bAttacking = false;
 	g_sChar.m_iHitpoints = 10;
 	g_sChar.m_dAttackRate = 0.25;
 	g_sChar.m_iKills = 0;
+	g_sChar.m_dAttackRenderTime = 0.0;
+	g_sChar.m_dNextAttackTime = 0.0;
 
 	oldLocationx = 0;
 	oldLocationx = 0;
@@ -272,12 +273,12 @@ void moveCharacter()
     if (g_dBounceTime > g_dElapsedTime)
         return;
 
-	if (g_abKeyPressed[K_2])
+	/*if (g_abKeyPressed[K_2])
 	{
 		g_sChar.m_iHitpoints--;
 		bSomethingHappened = true;
-	}
-	if (!g_sChar.m_bAttacking)
+	}*/
+	if (g_sChar.m_dAttackRenderTime < g_dElapsedTime)
 	{
 		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
 		{
@@ -674,6 +675,19 @@ void renderEnemy()
 		{
 			if (g_sEnemy[i].m_bActive)
 			{
+				if (g_sEnemy[i].m_dNextAttackTime < g_dElapsedTime)
+				{
+					g_sEnemy[i].m_bCanAttack = true;
+				}
+				else if (g_sEnemy[i].m_dNextAttackTime >= g_dElapsedTime)
+				{
+					g_sEnemy[i].m_cAttackLocation = { 0,0 };
+					g_sEnemy[i].m_bCanAttack = false;
+				}
+				if (g_sEnemy[i].m_bCanAttack && CheckAroundSelf(g_sEnemy[i].m_cLocation, g_sChar.m_cLocation))
+				{
+					launchEnemyAttack(&g_sChar, &g_sEnemy[i], &g_dElapsedTime);
+				}
 				g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x07);
 				if (g_sEnemy[i].m_seePlayer)
 				{
@@ -684,18 +698,6 @@ void renderEnemy()
 		eCheckForDamage( &g_Console, &g_sEnemy[i], &g_sChar, &g_dElapsedTime);
 	}
 	eRenderHP(&g_Console);
-}
-
-void enemyatt(COORD a, COORD b)
-{
-	if (((a.X == b.X + 1) && (a.Y == b.Y)) || ((a.X == b.X - 1) && (a.Y == b.Y)) || ((a.Y == b.Y + 1) && (a.X == b.X)) || ((a.Y == b.Y - 1) && (a.X == b.X)))
-	{
-		while (g_dElapsedTime > enemyatttime)
-		{
-			g_sChar.m_iHitpoints--;
-			enemyatttime = (int)g_dElapsedTime + 1;
-		}
-	}
 }
 
 void renderObject()
@@ -711,36 +713,20 @@ void renderObject()
 
 void enemyBehaviour(SGameChar *g_sEnemy)
 {
-	enemyatt(g_sEnemy->m_cLocation, g_sChar.m_cLocation);
-
 	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
 		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
-	/*else
-	{
-		randomMovement(g_dElapsedTime, g_sEnemy);
-=======
-	
-	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
-	{
-		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
-	}
-	/*else
-	{
-		randomMovement(g_dElapsedTime, &g_sEnemy[a]);
->>>>>>> 22a7dd052f7f2a44784d24266a0427d0d38f7929
-	}*/
 }
 
 void checkCharacterAttack()
 {
 	bool bSomethingHappened = false;
-	if (g_sChar.m_bAttacking || g_dCharNextAttackTime > g_dElapsedTime) // (N) If player is launching or next attack time has not come
+	if (g_sChar.m_bAttacking || g_sChar.m_dNextAttackTime > g_dElapsedTime) // (N) If player is launching or next attack time has not come
 	{
 		g_sChar.m_cAttackLocation = { 0,0 };
 		g_sChar.m_bCanAttack = false;
 	}
 	// (N) If player is not holding down attack keys + attack has already launched + next attack time has passed
-	else if (!g_sChar.m_bAttacking && g_dCharNextAttackTime <= g_dElapsedTime && (g_abKeyPressed[K_UP] + g_abKeyPressed[K_LEFT] + g_abKeyPressed[K_DOWN] + g_abKeyPressed[K_RIGHT]) == false)
+	else if (!g_sChar.m_bAttacking && g_sChar.m_dNextAttackTime <= g_dElapsedTime && (g_abKeyPressed[K_UP] + g_abKeyPressed[K_LEFT] + g_abKeyPressed[K_DOWN] + g_abKeyPressed[K_RIGHT]) == false)
 	{
 		g_sChar.m_bCanAttack = true;
 	}
@@ -749,31 +735,33 @@ void checkCharacterAttack()
 		if (g_abKeyPressed[K_UP])
 		{
 			setAttack(1, &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
 			setAttack(3, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
 			setAttack(2, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
 			setAttack(4, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened);
 		}
 	}
 }
 
 void renderCharacterAttack()
 {
-	if (g_sChar.m_bAttacking)
+	COORD c = g_sChar.m_cAttackRenderLocation;
+	
+	if (!g_sChar.m_bCanAttack && g_sChar.m_dAttackRenderTime >= g_dElapsedTime)
 	{
-		g_Console.writeToBuffer(g_sChar.m_cAttackLocation, (char)42, 0x0A);
+		g_Console.writeToBuffer(c, (char)42, 0x0A);
 		g_sChar.m_bAttacking = false;
 	}
 }

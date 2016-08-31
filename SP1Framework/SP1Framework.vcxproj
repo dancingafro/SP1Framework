@@ -115,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="snd_EnemyDie.wav" />
+    <Media Include="snd_EnemyHitPlayer.wav" />
     <Media Include="snd_PlayerAttackMiss.wav" />
     <Media Include="snd_PlayerHitEnemy.wav" />
     <Media Include="snd_PlayerHitWall.wav" />

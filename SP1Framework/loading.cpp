@@ -91,9 +91,12 @@ void initializeEnemy(SGameChar *g_sEnemy, unsigned int row, unsigned int col)
 	g_sEnemy->m_cLocation.Y = row;
 	g_sEnemy->m_bActive = true;
 	g_sEnemy->m_iHitpoints = 3;
-	g_sEnemy->m_bCanExplode = true;
 	g_sEnemy->m_dExplosionTime = 0.0;
-	g_sEnemy->m_bRecentlyAttacked = false;
+	g_sEnemy->m_dNextAttackTime = 0.0;
+	g_sEnemy->m_iDamage = 1;
+	g_sEnemy->m_dAttackRate = 2.0;
+	g_sEnemy->m_bCanAttack = false;
+	g_sEnemy->m_cAttackLocation = { 0,0 };
 }
 
 void initializeTeleporters(SGameObj *g_sTeleporters, unsigned int row, unsigned int col)
