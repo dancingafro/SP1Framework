@@ -690,7 +690,7 @@ void enemyatt(COORD a, COORD b)
 		while (g_dElapsedTime > enemyatttime)
 		{
 			g_sChar.m_iHitpoints--;
-			enemyatttime = (int)g_dElapsedTime + 1;
+			enemyatttime = (int)g_dElapsedTime + 2;
 		}
 	}
 }
@@ -710,8 +710,8 @@ void enemyBehaviour(SGameChar *g_sEnemy)
 {
 	enemyatt(g_sEnemy->m_cLocation, g_sChar.m_cLocation);
 
-	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
-		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar,map);
+	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, MapData))
+		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar, MapData);
 	/*else
 	{
 		randomMovement(g_dElapsedTime, g_sEnemy,map);
@@ -736,22 +736,22 @@ void checkCharacterAttack()
 		if (g_abKeyPressed[K_UP])
 		{
 			setAttack(1, &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, map);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
 			setAttack(3, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, map);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
 			setAttack(2, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, map);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
 			setAttack(4, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, map);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 	}
 }

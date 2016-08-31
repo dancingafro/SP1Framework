@@ -126,13 +126,13 @@ void loadfile(string mapname, int *numTele, int *numEnemy, MAPDATA(&MapData)[hei
 void gameLoad(int level);
 void renderEnemy();
 void enemyBehaviour(SGameChar *g_sEnemy);
-void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy, char(&map)[height][width]);
+void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy, MAPDATA(&MapData)[height][width]);
 void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
 bool collision(int x, int y, MAPDATA(&MapData)[height][width]);
-void breadthFirstSearch(double g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][width]);
-bool lineOfSight(SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][width]);
+void breadthFirstSearch(double g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar, MAPDATA(&MapData)[height][width]);
+bool lineOfSight(SGameChar *g_sEnemy, SGameChar *g_sChar, MAPDATA(&MapData)[height][width]);
 int  playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar);
 void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);
 void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[],  MAPDATA (&MapData)[height][width], char(&map)[height][width], char(&fog)[height][width]);
