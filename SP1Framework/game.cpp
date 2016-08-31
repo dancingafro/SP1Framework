@@ -6,7 +6,6 @@
 #include "HUD.h"
 
 points* playerPoints = new points();
-
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 //double  g_dCharNextAttackTime;
@@ -21,6 +20,7 @@ SGameChar   g_sEnemy[totalEnemy];
 EGAMESTATES g_eGameState;
 int level = 1;
 char map[height][width];
+MAPDATA MapData[height][width];
 char fog[height][width];
 int oldLocationx;
 int oldLocationy;
@@ -148,7 +148,7 @@ void update(double dt)
 			instructscreen();
 			break;
 		case S_GAMELOAD:
-			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy, g_sDoor, g_sTeleporters, map, fog);
+			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy, g_sDoor, g_sTeleporters, MapData, map, fog);
 			gameLoad(level);
 			break;
         case S_GAME: 
@@ -198,19 +198,19 @@ void render()
 
 void Splashscreenloading()
 {
-	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters,map,fog);
+	loadfile("Splashscreen.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters,map,fog);
 	g_eGameState = S_SPLASHSCREEN;
 }
 
 void instructionloading()
 {
-	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+	loadfile("instructions.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_INSTRUCTION;
 }
 
 void overloading()
 {
-	loadfile("gameover.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+	loadfile("gameover.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_GAMEOVER;
 }
 
@@ -219,16 +219,17 @@ void gameLoad(int level)
 	switch (level)
 	{
 	case 1:
-		loadfile("maze2.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+		loadfile("maze2.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	case 2:
-		loadfile("maze3.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+		loadfile("maze3.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	default:
+		g_eGameState = S_OVERLOAD;
 		break;
 	}
 	g_eGameState = S_GAME;
@@ -262,6 +263,7 @@ void gameplay()			// gameplay logic
 	if (allEnemydead)
 	{
 		map[g_sDoor[1].m_cLocation.Y][g_sDoor[1].m_cLocation.X] = 'E';
+		MapData[g_sDoor[1].m_cLocation.Y][g_sDoor[1].m_cLocation.X] = EXIT;
 	}
 }
 
@@ -282,7 +284,7 @@ void moveCharacter()
 	{
 		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
 		{
-			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
+			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, MapData))
 			{
 				for (int a = 0; a < numEnemy; a++)
 				{
@@ -306,6 +308,7 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -314,7 +317,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_A] && g_sChar.m_cLocation.X > 0)
 		{
-			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y))
+			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y, MapData))
 			{
 				
 				for (int a = 0; a < numEnemy; a++)
@@ -339,6 +342,7 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -347,7 +351,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 		{
-			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
+			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1, MapData))
 			{
 				
 				for (int a = 0; a < numEnemy; a++)
@@ -372,6 +376,7 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -380,7 +385,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_D] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 		{
-			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
+			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y, MapData))
 			{
 				for (int a = 0; a < numEnemy; a++)
 				{
@@ -404,8 +409,8 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
-					playerPoints->increasePoints();
 				}
 			}
 			bSomethingHappened = true;
@@ -467,14 +472,13 @@ void renderSplashScreen()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
 
-	c.X = 20;
-	c.Y = 1;
+	c.X = 0;
 	string line;
 	for (int y = 0; y < height; y++)
 	{
+		c.Y = y;
 		line = map[y];
 		g_Console.writeToBuffer(c,line );
-		c.Y++;
 	}
 	
 	menu(c);
@@ -483,19 +487,15 @@ void renderSplashScreen()  // renders the splash screen
 void renderGameover()
 {
 	COORD c = g_Console.getConsoleSize();
-	c.X = 12;
-	c.Y = 5;
-	ifstream file;
+	c.X = 0;
 	string line;
-	file.open("gameover.txt");
 
-	while (!file.eof())
+	for (int y = 0; y < height; y++)
 	{
-		getline(file, line);
+		c.Y = y;
+		line = map[y];
 		g_Console.writeToBuffer(c, line);
-		c.Y++;	
 	}
-	file.close();
 	govermenu(c);
 }
 
@@ -504,24 +504,22 @@ void menu(COORD c)
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
-	c.X = 34;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, "Start Game");
-	c.X = 33;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, "Instructions");
 	if (g_abKeyPressed[K_DOWN])
 		g_menuselect = 1;
 	if (g_menuselect == 1 && g_abKeyPressed[K_UP])
 		g_menuselect = 0;
+	c.X = 34;
+	c.Y = 17;
 	if (g_menuselect == 0)
 	{
-		c.X = 34;
-		c.Y = 17;
 		g_Console.writeToBuffer(c, "Start Game", 0xF0);
+		c.X = 33;
+		c.Y = 18;
+		g_Console.writeToBuffer(c, "Instructions");
 	}
 	if (g_menuselect == 1)
 	{
+		g_Console.writeToBuffer(c, "Start Game");
 		c.X = 33;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Instructions", 0xF0);
@@ -533,25 +531,22 @@ void govermenu(COORD c)
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
-	c.X = 34;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, "Main Menu");
-	c.X = 34;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, "Quit Game");
 	if (g_abKeyPressed[K_DOWN])
 		goverselect = 1;
 	if (goverselect == 1 && g_abKeyPressed[K_UP])
 		goverselect = 0;
+	c.X = 34;
+	c.Y = 17;
 	if (goverselect == 0)
 	{
-		c.X = 34;
-		c.Y = 17;
 		g_Console.writeToBuffer(c, "Main Menu", 0xF0);
-
+		c.X = 34;
+		c.Y = 18;
+		g_Console.writeToBuffer(c, "Quit Game");
 	}
 	if (goverselect == 1)
 	{
+		g_Console.writeToBuffer(c, "Main Menu");
 		c.X = 34;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Quit Game", 0xF0);
@@ -561,25 +556,49 @@ void govermenu(COORD c)
 void renderloadinginstruct()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
-
-	c.X = 20;
-	c.Y = 1;
-	string line;
+	WORD color = 0xf0;
+	c.X = 0;
+	c.Y = 0;
 	for (int y = 0; y < height; y++)
 	{
-		line = map[y];
-		g_Console.writeToBuffer(c, line);
-		c.Y++;
+		c.Y = y;
+		for (int x = 0; x < width; x++)
+		{
+			c.X = x;
+			switch (map[y][x])
+			{
+			case (char)219:
+				color = 0x0f;
+				break;
+			case (char)186:
+				color = 0x03;
+				break;
+			case (char)205:
+				color = 0x03;
+				break;
+			case '.':
+				color = 0x01;
+				break;
+			case (char)43:
+				color = 0x05;
+				break;
+			default:
+				color = 0x0f;
+				break;
+			}
+			g_Console.writeToBuffer(c, map[y][x], color);
+		}
 	}
+	g_Console.writeToBuffer(g_sKey.m_cLocation, (char)254);
 }
 
 void splashScreenWait()
 {
-	renderSplashScreen();
 	if (g_dElapsedTime < govertime)
 		return;
 	if (g_abKeyPressed[K_RETURN])
 	{
+		govertime = g_dElapsedTime + 0.5;
 		if(g_menuselect == 0)
 		g_eGameState = S_GAMELOAD;
 		else if (g_menuselect == 1)
@@ -589,13 +608,14 @@ void splashScreenWait()
 
 void overscreen()
 {
+	if (g_dElapsedTime < govertime)
+		return;
 	if (g_abKeyPressed[K_RETURN])
 	{
 		govertime = g_dElapsedTime + 0.5;
 		if (goverselect == 0)
 		{
 			g_sChar.m_iHitpoints = 10;
-
 			g_eGameState = S_LOADING;
 		}
 		else if (goverselect == 1)
@@ -605,9 +625,12 @@ void overscreen()
 
 void instructscreen()
 {
+	if (g_dElapsedTime < govertime)
+		return;
 	if (g_abKeyPressed[K_BACK])
 	{
-		g_eGameState = S_GAMELOAD;
+		govertime = g_dElapsedTime + 0.5;
+		g_eGameState = S_LOADING;
 	}
 }
 
@@ -634,7 +657,7 @@ void renderMap()
 		for (int x = 0; x < width; x++)
 		{
 			c.X = x;
-			switch (fog[y][x])
+			switch (map[y][x])
 			{
 			case (char)219:
 				color = 0x0f;
@@ -713,8 +736,15 @@ void renderObject()
 
 void enemyBehaviour(SGameChar *g_sEnemy)
 {
-	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
-		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
+	lineOfSight(g_sEnemy, &g_sChar, MapData);
+	if (g_sEnemy->m_seePlayer)
+	{
+		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar, MapData);
+	}
+	if (!g_sEnemy->m_seePlayer)
+	{
+		randomMovement(g_dElapsedTime, g_sEnemy, MapData);
+	}
 }
 
 void checkCharacterAttack()
@@ -735,22 +765,22 @@ void checkCharacterAttack()
 		if (g_abKeyPressed[K_UP])
 		{
 			setAttack(1, &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
 			setAttack(3, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
 			setAttack(2, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
 			setAttack(4, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 	}
 }

@@ -64,6 +64,15 @@ enum EGAMESTATES
 	S_OVERLOAD,
     S_COUNT
 };
+enum MAPDATA
+{
+	WALL,
+	ROAD,
+	EXIT,
+	DOOR,
+	TELE,
+	NOTHING
+};
 
 // struct for the game character
 struct SGameChar
@@ -79,6 +88,8 @@ struct SGameChar
 	bool  m_bCanAttack;
 	bool  m_bCanExplode;
 	int   m_directionFacing = 1;
+	int   m_idirectionAIMove;
+	bool  m_bRecentlyAttacked;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;
 	unsigned int m_iKills;
@@ -103,7 +114,6 @@ void shutdown    ( void );      // do clean up, free memory
 void Splashscreenloading();
 void splashScreenWait();    // waits for time to pass in splash screen
 void instructscreen();
-void gameover();
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
@@ -116,20 +126,20 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
+void loadfile(string mapname, int *numTele, int *numEnemy, MAPDATA(&MapData)[height][width], SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
 void gameLoad(int level);
 void renderEnemy();
 void enemyBehaviour(SGameChar *g_sEnemy);
-void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy);
+void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy, MAPDATA(&MapData)[height][width]);
 void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
-bool collision(int x, int y);
-void breadthFirstSearch(double g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar);
-bool lineOfSight(SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][width]);
+bool collision(int x, int y, MAPDATA(&MapData)[height][width]);
+void breadthFirstSearch(double g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar, MAPDATA(&MapData)[height][width]);
+bool lineOfSight(SGameChar *g_sEnemy, SGameChar *g_sChar, MAPDATA(&MapData)[height][width]);
 int  playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar);
 void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);
-void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
+void ResetAllData(int *numTele, int *numEnemy, SGameObj *g_sKey, SGameChar g_sEnemy[], SGameObj g_sDoor[], SGameObj g_sTeleporters[],  MAPDATA (&MapData)[height][width], char(&map)[height][width], char(&fog)[height][width]);
 void instructionloading();
 bool PositionCollision(int x1, int y1, int x2, int y2);
 void menu(COORD c);

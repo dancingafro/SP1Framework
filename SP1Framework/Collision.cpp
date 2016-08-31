@@ -1,19 +1,16 @@
 #include"Collision.h"
 
-bool collision(int x,int y)
+bool collision(int x, int y, MAPDATA(&MapData)[height][width])
 {
-	switch (map[y][x])
+	switch (MapData[y][x])
 	{
-	case (char)219:
+	case WALL:
 		return false;
 		break;
-	case (char)186:
+	case DOOR:
 		return false;
 		break;
-	case (char)205:
-		return false;
-		break;
-	case 'E':
+	case EXIT:
 		return true;
 		break;
 	default:

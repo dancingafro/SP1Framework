@@ -2,6 +2,7 @@
 #include "CheckAttack.h"
 #include "HUD.h"
 
+extern points* playerPoints;
 double ntt = 0.0;
 bool bEnemyIsHit;
 unsigned int iAtkType;
@@ -28,7 +29,7 @@ void setAttack(int directions, SGameChar *g_sChar )
 }
 
 
-void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dElapsedTime, bool *bSomethingHappened )
+void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dElapsedTime, bool *bSomethingHappened, MAPDATA(&MapData)[height][width])
 {
 	COORD cAtkLctn = g_sChar->m_cAttackLocation;
 	ntt = *g_dElapsedTime + g_sChar->m_dAttackRate;
@@ -38,7 +39,7 @@ void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dElaps
 	g_sChar->m_cAttackRenderLocation = g_sChar->m_cAttackLocation;
 	g_sChar->m_dAttackRenderTime = *g_dElapsedTime + 0.5;
 	*bSomethingHappened = true;
-	iAtkType = checkAtkType( cAtkLctn);
+	iAtkType = checkAtkType( cAtkLctn, MapData);
 	playAttackSound(iAtkType);
 }
 
@@ -68,10 +69,9 @@ void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sCha
 				g_sChar->m_iHitpoints = 10;
 			}
 			g_sEnemy->m_bActive = false;
-			//playerPoints->increasePoints();
 			PlaySound(TEXT("snd_EnemyDie.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			g_sEnemy->m_dExplosionTime = *g_dElapsedTime + 0.25;
-
+			playerPoints->increasePoints();
 		}
 	}
 	if (g_sEnemy->m_dExplosionTime > *g_dElapsedTime)
@@ -94,9 +94,9 @@ void cCheckForDamage(SGameChar *g_sChar, SGameChar g_sEnemy)
 	}
 }
 
-unsigned int checkAtkType( COORD cAtkLctn )
+unsigned int checkAtkType( COORD cAtkLctn, MAPDATA(&MapData)[height][width])
 {
-	if (!collision(cAtkLctn.X, cAtkLctn.Y))
+	if (!collision(cAtkLctn.X, cAtkLctn.Y, MapData))
 	{
 		iAtkType = 1;
 	}
