@@ -6,12 +6,11 @@
 #include "HUD.h"
 
 points* playerPoints = new points();
-
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  g_dCharNextAttackTime;
 bool    g_abKeyPressed[K_COUNT];
-
+bool allEnemydead = false;
 // Game specific variables here
 SGameObj	g_sKey;
 SGameObj	g_sDoor[2];
@@ -21,6 +20,7 @@ SGameChar   g_sEnemy[totalEnemy];
 EGAMESTATES g_eGameState;
 int level = 1;
 char map[height][width];
+MAPDATA MapData[height][width];
 char fog[height][width];
 int oldLocationx;
 int oldLocationy;
@@ -147,15 +147,15 @@ void update(double dt)
 			instructscreen();
 			break;
 		case S_GAMELOAD:
-			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy, g_sDoor, g_sTeleporters, map, fog);
+			ResetAllData(&numTele, &numEnemy, &g_sKey, g_sEnemy, g_sDoor, g_sTeleporters, MapData, map, fog);
 			gameLoad(level);
 			break;
         case S_GAME: 
 			gameplay(); // gameplay logic when we are in the game
             break;
-	//	case S_GAMEOVER:
-	//		overscreen();
-	//		break;
+		case S_GAMEOVER:
+			overscreen();
+			break;
 		case S_OVERLOAD:
 			overloading();
 			break;
@@ -197,19 +197,19 @@ void render()
 
 void Splashscreenloading()
 {
-	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters,map,fog);
+	loadfile("Splashscreen.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters,map,fog);
 	g_eGameState = S_SPLASHSCREEN;
 }
 
 void instructionloading()
 {
-	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+	loadfile("instructions.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_INSTRUCTION;
 }
 
 void overloading()
 {
-	loadfile("gameover.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+	loadfile("gameover.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_GAMEOVER;
 }
 
@@ -218,16 +218,17 @@ void gameLoad(int level)
 	switch (level)
 	{
 	case 1:
-		loadfile("maze2.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+		loadfile("maze2.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	case 2:
-		loadfile("maze3.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+		loadfile("maze3.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	default:
+		g_eGameState = S_OVERLOAD;
 		break;
 	}
 	g_eGameState = S_GAME;
@@ -235,7 +236,7 @@ void gameLoad(int level)
 
 void gameplay()			// gameplay logic
 {
-                        // sound can be played here too.
+	// sound can be played here too.
 	processUserInput();// checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
 	if (oldLocationx != g_sChar.m_cLocation.X || oldLocationy != g_sChar.m_cLocation.Y)
@@ -245,12 +246,22 @@ void gameplay()			// gameplay logic
 		FOW(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, map, fog);
 	}
 
+	allEnemydead = true;
 	for (int i = 0; i < numEnemy; i++)
 	{
 		if (g_sEnemy[i].m_bActive)
 		{
+			allEnemydead = false;
 			enemyBehaviour(&g_sEnemy[i]);
 		}
+	}
+	if (g_sChar.m_iHitpoints <= 0)
+	{
+		g_eGameState = S_OVERLOAD;
+	}
+	if (allEnemydead)
+	{
+		map[g_sDoor[1].m_cLocation.Y][g_sDoor[1].m_cLocation.X] = 'E';
 	}
 }
 
@@ -271,7 +282,7 @@ void moveCharacter()
 	{
 		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
 		{
-			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
+			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, MapData))
 			{
 				for (int a = 0; a < numEnemy; a++)
 				{
@@ -295,6 +306,7 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -303,7 +315,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_A] && g_sChar.m_cLocation.X > 0)
 		{
-			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y))
+			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y, MapData))
 			{
 				
 				for (int a = 0; a < numEnemy; a++)
@@ -328,6 +340,7 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -336,7 +349,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 		{
-			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
+			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1, MapData))
 			{
 				
 				for (int a = 0; a < numEnemy; a++)
@@ -361,6 +374,7 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
 					playerPoints->increasePoints();
 				}
@@ -369,7 +383,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_D] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 		{
-			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
+			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y, MapData))
 			{
 				for (int a = 0; a < numEnemy; a++)
 				{
@@ -393,8 +407,8 @@ void moveCharacter()
 				if (g_sChar.m_cLocation.Y == g_sKey.m_cLocation.Y && g_sChar.m_cLocation.X == g_sKey.m_cLocation.X && g_sKey.m_bActive)
 				{
 					map[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = '.';
+					MapData[g_sDoor[0].m_cLocation.Y][g_sDoor[0].m_cLocation.X] = NOTHING;
 					g_sKey.m_bActive = false;
-					playerPoints->increasePoints();
 				}
 			}
 			bSomethingHappened = true;
@@ -439,7 +453,6 @@ void processUserInput()
         g_bQuitGame = true;
 	if (g_abKeyPressed[K_1])
 	{
-		map[g_sDoor[1].m_cLocation.Y][g_sDoor[1].m_cLocation.X] = 'E';
 		for (int i = 0; i < numEnemy; i++)
 		{
 			g_sEnemy[i].m_bActive = false;
@@ -457,14 +470,13 @@ void renderSplashScreen()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
 
-	c.X = 20;
-	c.Y = 1;
+	c.X = 0;
 	string line;
 	for (int y = 0; y < height; y++)
 	{
+		c.Y = y;
 		line = map[y];
 		g_Console.writeToBuffer(c,line );
-		c.Y++;
 	}
 	
 	menu(c);
@@ -473,19 +485,15 @@ void renderSplashScreen()  // renders the splash screen
 void renderGameover()
 {
 	COORD c = g_Console.getConsoleSize();
-	c.X = 12;
-	c.Y = 5;
-	ifstream file;
+	c.X = 0;
 	string line;
-	file.open("gameover.txt");
 
-	while (!file.eof())
+	for (int y = 0; y < height; y++)
 	{
-		getline(file, line);
+		c.Y = y;
+		line = map[y];
 		g_Console.writeToBuffer(c, line);
-		c.Y++;	
 	}
-	file.close();
 	govermenu(c);
 }
 
@@ -494,24 +502,22 @@ void menu(COORD c)
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
-	c.X = 34;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, "Start Game");
-	c.X = 33;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, "Instructions");
 	if (g_abKeyPressed[K_DOWN])
 		g_menuselect = 1;
 	if (g_menuselect == 1 && g_abKeyPressed[K_UP])
 		g_menuselect = 0;
+	c.X = 34;
+	c.Y = 17;
 	if (g_menuselect == 0)
 	{
-		c.X = 34;
-		c.Y = 17;
 		g_Console.writeToBuffer(c, "Start Game", 0xF0);
+		c.X = 33;
+		c.Y = 18;
+		g_Console.writeToBuffer(c, "Instructions");
 	}
 	if (g_menuselect == 1)
 	{
+		g_Console.writeToBuffer(c, "Start Game");
 		c.X = 33;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Instructions", 0xF0);
@@ -523,66 +529,49 @@ void govermenu(COORD c)
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
-	c.X = 34;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, "Main Menu");
-	c.X = 34;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, "Quit Game");
 	if (g_abKeyPressed[K_DOWN])
 		goverselect = 1;
 	if (goverselect == 1 && g_abKeyPressed[K_UP])
 		goverselect = 0;
+	c.X = 34;
+	c.Y = 17;
 	if (goverselect == 0)
 	{
-		c.X = 34;
-		c.Y = 17;
 		g_Console.writeToBuffer(c, "Main Menu", 0xF0);
-
+		c.X = 34;
+		c.Y = 18;
+		g_Console.writeToBuffer(c, "Quit Game");
 	}
 	if (goverselect == 1)
 	{
+		g_Console.writeToBuffer(c, "Main Menu");
 		c.X = 34;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Quit Game", 0xF0);
 	}
-	if (goverselect == 0)
-	{
-		g_eGameState = S_LOADING;
-
-		g_dCharNextAttackTime = 0.0;
-		g_sChar.m_cAttackLocation = { 0, 0 };
-		g_sChar.m_bAttacking = false;
-		g_sChar.m_iHitpoints = 10;
-		g_sChar.m_dAttackRate = 0.25;
-		g_sChar.m_iKills = 0;
-	}
-	else if (goverselect == 1)
-		g_bQuitGame = true;
 }
 
 void renderloadinginstruct()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
 
-	c.X = 20;
-	c.Y = 1;
+	c.X = 0;
 	string line;
 	for (int y = 0; y < height; y++)
 	{
+		c.Y = y;
 		line = map[y];
 		g_Console.writeToBuffer(c, line);
-		c.Y++;
 	}
 }
 
 void splashScreenWait()
 {
-	renderSplashScreen();
 	if (g_dElapsedTime < govertime)
 		return;
 	if (g_abKeyPressed[K_RETURN])
 	{
+		govertime = g_dElapsedTime + 0.5;
 		if(g_menuselect == 0)
 		g_eGameState = S_GAMELOAD;
 		else if (g_menuselect == 1)
@@ -590,32 +579,31 @@ void splashScreenWait()
 	}
 }
 
-//void overscreen()
-//{
-//	if (g_abKeyPressed[K_RETURN])
-//	{
-//		govertime = g_dElapsedTime + 0.5;
-//		if (goverselect == 0) 
-//		{
-//			g_eGameState = S_LOADING;
-//
-//			g_dCharNextAttackTime = 0.0;
-//			g_sChar.m_cAttackLocation = { 0, 0 };
-//			g_sChar.m_bAttacking = false;
-//			g_sChar.m_iHitpoints = 10;
-//			g_sChar.m_dAttackRate = 0.25;
-//			g_sChar.m_iKills = 0;
-//		}
-//		else if (goverselect == 1)
-//			g_bQuitGame = true;
-//	}
-//}
+void overscreen()
+{
+	if (g_dElapsedTime < govertime)
+		return;
+	if (g_abKeyPressed[K_RETURN])
+	{
+		govertime = g_dElapsedTime + 0.5;
+		if (goverselect == 0)
+		{
+			g_sChar.m_iHitpoints = 10;
+			g_eGameState = S_LOADING;
+		}
+		else if (goverselect == 1)
+			g_bQuitGame = true;
+	}
+}
 
 void instructscreen()
 {
+	if (g_dElapsedTime < govertime)
+		return;
 	if (g_abKeyPressed[K_BACK])
 	{
-		g_eGameState = S_GAMELOAD;
+		govertime = g_dElapsedTime + 0.5;
+		g_eGameState = S_LOADING;
 	}
 }
 
@@ -699,10 +687,10 @@ void enemyatt(COORD a, COORD b)
 {
 	if (((a.X == b.X + 1) && (a.Y == b.Y)) || ((a.X == b.X - 1) && (a.Y == b.Y)) || ((a.Y == b.Y + 1) && (a.X == b.X)) || ((a.Y == b.Y - 1) && (a.X == b.X)))
 	{
-		while (g_dElapsedTime > enemyatttime + 1)
+		while (g_dElapsedTime > enemyatttime)
 		{
 			g_sChar.m_iHitpoints--;
-			enemyatttime = (int)g_dElapsedTime;
+			enemyatttime = (int)g_dElapsedTime + 2;
 		}
 	}
 }
@@ -720,15 +708,16 @@ void renderObject()
 
 void enemyBehaviour(SGameChar *g_sEnemy)
 {
-	lineOfSight(g_sEnemy, &g_sChar, map);
+	lineOfSight(g_sEnemy, &g_sChar, MapData);
 	if (g_sEnemy->m_seePlayer)
 	{
-		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
+		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar, MapData);
 	}
 	if (!g_sEnemy->m_seePlayer)
 	{
-		randomMovement(g_dElapsedTime, g_sEnemy);
+		randomMovement(g_dElapsedTime, g_sEnemy, MapData);
 	}
+	enemyatt(g_sEnemy->m_cLocation, g_sChar.m_cLocation);
 }
 
 void checkCharacterAttack()
@@ -748,23 +737,23 @@ void checkCharacterAttack()
 	{
 		if (g_abKeyPressed[K_UP])
 		{
-			setAttackUp( &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttack(1, &g_sChar );
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
-			setAttackLeft( &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttack(3, &g_sChar);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
-			setAttackDown( &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttack(2, &g_sChar);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
-			setAttackRight( &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			setAttack(4, &g_sChar);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, MapData);
 		}
 	}
 }

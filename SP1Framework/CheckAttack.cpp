@@ -2,31 +2,34 @@
 #include "CheckAttack.h"
 #include "HUD.h"
 
+extern points* playerPoints;
 double ntt = 0.0;
 bool bEnemyIsHit;
 unsigned int iAtkType;
 
-void setAttackUp( SGameChar *g_sChar )
+void setAttack(int directions, SGameChar *g_sChar )
 {
-	g_sChar->m_cAttackLocation = { g_sChar -> m_cLocation.X, g_sChar -> m_cLocation.Y - 1 };
+	switch (directions)
+	{
+	case 1:
+		g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X, g_sChar->m_cLocation.Y - 1 };
+		break;
+	case 2:
+		g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X, g_sChar->m_cLocation.Y + 1 };
+		break;
+	case 3:
+		g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X - 1, g_sChar->m_cLocation.Y };
+		break;
+	case 4:
+		g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X + 1, g_sChar->m_cLocation.Y };
+		break;
+	default:
+		break;
+	}
 }
 
-void setAttackLeft( SGameChar *g_sChar )
-{
-	g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X - 1, g_sChar->m_cLocation.Y };
-}
 
-void setAttackDown( SGameChar *g_sChar )
-{
-	g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X, g_sChar->m_cLocation.Y + 1 };
-}
-
-void setAttackRight( SGameChar *g_sChar )
-{
-	g_sChar->m_cAttackLocation = { g_sChar->m_cLocation.X + 1, g_sChar->m_cLocation.Y };
-}
-
-void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened )
+void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened, MAPDATA(&MapData)[height][width])
 {
 	COORD cAtkLctn = g_sChar->m_cAttackLocation;
 	ntt = *g_dElapsedTime + g_sChar->m_dAttackRate;
@@ -34,7 +37,7 @@ void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharN
 	g_sChar->m_bCanAttack = false;
 	g_sChar->m_bAttacking = true;
 	*bSomethingHappened = true;
-	iAtkType = checkAtkType( cAtkLctn);
+	iAtkType = checkAtkType( cAtkLctn, MapData);
 	playAttackSound(iAtkType);
 }
 
@@ -49,10 +52,9 @@ void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sCha
 		{
 			g_sChar->m_iKills++;
 			g_sEnemy->m_bActive = false;
-			//playerPoints->increasePoints();
 			PlaySound(TEXT("snd_EnemyDie.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			g_sEnemy->m_dExplosionTime = *g_dElapsedTime + 0.25;
-
+			playerPoints->increasePoints();
 		}
 	}
 	if (g_sEnemy->m_dExplosionTime > *g_dElapsedTime)
@@ -66,9 +68,9 @@ void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sCha
 	}
 }
 
-unsigned int checkAtkType( COORD cAtkLctn )
+unsigned int checkAtkType( COORD cAtkLctn, MAPDATA(&MapData)[height][width])
 {
-	if (!collision(cAtkLctn.X, cAtkLctn.Y))
+	if (!collision(cAtkLctn.X, cAtkLctn.Y, MapData))
 	{
 		iAtkType = 1;
 	}
