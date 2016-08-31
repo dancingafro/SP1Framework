@@ -672,7 +672,7 @@ void renderEnemy()
 				g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x07);
 				if (g_sEnemy[i].m_seePlayer)
 				{
-					g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x05);
+					g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x0C);
 				}
 			}
 		}
