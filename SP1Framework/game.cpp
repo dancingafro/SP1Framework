@@ -6,7 +6,6 @@
 #include "HUD.h"
 
 points* playerPoints = new points();
-
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  g_dCharNextAttackTime;

@@ -2,6 +2,7 @@
 #include "CheckAttack.h"
 #include "HUD.h"
 
+extern points* playerPoints;
 double ntt = 0.0;
 bool bEnemyIsHit;
 unsigned int iAtkType;
@@ -51,10 +52,9 @@ void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sCha
 		{
 			g_sChar->m_iKills++;
 			g_sEnemy->m_bActive = false;
-			//playerPoints->increasePoints();
 			PlaySound(TEXT("snd_EnemyDie.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			g_sEnemy->m_dExplosionTime = *g_dElapsedTime + 0.25;
-
+			playerPoints->increasePoints();
 		}
 	}
 	if (g_sEnemy->m_dExplosionTime > *g_dElapsedTime)
