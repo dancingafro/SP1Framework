@@ -86,7 +86,7 @@ struct SGameChar
 	bool  m_seePlayer;
 	bool  m_bCanAttack;
 	bool  m_bCanExplode;
-	int   m_directionFacing = 1;
+	int   m_idirectionAIMove;
 	bool  m_bRecentlyAttacked;
 	unsigned int m_iHitpoints;
 	unsigned int m_iDamage;

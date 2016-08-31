@@ -656,7 +656,7 @@ void renderMap()
 		for (int x = 0; x < width; x++)
 		{
 			c.X = x;
-			switch (fog[y][x])
+			switch (map[y][x])
 			{
 			case (char)219:
 				color = 0x0f;
@@ -734,14 +734,16 @@ void renderObject()
 
 void enemyBehaviour(SGameChar *g_sEnemy)
 {
-	enemyatt(g_sEnemy->m_cLocation, g_sChar.m_cLocation);
-
-	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, MapData))
-		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar, MapData);
-	/*else
+	lineOfSight(g_sEnemy, &g_sChar, MapData);
+	if (g_sEnemy->m_seePlayer)
 	{
-		randomMovement(g_dElapsedTime, g_sEnemy,map);
-	}*/
+		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar, MapData);
+	}
+	if (!g_sEnemy->m_seePlayer)
+	{
+		randomMovement(g_dElapsedTime, g_sEnemy, MapData);
+	}
+	enemyatt(g_sEnemy->m_cLocation, g_sChar.m_cLocation);
 }
 
 void checkCharacterAttack()
