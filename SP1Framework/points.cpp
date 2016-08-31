@@ -5,11 +5,6 @@ points::points()
 	pointCount = 0;
 }
 
-points::~points()
-{
-
-}
-
 int points::getPoints()
 {
 	return pointCount;
