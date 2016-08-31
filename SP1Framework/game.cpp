@@ -642,7 +642,7 @@ void renderMap()
 		for (int x = 0; x < width; x++)
 		{
 			c.X = x;
-			switch (fog[y][x])
+			switch (map[y][x])
 			{
 			case (char)219:
 				color = 0x0f;
@@ -686,7 +686,7 @@ void renderEnemy()
 				g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x07);
 				if (g_sEnemy[i].m_seePlayer)
 				{
-					g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x05);
+					g_Console.writeToBuffer(g_sEnemy[i].m_cLocation, "C", 0x0C);
 				}
 			}
 		}
@@ -720,15 +720,15 @@ void renderObject()
 
 void enemyBehaviour(SGameChar *g_sEnemy)
 {
-	
-	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
+	lineOfSight(g_sEnemy, &g_sChar, map);
+	if (g_sEnemy->m_seePlayer)
 	{
 		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
 	}
-	/*else
+	if (!g_sEnemy->m_seePlayer)
 	{
-		randomMovement(g_dElapsedTime, &g_sEnemy[a]);
-	}*/
+		randomMovement(g_dElapsedTime, g_sEnemy);
+	}
 }
 
 void checkCharacterAttack()
