@@ -1,6 +1,6 @@
 #include"Collision.h"
 
-bool collision(int x,int y)
+bool collision(int x, int y, char(&map)[height][width])
 {
 	switch (map[y][x])
 	{

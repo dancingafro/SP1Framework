@@ -28,7 +28,7 @@ void setAttack(int directions, SGameChar *g_sChar )
 }
 
 
-void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened )
+void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened, char(&map)[height][width])
 {
 	COORD cAtkLctn = g_sChar->m_cAttackLocation;
 	ntt = *g_dElapsedTime + g_sChar->m_dAttackRate;
@@ -36,7 +36,7 @@ void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharN
 	g_sChar->m_bCanAttack = false;
 	g_sChar->m_bAttacking = true;
 	*bSomethingHappened = true;
-	iAtkType = checkAtkType( cAtkLctn);
+	iAtkType = checkAtkType( cAtkLctn,map);
 	playAttackSound(iAtkType);
 }
 
@@ -68,9 +68,9 @@ void eCheckForDamage( Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sCha
 	}
 }
 
-unsigned int checkAtkType( COORD cAtkLctn )
+unsigned int checkAtkType( COORD cAtkLctn, char(&map)[height][width])
 {
-	if (!collision(cAtkLctn.X, cAtkLctn.Y))
+	if (!collision(cAtkLctn.X, cAtkLctn.Y,map))
 	{
 		iAtkType = 1;
 	}

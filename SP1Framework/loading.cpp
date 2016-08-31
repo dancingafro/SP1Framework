@@ -1,6 +1,6 @@
 #include"Loading.h"
 
-void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width])
+void loadfile(string mapname, int *numTele, int *numEnemy, GVARABLES *mapData, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width])
 {
 	unsigned int row = 1;
 	string line = " ";
@@ -14,7 +14,7 @@ void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGa
 				switch (line[col])
 				{
 				case 'W':
-					map[row][col] = (char)219;
+					map[row][col] = mapData->wall;
 					break;
 				case 'w':
 					map[row][col] = 'W';
@@ -24,14 +24,14 @@ void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGa
 					break;
 				case 'T':
 					initializeTeleporters(&g_sTeleporters[*numTele], row, col);
-					map[row][col] = (char)43;
+					map[row][col] = mapData->tele;
 					*numTele = *numTele + 1;
 					break;
 				case 'P':
 					g_sDoor[1].m_cLocation.X = col;
 					g_sDoor[1].m_cLocation.Y = row;
 					g_sDoor[1].m_bActive = true;
-					map[row][col] = (char)205;
+					map[row][col] = mapData->door1;
 					break;
 				case 'B':
 					initializeEnemy(&g_sEnemy[*numEnemy], row, col);
@@ -42,7 +42,7 @@ void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGa
 					g_sDoor[0].m_cLocation.X = col;
 					g_sDoor[0].m_cLocation.Y = row;
 					g_sDoor[0].m_bActive = true;
-					map[row][col] = (char)186;
+					map[row][col] = mapData->door2;
 					break;
 				case 'K':
 					(*g_sKey).m_cLocation.X = col;
@@ -73,7 +73,7 @@ void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGa
 				}
 				else if (line[col] == 'N')
 				{
-					fog[row][col] = (char)178;
+					fog[row][col] = mapData->hud;
 				}
 				else
 				{

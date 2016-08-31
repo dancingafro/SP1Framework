@@ -18,6 +18,7 @@ SGameObj	g_sDoor[2];
 SGameObj	g_sTeleporters[totalTele];
 SGameChar   g_sChar;
 SGameChar   g_sEnemy[totalEnemy];
+GVARABLES   MapData;
 EGAMESTATES g_eGameState;
 int level = 1;
 char map[height][width];
@@ -197,19 +198,19 @@ void render()
 
 void Splashscreenloading()
 {
-	loadfile("Splashscreen.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters,map,fog);
+	loadfile("Splashscreen.txt", &numTele, &numEnemy,&MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters,map,fog);
 	g_eGameState = S_SPLASHSCREEN;
 }
 
 void instructionloading()
 {
-	loadfile("instructions.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+	loadfile("instructions.txt", &numTele, &numEnemy, &MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_INSTRUCTION;
 }
 
 void overloading()
 {
-	loadfile("gameover.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+	loadfile("gameover.txt", &numTele, &numEnemy, &MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 	g_eGameState = S_GAMEOVER;
 }
 
@@ -218,16 +219,17 @@ void gameLoad(int level)
 	switch (level)
 	{
 	case 1:
-		loadfile("maze2.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+		loadfile("maze2.txt", &numTele, &numEnemy, &MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	case 2:
-		loadfile("maze3.txt", &numTele, &numEnemy, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
+		loadfile("maze3.txt", &numTele, &numEnemy, &MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
 		break;
 	default:
+		g_eGameState = S_OVERLOAD;
 		break;
 	}
 	g_eGameState = S_GAME;
@@ -281,7 +283,7 @@ void moveCharacter()
 	{
 		if (g_abKeyPressed[K_W] && g_sChar.m_cLocation.Y > 0)
 		{
-			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
+			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, map))
 			{
 				for (int a = 0; a < numEnemy; a++)
 				{
@@ -313,7 +315,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_A] && g_sChar.m_cLocation.X > 0)
 		{
-			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y))
+			if (collision(g_sChar.m_cLocation.X-1, g_sChar.m_cLocation.Y, map))
 			{
 				
 				for (int a = 0; a < numEnemy; a++)
@@ -346,7 +348,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_S] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 		{
-			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1))
+			if (collision(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1, map))
 			{
 				
 				for (int a = 0; a < numEnemy; a++)
@@ -379,7 +381,7 @@ void moveCharacter()
 		}
 		if (g_abKeyPressed[K_D] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 		{
-			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
+			if (collision(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y, map))
 			{
 				for (int a = 0; a < numEnemy; a++)
 				{
@@ -466,14 +468,13 @@ void renderSplashScreen()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
 
-	c.X = 20;
-	c.Y = 1;
+	c.X = 0;
 	string line;
 	for (int y = 0; y < height; y++)
 	{
+		c.Y = y;
 		line = map[y];
 		g_Console.writeToBuffer(c,line );
-		c.Y++;
 	}
 	
 	menu(c);
@@ -482,19 +483,15 @@ void renderSplashScreen()  // renders the splash screen
 void renderGameover()
 {
 	COORD c = g_Console.getConsoleSize();
-	c.X = 12;
-	c.Y = 5;
-	ifstream file;
+	c.X = 0;
 	string line;
-	file.open("gameover.txt");
 
-	while (!file.eof())
+	for (int y = 0; y < height; y++)
 	{
-		getline(file, line);
+		c.Y = y;
+		line = map[y];
 		g_Console.writeToBuffer(c, line);
-		c.Y++;	
 	}
-	file.close();
 	govermenu(c);
 }
 
@@ -503,24 +500,22 @@ void menu(COORD c)
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
-	c.X = 34;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, "Start Game");
-	c.X = 33;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, "Instructions");
 	if (g_abKeyPressed[K_DOWN])
 		g_menuselect = 1;
 	if (g_menuselect == 1 && g_abKeyPressed[K_UP])
 		g_menuselect = 0;
+	c.X = 34;
+	c.Y = 17;
 	if (g_menuselect == 0)
 	{
-		c.X = 34;
-		c.Y = 17;
 		g_Console.writeToBuffer(c, "Start Game", 0xF0);
+		c.X = 33;
+		c.Y = 18;
+		g_Console.writeToBuffer(c, "Instructions");
 	}
 	if (g_menuselect == 1)
 	{
+		g_Console.writeToBuffer(c, "Start Game");
 		c.X = 33;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Instructions", 0xF0);
@@ -532,25 +527,22 @@ void govermenu(COORD c)
 	c.X = 27;
 	c.Y = 15;
 	g_Console.writeToBuffer(c, "Press <Enter> to select.", 0x0B);
-	c.X = 34;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, "Main Menu");
-	c.X = 34;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, "Quit Game");
 	if (g_abKeyPressed[K_DOWN])
 		goverselect = 1;
 	if (goverselect == 1 && g_abKeyPressed[K_UP])
 		goverselect = 0;
+	c.X = 34;
+	c.Y = 17;
 	if (goverselect == 0)
 	{
-		c.X = 34;
-		c.Y = 17;
 		g_Console.writeToBuffer(c, "Main Menu", 0xF0);
-
+		c.X = 34;
+		c.Y = 18;
+		g_Console.writeToBuffer(c, "Quit Game");
 	}
 	if (goverselect == 1)
 	{
+		g_Console.writeToBuffer(c, "Main Menu");
 		c.X = 34;
 		c.Y = 18;
 		g_Console.writeToBuffer(c, "Quit Game", 0xF0);
@@ -561,24 +553,23 @@ void renderloadinginstruct()  // renders the splash screen
 {
 	COORD c = g_Console.getConsoleSize();
 
-	c.X = 20;
-	c.Y = 1;
+	c.X = 0;
 	string line;
 	for (int y = 0; y < height; y++)
 	{
+		c.Y = y;
 		line = map[y];
 		g_Console.writeToBuffer(c, line);
-		c.Y++;
 	}
 }
 
 void splashScreenWait()
 {
-	renderSplashScreen();
 	if (g_dElapsedTime < govertime)
 		return;
 	if (g_abKeyPressed[K_RETURN])
 	{
+		govertime = g_dElapsedTime + 0.5;
 		if(g_menuselect == 0)
 		g_eGameState = S_GAMELOAD;
 		else if (g_menuselect == 1)
@@ -588,13 +579,14 @@ void splashScreenWait()
 
 void overscreen()
 {
+	if (g_dElapsedTime < govertime)
+		return;
 	if (g_abKeyPressed[K_RETURN])
 	{
 		govertime = g_dElapsedTime + 0.5;
 		if (goverselect == 0)
 		{
 			g_sChar.m_iHitpoints = 10;
-
 			g_eGameState = S_LOADING;
 		}
 		else if (goverselect == 1)
@@ -604,9 +596,12 @@ void overscreen()
 
 void instructscreen()
 {
+	if (g_dElapsedTime < govertime)
+		return;
 	if (g_abKeyPressed[K_BACK])
 	{
-		g_eGameState = S_GAMELOAD;
+		govertime = g_dElapsedTime + 0.5;
+		g_eGameState = S_LOADING;
 	}
 }
 
@@ -714,20 +709,10 @@ void enemyBehaviour(SGameChar *g_sEnemy)
 	enemyatt(g_sEnemy->m_cLocation, g_sChar.m_cLocation);
 
 	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
-		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
+		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar,map);
 	/*else
 	{
-		randomMovement(g_dElapsedTime, g_sEnemy);
-=======
-	
-	if (g_sEnemy->m_seePlayer || lineOfSight(g_sEnemy, &g_sChar, map))
-	{
-		breadthFirstSearch(g_dElapsedTime, g_sEnemy, &g_sChar);
-	}
-	/*else
-	{
-		randomMovement(g_dElapsedTime, &g_sEnemy[a]);
->>>>>>> 22a7dd052f7f2a44784d24266a0427d0d38f7929
+		randomMovement(g_dElapsedTime, g_sEnemy,map);
 	}*/
 }
 
@@ -749,22 +734,22 @@ void checkCharacterAttack()
 		if (g_abKeyPressed[K_UP])
 		{
 			setAttack(1, &g_sChar );
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, map);
 		}
 		if (g_abKeyPressed[K_LEFT])
 		{
 			setAttack(3, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, map);
 		}
 		if (g_abKeyPressed[K_DOWN])
 		{
 			setAttack(2, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, map);
 		}
 		if (g_abKeyPressed[K_RIGHT])
 		{
 			setAttack(4, &g_sChar);
-			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened);
+			launchPlayerAttack(&g_Console, &g_sChar, &g_dCharNextAttackTime, &g_dElapsedTime, &bSomethingHappened, map);
 		}
 	}
 }

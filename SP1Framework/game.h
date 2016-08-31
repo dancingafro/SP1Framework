@@ -64,6 +64,14 @@ enum EGAMESTATES
 	S_OVERLOAD,
     S_COUNT
 };
+struct GVARABLES
+{
+	char wall = (char)219;
+	char tele = (char)43;
+	char door1 = (char)205;
+	char door2 = (char)186;
+	char hud = (char)178;
+};
 
 // struct for the game character
 struct SGameChar
@@ -101,7 +109,6 @@ void shutdown    ( void );      // do clean up, free memory
 void Splashscreenloading();
 void splashScreenWait();    // waits for time to pass in splash screen
 void instructscreen();
-void gameover();
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
@@ -114,16 +121,16 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void loadfile(string mapname, int *numTele, int *numEnemy, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
+void loadfile(string mapname, int *numTele, int *numEnemy, GVARABLES *mapData, SGameObj *g_sKey, SGameObj g_sDoor[], SGameChar g_sEnemy[], SGameObj g_sTeleporters[], char(&map)[height][width], char(&fog)[height][width]);
 void gameLoad(int level);
 void renderEnemy();
 void enemyBehaviour(SGameChar *g_sEnemy);
-void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy);
+void randomMovement(double g_dElapsedTime, SGameChar *g_sEnemy, char(&map)[height][width]);
 void renderObject();
 void checkCharacterAttack();
 void renderCharacterAttack();
-bool collision(int x, int y);
-void breadthFirstSearch(double g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar);
+bool collision(int x, int y, char(&map)[height][width]);
+void breadthFirstSearch(double g_dElapsedTime, SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][width]);
 bool lineOfSight(SGameChar *g_sEnemy, SGameChar *g_sChar, char(&map)[height][width]);
 int  playerToEnemyDistance(int a, SGameChar g_sEnemy[], SGameChar *g_sChar);
 void FOW(int x, int y, char(&map)[height][width], char(&fog)[height][width]);

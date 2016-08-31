@@ -4,9 +4,9 @@
 #include "game.h"
 
 void setAttack(int directions, SGameChar *g_sChar);
-void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened);
+void launchPlayerAttack(Console *g_Console, SGameChar *g_sChar, double *g_dCharNextAttackTime, double *g_dElapsedTime, bool *bSomethingHappened, char(&map)[height][width]);
 void eCheckForDamage(Console *g_Console, SGameChar *g_sEnemy, SGameChar *g_sChar, double *g_dElapsedTime);
-unsigned int checkAtkType(COORD cAtkLctn);
+unsigned int checkAtkType(COORD cAtkLctn, char(&map)[height][width]);
 void playAttackSound(unsigned int iAtkType);
 void renderExplosion(Console *g_Console, short cX, short cY);
 
