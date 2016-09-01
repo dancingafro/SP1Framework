@@ -222,17 +222,18 @@ void gameLoad(int level)
 		loadfile("maze2.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
+		g_eGameState = S_GAME;
 		break;
 	case 2:
 		loadfile("maze3.txt", &numTele, &numEnemy, MapData, &g_sKey, g_sDoor, g_sEnemy, g_sTeleporters, map, fog);
 		g_sChar.m_cLocation.X = 2;
 		g_sChar.m_cLocation.Y = 2;
+		g_eGameState = S_GAME;
 		break;
 	default:
 		g_eGameState = S_OVERLOAD;
 		break;
 	}
-	g_eGameState = S_GAME;
 }
 
 void gameplay()			// gameplay logic
@@ -424,7 +425,7 @@ void moveCharacter()
 					int randNum = 0;
 					while (true)
 					{
-						float frandNum = (rand() % numTele);
+						int frandNum = (rand() % numTele);
 						if (frandNum == i)
 						{
 							continue;
